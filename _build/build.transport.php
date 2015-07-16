@@ -27,7 +27,8 @@
  * mspBePaid package builder
  *
  * @author Ivan Klimchuk <ivan@klimchuk.com>
- * @package build
+ * @package mspbepaid
+ * @subpackage build
  */
 
 $mtime = microtime();

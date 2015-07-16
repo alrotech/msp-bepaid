@@ -25,7 +25,8 @@
 
 /**
  * @author Ivan Klimchuk <ivan@klimchuk.com>
- * @package build
+ * @package mspbepaid
+ * @subpackage build
  */
 
 define('PKG_NAME', 'mspBePaid');
