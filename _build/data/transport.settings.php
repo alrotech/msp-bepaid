@@ -36,12 +36,12 @@ $settings = array();
 $tmp = array(
     'store_id' => array(
         'xtype' => 'textfield',
-        'value' => '',
+        'value' => '361',
         'area' => 'ms2_payment_bepaid'
     ),
     'secret_key' => array(
         'xtype' => 'textfield',
-        'value' => '',
+        'value' => 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d',
         'area' => 'ms2_payment_bepaid'
     ),
     'login' => array(
@@ -56,12 +56,12 @@ $tmp = array(
     ),
     'checkout_url' => array(
         'xtype' => 'textfield',
-        'value' => 'https://secure.bepaid.by',
+        'value' => 'https://checkout.bepaid.by',
         'area' => 'ms2_payment_bepaid'
     ),
     'gate_url' => array(
         'xtype' => 'textfield',
-        'value' => 'https://billing.bepaid.by',
+        'value' => 'https://gateway.bepaid.by',
         'area' => 'ms2_payment_bepaid'
     ),
     'version' => array(

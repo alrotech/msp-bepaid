@@ -1,2 +1,4 @@
 .idea
 .D_Store
+_build/vendor
+

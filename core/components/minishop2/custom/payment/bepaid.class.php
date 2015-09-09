@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . 'bepaid/vendor/autoload.php';
+
 if (!class_exists('msPaymentInterface')) {
     require_once dirname(dirname(dirname(__FILE__))) . '/model/minishop2/mspaymenthandler.class.php';
 }

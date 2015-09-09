@@ -39,19 +39,19 @@ require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
 /* define sources */
 $root = dirname(dirname(__FILE__)) . '/';
 $sources = [
-    'root' => $root,
     'build' => $root . '_build/',
     'data' => $root . '_build/data/',
+    'docs' => $root . 'docs/',
     'resolvers' => $root . '_build/resolvers/',
-    'source_assets' => [
+    'assets' => [
         'components/minishop2/payment/bepaid.php'
     ],
-    'source_core' => [
+    'core' => [
+        'components/minishop2/custom/payment/bepaid/',
         'components/minishop2/custom/payment/bepaid.class.php',
         'components/minishop2/lexicon/en/msp.bepaid.inc.php',
-        'components/minishop2/lexicon/ru/msp.bepaid.inc.php'
+        'components/minishop2/lexicon/ru/msp.bepaid.inc.php',
     ],
-    'docs' => $root . 'docs/'
 ];
 
 $modx = new modX();
@@ -98,7 +98,7 @@ if (defined('BUILD_SETTING_UPDATE')) {
 }
 
 $resolvers = [];
-foreach ($sources['source_assets'] as $file) {
+foreach ($sources['assets'] as $file) {
     $directory = dirname($file);
     array_push($resolvers, [
         'type' => 'file',
@@ -106,7 +106,7 @@ foreach ($sources['source_assets'] as $file) {
         'target' => "return MODX_ASSETS_PATH . '$directory/';",
     ]);
 }
-foreach ($sources['source_core'] as $file) {
+foreach ($sources['core'] as $file) {
     $directory = dirname($file);
     array_push($resolvers, [
         'type' => 'file',
@@ -150,4 +150,3 @@ if (defined('PKG_AUTO_INSTALL') && PKG_AUTO_INSTALL) {
         $modx->log(modX::LOG_LEVEL_ERROR, "Could not install package $package->signature");
     }
 }
-
