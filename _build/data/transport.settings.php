@@ -109,5 +109,4 @@ foreach ($tmp as $k => $v) {
     $settings[] = $setting;
 }
 
-unset($tmp);
 return $settings;
