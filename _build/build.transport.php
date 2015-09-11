@@ -31,10 +31,32 @@
  * @subpackage build
  */
 
+ini_set('date.timezone', 'Europe/Minsk');
+
 set_time_limit(0);
 
 require_once 'build.config.php';
-require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
+require_once 'xpdo/xpdo/xpdo.class.php';
+require_once 'xpdo/xpdo/transport/xpdotransport.class.php';
+
+$xpdo = xPDO::getInstance('db', [
+    xPDO::OPT_CACHE_PATH => __DIR__ . '/../cache/',
+    xPDO::OPT_HYDRATE_FIELDS => true,
+    xPDO::OPT_HYDRATE_RELATED_OBJECTS => true,
+    xPDO::OPT_HYDRATE_ADHOC_FIELDS => true,
+    xPDO::OPT_CONNECTIONS => [
+        [
+            'dsn' => 'mysql:host=localhost;dbname=xpdotest;charset=utf8',
+            'username' => 'test',
+            'password' => 'test',
+            'options' => [xPDO::OPT_CONN_MUTABLE => true],
+            'driverOptions' => [],
+        ]
+    ]
+]);
+
+$xpdo->setLogLevel(xPDO::LOG_LEVEL_FATAL);
+$xpdo->setLogTarget();
 
 /* define sources */
 $root = dirname(dirname(__FILE__)) . '/';
@@ -54,13 +76,6 @@ $sources = [
     ],
 ];
 
-$modx = new modX();
-$modx->initialize('mgr');
-$modx->setLogLevel(modX::LOG_LEVEL_INFO);
-$modx->setLogTarget();
-
-$modx->loadClass('transport.xPDOTransport', XPDO_CORE_PATH, true, true);
-
 $signature = join('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
 $directory = MODX_CORE_PATH . 'packages/';
 $filename = $directory . $signature . '.transport.zip';
@@ -70,21 +85,19 @@ if (file_exists($filename)) {
     unlink($filename);
 }
 if (file_exists($directory . $signature) && is_dir($directory . $signature)) {
-    $cacheManager = $modx->getCacheManager();
+    $cacheManager = $xpdo->getCacheManager();
     if ($cacheManager) {
         $cacheManager->deleteTree($directory . $signature, true, false, []);
     }
 }
 
-$package = new xPDOTransport($modx, $signature, $directory);
-
-$modx->loadClass('transport.xPDOTransportVehicle', XPDO_CORE_PATH, true, true);
+$package = new xPDOTransport($xpdo, $signature, $directory);
 
 /* load system settings */
 if (defined('BUILD_SETTING_UPDATE')) {
     $settings = include $sources['data'] . 'transport.settings.php';
     if (!is_array($settings)) {
-        $modx->log(modX::LOG_LEVEL_ERROR, 'Could not package in settings.');
+        $xpdo->log(XPDO::LOG_LEVEL_ERROR, 'Could not package in settings.');
     } else {
         foreach ($settings as $setting) {
             $package->put($setting, [
@@ -92,6 +105,9 @@ if (defined('BUILD_SETTING_UPDATE')) {
                 xPDOTransport::PRESERVE_KEYS => true,
                 xPDOTransport::UPDATE_OBJECT => BUILD_SETTING_UPDATE,
                 'class' => 'modSystemSetting',
+                'resolve' => null,
+                'validate' => null,
+                'package' => 'modx',
             ]);
         }
     }
@@ -119,16 +135,25 @@ array_push($resolvers, [
     'source' => $sources['resolvers'] . 'resolve.settings.php'
 ]);
 
-$payment = $modx->newObject('msPayment', [
+class msPayment extends xPDOObject {}
+$payment = new msPayment($xpdo);
+$payment->fromArray([
+    'id' => null,
     'name' => 'BePaid',
-    'class' => 'BePaid',
+    'description' => null,
+    'price' => 0,
+    'logo' => null,
+    'rank' => 0,
     'active' => 0,
+    'class' => 'BePaid',
+    'properties' => null
 ]);
 
 $package->put($payment, [
     xPDOTransport::UNIQUE_KEY => 'name',
     xPDOTransport::PRESERVE_KEYS => false,
     xPDOTransport::UPDATE_OBJECT => false,
+    'package' => 'minishop2',
     'resolve' => $resolvers
 ]);
 
@@ -140,13 +165,5 @@ $package->setAttribute('setup-options', [
 ]);
 
 if ($package->pack()) {
-    $modx->log(modX::LOG_LEVEL_INFO, "Package built");
-}
-
-if (defined('PKG_AUTO_INSTALL') && PKG_AUTO_INSTALL) {
-    if ($package->install()) {
-        $modx->log(modX::LOG_LEVEL_INFO, "Package $package->signature successfully installed");
-    } else {
-        $modx->log(modX::LOG_LEVEL_ERROR, "Could not install package $package->signature");
-    }
+    $xpdo->log(xPDO::LOG_LEVEL_INFO, "Package built");
 }

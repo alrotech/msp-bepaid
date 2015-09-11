@@ -96,13 +96,16 @@ $tmp = array(
     ),
 );
 
+class modSystemSetting extends xPDOObject {}
+
 foreach ($tmp as $k => $v) {
-    $setting = $modx->newObject('modSystemSetting');
+    $setting = new modSystemSetting($xpdo);
     $setting->fromArray(array_merge(
         array(
             'key' => 'ms2_payment_bepaid_' . $k,
             'namespace' => 'minishop2',
             'area' => 'ms2_payment',
+            'editedon' => null,
         ), $v
     ), '', true, true);
 
