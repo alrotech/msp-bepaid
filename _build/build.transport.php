@@ -31,11 +31,17 @@
  * @subpackage build
  */
 
-ini_set('date.timezone', 'Europe/Minsk');
-
 set_time_limit(0);
 
-require_once 'build.config.php';
+ini_set('date.timezone', 'Europe/Minsk');
+
+define('PKG_NAME', 'mspBePaid');
+define('PKG_NAME_LOWER', strtolower(PKG_NAME));
+define('PKG_VERSION', '1.0.5');
+define('PKG_RELEASE', 'beta');
+
+define('BUILD_SETTING_UPDATE', true);
+
 require_once 'xpdo/xpdo/xpdo.class.php';
 require_once 'xpdo/xpdo/transport/xpdotransport.class.php';
 
@@ -76,7 +82,7 @@ $sources = [
 ];
 
 $signature = join('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
-$directory = MODX_CORE_PATH . 'packages/';
+$directory = $root . '_packages/';
 $filename = $directory . $signature . '.transport.zip';
 
 /* remove the package if it's already been made */
