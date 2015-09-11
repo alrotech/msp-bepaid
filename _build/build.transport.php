@@ -69,7 +69,6 @@ $sources = [
         'components/minishop2/payment/bepaid.php'
     ],
     'core' => [
-        'components/minishop2/custom/payment/bepaid/',
         'components/minishop2/custom/payment/bepaid.class.php',
         'components/minishop2/lexicon/en/msp.bepaid.inc.php',
         'components/minishop2/lexicon/ru/msp.bepaid.inc.php',
