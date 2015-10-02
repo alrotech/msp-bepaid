@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . 'bepaid/vendor/autoload.php';
-
 if (!class_exists('msPaymentInterface')) {
     require_once dirname(dirname(dirname(__FILE__))) . '/model/minishop2/mspaymenthandler.class.php';
 }
@@ -9,38 +7,85 @@ if (!class_exists('msPaymentInterface')) {
 class BePaid extends msPaymentHandler implements msPaymentInterface
 {
     public $config;
+
+    /** @var modX */
     public $modx;
 
-    function __construct(xPDOObject $object, $config = array())
+    /**
+     * @param xPDOObject $object
+     * @param array $config
+     */
+    function __construct(xPDOObject $object, $config = [])
     {
         $this->modx = &$object->xpdo;
 
-        $siteUrl = $this->modx->getOption('site_url');
-        $assetsUrl = $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2/');
-        $paymentUrl = $siteUrl . substr($assetsUrl, 1) . 'payment/webpay.php';
+        $site_url = $this->modx->getOption('site_url');
+        $assets_url = $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2/');
+        $payment_url = $site_url . substr($assets_url, 1) . 'payment/webpay.php';
 
-        $this->config = array_merge(
-            array(
-                'store_name' => $this->modx->getOption('site_name'),
-                'store_id' => $this->modx->getOption('ms2_payment_webpay_store_id'),
-                'secret' => $this->modx->getOption('ms2_payment_webpay_secret_key'),
-                'login' => $this->modx->getOption('ms2_payment_webpay_login'),
-                'password' => $this->modx->getOption('ms2_payment_webpay_password'),
+        $this->config = array_merge([
+            'store_name' => $this->modx->getOption('site_name'),
+            'store_id' => $this->modx->getOption('ms2_payment_webpay_store_id'),
+            'secret' => $this->modx->getOption('ms2_payment_webpay_secret_key'),
+            'login' => $this->modx->getOption('ms2_payment_webpay_login'),
+            'password' => $this->modx->getOption('ms2_payment_webpay_password'),
+            'payment_url' => $payment_url,
+            'checkout_url' => $this->modx->getOption('ms2_payment_webpay_checkout_url'),
+            'gate_url' => $this->modx->getOption('ms2_payment_webpay_gate_url'),
+            'version' => $this->modx->getOption('ms2_payment_webpay_version', 2, true),
+            'language' => $this->modx->getOption('ms2_payment_webpay_language', 'russian', true),
+            'currency' => $this->modx->getOption('ms2_payment_webpay_currency', 'BYR', true),
+            'developer_mode' => $this->modx->getOption('ms2_payment_webpay_developer_mode', 0, true),
+            'json_response' => false
+        ], $config);
 
-                'payment_url' => $paymentUrl,
-                'checkout_url' => $this->modx->getOption('ms2_payment_webpay_checkout_url'),
-                'gate_url' => $this->modx->getOption('ms2_payment_webpay_gate_url'),
+        //amount - summ of order
+        //currency - currency
+        //description - order desc
 
-                'version' => $this->modx->getOption('ms2_payment_webpay_version', 2, true),
-                'language' => $this->modx->getOption('ms2_payment_webpay_language', 'russian', true),
-                'currency' => $this->modx->getOption('ms2_payment_webpay_currency', 'BYR', true),
+        //language - list of
+//        en - English
+//es - Spanish
+//tr - Turkish
+//de - German
+//it - Italian
+//ru - Russian
+//zh - Chinese
+//fr - French
+//da - Danish
+//sv - Swedish
+//no - Norwegian
+//fi - Finnish
 
-                'developer_mode' => $this->modx->getOption('ms2_payment_webpay_developer_mode', 0, true),
 
-                'json_response' => false
-            ),
-            $config
-        );
+//       // https://checkout.bepaid.by/ctp/api/checkouts
+//        authorization and payment.
+        //success_url
+        //decline_url
+        //fail_url
+        //cancel_url
+        //notification_url
+
+        // opt tracking_id wtF?
+        // opt dynamic_billing_descriptor wtF?
+
+        // opt customer_fields - It controls the input fields for customer details shown at the payment page
+        // read_only
+
+        //hidden ?
+
+
+
+//        email	Email of your Customer making a purchase at your shop
+//first_name	Customer's first name
+//last_name	Customer's last name
+//address	Customer's billing address
+//city	Customer's billing city
+//state	Customer's two-letter billing state only if the billing address country is US or CA
+//zip	conditionally optional. Customer's billing ZIP or postal code. The parameter is optional if country is from the list.
+//If country=US, zip format must be NNNNN or NNNNN-NNNN.
+//    phone	Customer's optional phone number
+//country	Customer's billing country in ISO 3166-1 Alpha-2 format
 
         if ($this->config['developer_mode']) {
             $this->config['checkout_url'] = 'https://secure.sandbox.webpay.by:8843';
@@ -48,13 +93,21 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
     }
 
+    /**
+     * @param msOrder $order
+     * @return array|string
+     */
     public function send(msOrder $order)
     {
         $link = $this->getPaymentLink($order);
 
-        return $this->success('', array('redirect' => $link));
+        return $this->success('', ['redirect' => $link]);
     }
 
+    /**
+     * @param msOrder $order
+     * @return string
+     */
     public function getPaymentLink(msOrder $order)
     {
         $id = $order->get('id');
@@ -126,7 +179,12 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         return $link;
     }
 
-    public function receive(msOrder $order, $params = array())
+    /**
+     * @param msOrder $order
+     * @param array $params
+     * @return void
+     */
+    public function receive(msOrder $order, $params = [])
     {
         switch ($params['action']) {
             case 'success':
@@ -206,7 +264,11 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
     }
 
-    public function paymentError($text, $request = array())
+    /**
+     * @param $text
+     * @param array $request
+     */
+    public function paymentError($text, $request = [])
     {
         $this->modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:WebPay] ' . $text . ', request: ' . print_r($request, 1));
         header("HTTP/1.0 400 Bad Request");

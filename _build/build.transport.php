@@ -64,7 +64,9 @@ $xpdo = xPDO::getInstance('db', [
 $xpdo->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 $xpdo->setLogTarget();
 
-/* define sources */
+class modSystemSetting extends xPDOObject {}
+class msPayment extends xPDOObject {}
+
 $root = dirname(dirname(__FILE__)) . '/';
 $sources = [
     'build' => $root . '_build/',
@@ -118,6 +120,12 @@ if (defined('BUILD_SETTING_UPDATE')) {
     }
 }
 
+$validators = [];
+array_push($validators, [
+    'type' => 'php',
+    'source' => $sources['validators'] . 'validate.phpversion.php'
+]);
+
 $resolvers = [];
 foreach ($sources['assets'] as $file) {
     $directory = dirname($file);
@@ -135,12 +143,11 @@ foreach ($sources['core'] as $file) {
         'target' => "return MODX_CORE_PATH . '$directory/';"
     ]);
 }
-array_push($resolvers, [
-    'type' => 'php',
-    'source' => $sources['resolvers'] . 'resolve.settings.php'
-]);
 
-class msPayment extends xPDOObject {}
+array_push($resolvers,
+    ['type' => 'php', 'source' => $sources['resolvers'] . 'resolve.settings.php']
+);
+
 $payment = new msPayment($xpdo);
 $payment->fromArray([
     'id' => null,
@@ -159,15 +166,15 @@ $package->put($payment, [
     xPDOTransport::PRESERVE_KEYS => false,
     xPDOTransport::UPDATE_OBJECT => false,
     'package' => 'minishop2',
-    'resolve' => $resolvers
+    'resolve' => $resolvers,
+    'validate' => $validators,
 ]);
 
 $package->setAttribute('changelog', file_get_contents($sources['docs'] . 'changelog.txt'));
 $package->setAttribute('license', file_get_contents($sources['docs'] . 'license.txt'));
 $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.txt'));
-$package->setAttribute('setup-options', [
-    'source' => $sources['build'] . 'setup.options.php'
-]);
+$package->setAttribute('requires', ['php' => '>=5.4']);
+$package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 
 if ($package->pack()) {
     $xpdo->log(xPDO::LOG_LEVEL_INFO, "Package built");

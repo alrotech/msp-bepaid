@@ -31,83 +31,48 @@
  * @subpackage build
  */
 
-$settings = array();
-
-$tmp = array(
-    'store_id' => array(
+$list = [
+    'store_id' => [
         'xtype' => 'textfield',
-        'value' => '361',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'secret_key' => array(
+        'value' => '363'
+    ],
+    'secret_key' => [
         'xtype' => 'textfield',
-        'value' => 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'login' => array(
+        'value' => '4f585d2709776e53d080f36872fd1b63b700733e7624dfcadd057296daa37df6'
+    ],
+    'checkout_url' => [
         'xtype' => 'textfield',
-        'value' => '',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'password' => array(
+        'value' => 'https://checkout.bepaid.by/ctp/api/checkouts',
+    ],
+    'language' => [
         'xtype' => 'textfield',
-        'value' => '',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'checkout_url' => array(
+        'value' => 'russian', // list of availables languages, combobox - нужен спец плагин
+    ],
+    'currency' => [
         'xtype' => 'textfield',
-        'value' => 'https://checkout.bepaid.by',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'gate_url' => array(
-        'xtype' => 'textfield',
-        'value' => 'https://gateway.bepaid.by',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'version' => array(
-        'xtype' => 'numberfield',
-        'value' => 2,
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'developer_mode' => array(
-        'xtype' => 'combo-boolean',
-        'value' => true,
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'language' => array(
-        'xtype' => 'textfield',
-        'value' => 'russian',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'currency' => array(
-        'xtype' => 'textfield',
-        'value' => 'BYR',
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'success_id' => array(
-        'xtype' => 'numberfield',
+        'value' => 'BYR', // ? все по ISO
+    ],
+    'success_id' => [
+        'xtype' => 'numberfield', // set resource field - combobox?
         'value' => 0,
-        'area' => 'ms2_payment_bepaid'
-    ),
-    'failure_id' => array(
-        'xtype' => 'numberfield',
+    ],
+    'failure_id' => [
+        'xtype' => 'numberfield', // // set resource field - combobox?
         'value' => 0,
-        'area' => 'ms2_payment_bepaid'
-    ),
-);
+    ]
+];
 
-class modSystemSetting extends xPDOObject {}
+// нужно написать плагин, который будет предзагружаться в админке в системных настройках и подменять нужный combobox для языка
 
-foreach ($tmp as $k => $v) {
+$settings = [];
+foreach ($list as $k => $v) {
     $setting = new modSystemSetting($xpdo);
-    $setting->fromArray(array_merge(
-        array(
-            'key' => 'ms2_payment_bepaid_' . $k,
-            'namespace' => 'minishop2',
-            'area' => 'ms2_payment',
-            'editedon' => null,
-        ), $v
-    ), '', true, true);
+    $setting->fromArray(array_merge([
+        'key' => 'ms2_payment_bepaid_' . $k,
+        'namespace' => 'minishop2',
+        'area' => 'ms2_payment_bepaid',
+        'editedon' => null,
+    ], $v), '', true, true);
 
     $settings[] = $setting;
 }
