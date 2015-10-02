@@ -21,25 +21,18 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $site_url = $this->modx->getOption('site_url');
         $assets_url = $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2/');
-        $payment_url = $site_url . substr($assets_url, 1) . 'payment/webpay.php';
+        $payment_url = $site_url . substr($assets_url, 1) . 'payment/bepaid.php';
 
         $this->config = array_merge([
-            'store_name' => $this->modx->getOption('site_name'),
-            'store_id' => $this->modx->getOption('ms2_payment_webpay_store_id'),
-            'secret' => $this->modx->getOption('ms2_payment_webpay_secret_key'),
-            'login' => $this->modx->getOption('ms2_payment_webpay_login'),
-            'password' => $this->modx->getOption('ms2_payment_webpay_password'),
-            'payment_url' => $payment_url,
-            'checkout_url' => $this->modx->getOption('ms2_payment_webpay_checkout_url'),
-            'gate_url' => $this->modx->getOption('ms2_payment_webpay_gate_url'),
-            'version' => $this->modx->getOption('ms2_payment_webpay_version', 2, true),
-            'language' => $this->modx->getOption('ms2_payment_webpay_language', 'russian', true),
-            'currency' => $this->modx->getOption('ms2_payment_webpay_currency', 'BYR', true),
-            'developer_mode' => $this->modx->getOption('ms2_payment_webpay_developer_mode', 0, true),
+            'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id'),
+            'secret' => $this->modx->getOption('ms2_payment_bepaid_secret_key'),
+            'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'), // ? нужно ли хардкодить
+            'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, 'ru'),
+            'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYR'),
             'json_response' => false
         ], $config);
 
-        //amount - summ of order
+        //amount - summ of order        cost in minimal currency units, e.g. $32.45 must be sent as 3245 - usd and cents should be converted to cents
         //currency - currency
         //description - order desc
 
@@ -58,7 +51,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 //fi - Finnish
 
 
-//       // https://checkout.bepaid.by/ctp/api/checkouts
 //        authorization and payment.
         //success_url
         //decline_url
@@ -87,10 +79,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 //    phone	Customer's optional phone number
 //country	Customer's billing country in ISO 3166-1 Alpha-2 format
 
-        if ($this->config['developer_mode']) {
-            $this->config['checkout_url'] = 'https://secure.sandbox.webpay.by:8843';
-            $this->config['gate_url'] = 'https://sandbox.webpay.by';
-        }
     }
 
     /**
@@ -106,10 +94,60 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
     /**
      * @param msOrder $order
+     */
+    public function createPaymentToken(msOrder $order)
+    {
+
+        $address = $order->getOne('Address'); // все про customer
+
+
+        $payload = [
+
+            'checkout' => [
+                'transaction_type' => 'payment',
+                'settings' => [
+
+                ],
+                'order' => [
+
+                ],
+                'customer' => [
+
+                ]
+
+
+            ]
+
+        ];
+
+        $p = json_encode($payload, JSON_UNESCAPED_UNICODE);
+
+        // curl to checkout service
+        $ch = curl_init();
+        // CURLOPT_HTTPHEADER = []
+        // CURLOPT_HEADER = 1
+        // CURLOPT_USERPWD = usr:pasw
+        // CURLOPT_TIMEOUT : 30
+        // CURLOPT_POST : 1
+        // CURLOPT_POSTFIELDS : payload
+        // CURLOPT_RETURNTRANSFER : true
+
+
+        curl_setopt($ch, CURLAUTH_BASIC, []);
+        // use HTTP Basic authentication with shop id and shop secret key
+        // have the headers Content-Type: application/json and Accept: application/json
+        // use SSL connection with 128-bit (or stronger) encryption to meet PCI DSS requirements
+        // be UTF-8 encoded - OK
+    }
+
+    /**
+     * @param msOrder $order
      * @return string
      */
     public function getPaymentLink(msOrder $order)
     {
+
+
         $id = $order->get('id');
         $cost = $order->get('cost');
 

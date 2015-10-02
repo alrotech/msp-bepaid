@@ -45,12 +45,20 @@ $list = [
         'value' => 'https://checkout.bepaid.by/ctp/api/checkouts',
     ],
     'language' => [
-        'xtype' => 'textfield',
+        'xtype' => 'textfield', // mspbepaid-combo-languages
         'value' => 'russian', // list of availables languages, combobox - нужен спец плагин
+    ],
+    'read_only' => [ // как теги сделать бы комбик, если такое возможно в system settings
+        'xtype' => 'textfield',
+        'value' => ''
+    ],
+    'hidden' => [ // как теги сделать бы комбик, если такое возможно в system settings
+        'xtype' => 'textfield',
+        'value' => ''
     ],
     'currency' => [
         'xtype' => 'textfield',
-        'value' => 'BYR', // ? все по ISO
+        'value' => 'BYR', // ? все по ISO http://en.wikipedia.org/wiki/ISO_4217
     ],
     'success_id' => [
         'xtype' => 'numberfield', // set resource field - combobox?
