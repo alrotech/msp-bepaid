@@ -37,7 +37,7 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.0.5');
+define('PKG_VERSION', '1.0.6');
 define('PKG_RELEASE', 'beta');
 
 define('BUILD_SETTING_UPDATE', true);

@@ -1,5 +1,9 @@
-Changelog for mspBePaid.
+This file shows the changes in recent releases of mspBePaid.
 
-1.0.0 beta
+mspBePaid 1.0.6-beta (July 16, 2015)
 ==============
-- Initial release.
+- Added require of minimal php version
+
+mspBePaid 1.0.6-beta (July 16, 2015)
+==============
+- Copy of mspWebPay
