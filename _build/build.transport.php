@@ -37,13 +37,13 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.0.6');
+define('PKG_VERSION', '1.0.8');
 define('PKG_RELEASE', 'beta');
 
 define('BUILD_SETTING_UPDATE', true);
 
-require_once 'xpdo/xpdo/xpdo.class.php';
-require_once 'xpdo/xpdo/transport/xpdotransport.class.php';
+require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
+require_once __DIR__ . '/xpdo/xpdo/transport/xpdotransport.class.php';
 
 $xpdo = xPDO::getInstance('db', [
     xPDO::OPT_CACHE_PATH => __DIR__ . '/../cache/',
@@ -73,6 +73,7 @@ $sources = [
     'data' => $root . '_build/data/',
     'docs' => $root . 'docs/',
     'resolvers' => $root . '_build/resolvers/',
+    'validators' => $root . '_build/validators/',
     'assets' => [
         'components/minishop2/payment/bepaid.php'
     ],
@@ -84,7 +85,8 @@ $sources = [
 ];
 
 $signature = join('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
-$directory = $root . '_packages/';
+//$directory = $root . '_packages/';
+$directory = __DIR__ . '/../../../core/packages/'; // local place
 $filename = $directory . $signature . '.transport.zip';
 
 /* remove the package if it's already been made */

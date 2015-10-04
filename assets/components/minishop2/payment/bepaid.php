@@ -15,32 +15,11 @@ if (!class_exists('bePaid')) {
 }
 
 $context = '';
-$params = array();
+$params = [];
 
 $handler = new BePaid($modx->newObject('msOrder'));
 
 switch ($_GET['action']) {
-    case 'payment':
-        $request = json_decode($_REQUEST['request']);
-        $url = $handler->config['checkout_url'];
-
-        $fields = '';
-        foreach ($request as $k => $v) {
-            $fields .= '<input type="hidden" name="' . $k . '" value="' . $v . '">';
-        }
-
-        $form = "<form action=\"$url\" method=\"post\">$fields</form>";
-        $script = "
-            <script>
-                window.onload=function(){
-                    document.forms[0].submit();
-                }
-            </script>
-        ";
-
-        echo $form, $script;
-        exit;
-        break;
     case 'notify':
         if (empty($_POST['site_order_id'])) {
             $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Returned empty order id.');

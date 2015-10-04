@@ -25,8 +25,8 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $this->config = array_merge([
             'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id'),
-            'secret' => $this->modx->getOption('ms2_payment_bepaid_secret_key'),
-            'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'), // ? нужно ли хардкодить
+            'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key'),
+            'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'), // ? нужно ли хардкодить
             'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, 'ru'),
             'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYR'),
             'json_response' => false
@@ -87,134 +87,117 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      */
     public function send(msOrder $order)
     {
-        $link = $this->getPaymentLink($order);
+        if (!$link = $this->getPaymentToken($order)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Token and redirect url can not be requested.', '', '', __FILE__, __LINE__);
+        }
 
         return $this->success('', ['redirect' => $link]);
     }
 
     /**
      * @param msOrder $order
+     * @return bool|string
      */
-    public function createPaymentToken(msOrder $order)
+    protected function getPaymentToken(msOrder $order)
     {
 
         $address = $order->getOne('Address'); // все про customer
 
+        // TODO Add real data
 
         $payload = [
-
             'checkout' => [
                 'transaction_type' => 'payment',
                 'settings' => [
-
+                    'success_url' => '',
+                    'decline_url' => '',
+                    'fail_url' => '',
+                    'cancel_url' => '',
+                    'notification_url' => '',
+                    'language' => $this->config['language'],
+                    'customer_fields' => [
+                        'read_only' => [],
+                        'hidden' => []
+                    ]
                 ],
                 'order' => [
-
+                    'currency' => $this->config['currency'],
+                    'amount' => 20000, // рублей
+                    'description' => 'Description'
                 ],
                 'customer' => [
-
+                    'address' => 'Baker street 221b',
+                    'country' => 'GB',
+                    'city' => 'London',
+                    'email' => 'jake@example.com'
                 ]
-
-
             ]
-
         ];
 
-        $p = json_encode($payload, JSON_UNESCAPED_UNICODE);
+        $response = $this->request(
+            $this->config['checkout_url'],
+            $payload,
+            [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Cache-Control' => 'no-cache'
+            ],
+            [
+                $this->config['store_id'],
+                $this->config['secret_key']
+            ]
+        );
 
-        // curl to checkout service
-        $ch = curl_init();
-        // CURLOPT_HTTPHEADER = []
-        // CURLOPT_HEADER = 1
-        // CURLOPT_USERPWD = usr:pasw
-        // CURLOPT_TIMEOUT : 30
-        // CURLOPT_POST : 1
-        // CURLOPT_POSTFIELDS : payload
-        // CURLOPT_RETURNTRANSFER : true
+        $response = json_decode($response);
 
+        print_r($response);
 
-        curl_setopt($ch, CURLAUTH_BASIC, []);
-        // use HTTP Basic authentication with shop id and shop secret key
-        // have the headers Content-Type: application/json and Accept: application/json
-        // use SSL connection with 128-bit (or stronger) encryption to meet PCI DSS requirements
-        // be UTF-8 encoded - OK
+        exit;
+
+        if (isset($response['checkout']) && isset($response['checkout']['redirect_url'])) {
+            return $response['checkout']['redirect_url'];
+        }
+
+        return false;
     }
 
     /**
-     * @param msOrder $order
-     * @return string
+     * @param $url
+     * @param $payload
+     * @param array $headers
+     * @param array $auth
+     * @return mixed
      */
-    public function getPaymentLink(msOrder $order)
+    protected function request($url, $payload, $headers = [], $auth = [])
     {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array_map(function ($key, $value) {
+            return join(': ', [$key, $value]);
+        }, array_keys($headers), $headers));
 
-        $id = $order->get('id');
-        $cost = $order->get('cost');
+        curl_setopt($ch, CURLOPT_USERPWD, join(':', $auth));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
 
-        $user = $order->getOne('User');
-        if ($user) {
-            $user = $user->getOne('Profile');
-        }
-        $address = $order->getOne('Address');
-        $delivery = $order->getOne('Delivery');
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
 
-        $products = $this->modx->getCollection('msOrderProduct', array('order_id' => $id));
+        curl_close($ch);
 
-        $random = md5(substr(md5(time()), 5, 10));
-
-        $request = array(
-            '*scart' => '',
-            'wsb_order_num' => $id,
-            'wsb_storeid' => $this->config['store_id'],
-            'wsb_store' => $this->config['store_name'],
-            'wsb_version' => $this->config['version'],
-            'wsb_currency_id' => $this->config['currency'],
-            'wsb_language_id' => $this->config['language'],
-            'wsb_seed' => $random,
-            'wsb_test' => $this->config['developer_mode'],
-            'wsb_return_url' => $this->config['payment_url'] . '?action=success',
-            'wsb_cancel_return_url' => $this->config['payment_url'] . '?action=cancel',
-            'wsb_notify_url' => $this->config['payment_url'] . '?action=notify',
-            //,'wsb_tax' => 0 // not required
-            'wsb_shipping_name' => $delivery->get('name'),
-            'wsb_shipping_price' => $delivery->get('price'),
-            //,'wsb_discount_name' => '?' // not required
-            //,'wsb_discount_price' => '?' // not required
-            'wsb_total' => $cost,
-            'wsb_email' => $user->get('email'),
-            'wsb_phone' => $address->get('phone'),
-            //,'wsb_icn' => '' // not required // special
-            //,'wsb_card' => '' // not required // special
-        );
-
-        $i = 0;
-        foreach ($products as $product) {
-            $request["wsb_invoice_item_name[$i]"] = $product->get('name');
-            $request["wsb_invoice_item_quantity[$i]"] = $product->get('count');
-            $request["wsb_invoice_item_price[$i]"] = $product->get('price');
-            $i++;
-        }
-        $signature = sha1(
-            $request['wsb_seed']
-            . $request['wsb_storeid']
-            . $request['wsb_order_num']
-            . $request['wsb_test']
-            . $request['wsb_currency_id']
-            . $request['wsb_total']
-            . $this->config['secret']
-        );
-        $request['wsb_signature'] = $signature;
-
-        $link = $this->config['payment_url']
-            . '?'
-            . http_build_query(
-                array(
-                    'action' => 'payment',
-                    'request' => json_encode($request)
-                )
+        if ($response === false) {
+            $this->modx->log(
+                modX::LOG_LEVEL_ERROR,
+                '[ms2::payment::bePaid] CURL Error, can not process request via path "' . $url . '". Error info: ' . $error,
+                '', '', __FILE__, __LINE__
             );
+        }
 
-        return $link;
+        return $response;
     }
 
     /**
@@ -308,7 +291,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      */
     public function paymentError($text, $request = [])
     {
-        $this->modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:WebPay] ' . $text . ', request: ' . print_r($request, 1));
+        $this->modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] ' . $text . ', request: ' . print_r($request, 1));
         header("HTTP/1.0 400 Bad Request");
 
         die('ERROR: ' . $text);
