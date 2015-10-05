@@ -37,3 +37,5 @@ $_lang['setting_ms2_payment_bepaid_success_id_desc'] = 'The customer will be sen
 
 $_lang['setting_ms2_payment_bepaid_failure_id'] = 'bePaid failure page id';
 $_lang['setting_ms2_payment_bepaid_failure_id_desc'] = 'The customer will be sent to this page if something went wrong. It is recommended to specify the id of the page with the shopping cart to order output.';
+
+$_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';

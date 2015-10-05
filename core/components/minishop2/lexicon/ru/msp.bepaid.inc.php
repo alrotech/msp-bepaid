@@ -37,3 +37,5 @@ $_lang['setting_ms2_payment_bepaid_success_id_desc'] = 'Пользователь
 
 $_lang['setting_ms2_payment_bepaid_failure_id'] = 'Страница отказа от оплаты bePaid';
 $_lang['setting_ms2_payment_bepaid_failure_id_desc'] = 'Пользователь будет отправлен на эту страницу при неудачной оплате. Рекомендуется указать id страницы с корзиной, для вывода заказа';
+
+$_lang['ms2_payment_bepaid_order_description'] = 'Оплата заказа #[[+num]]';

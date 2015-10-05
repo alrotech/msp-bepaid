@@ -49,8 +49,8 @@ $list = [
         'value' => 'https://checkout.begateway.com/ctp/api/checkouts',
     ],
     'language' => [
-        'xtype' => 'textfield', // mspbepaid-combo-languages
-        'value' => 'ru', // list of availables languages, combobox - нужен спец плагин
+        'xtype' => 'bepaid-combo-languages',
+        'value' => 'ru',
     ],
     'readonly_fields' => [ // как теги сделать бы комбик, если такое возможно в system settings
         'xtype' => 'textfield',
@@ -62,18 +62,26 @@ $list = [
     ],
     'currency' => [
         'xtype' => 'textfield',
-        'value' => 'BYR', // ? все по ISO http://en.wikipedia.org/wiki/ISO_4217
+        'value' => 'BYR',
     ],
     'test_mode' => [
         'xtype' => 'combo-boolean',
         'value' => true
     ],
-    'success_id' => [
-        'xtype' => 'numberfield', // set resource field - combobox?
+    'success_status' => [
+        'xtype' => 'bepaid-combo-status',
+        'value' => 0 // ?
+    ],
+    'failure_status' => [
+        'xtype' => 'bepaid-combo-status',
+        'value' => 0 // ?
+    ],
+    'success_page' => [
+        'xtype' => 'bepaid-combo-resource', // set resource field - combobox?
         'value' => 0,
     ],
-    'failure_id' => [
-        'xtype' => 'numberfield', // // set resource field - combobox?
+    'failure_page' => [
+        'xtype' => 'bepaid-combo-resource', // // set resource field - combobox?
         'value' => 0,
     ]
 ];

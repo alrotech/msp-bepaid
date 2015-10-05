@@ -77,12 +77,13 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                     'cancel_url' => $gateway . http_build_query(['action' => 'cancel']),
                     'notification_url' => $gateway . http_build_query(['action' => 'notify']),
                     'language' => $this->config['language'],
-                    'customer_fields' => $this->config['customer_fields']
+                    'customer_fields' => $this->config['customer_fields'],
+                    'tracking_id' => $order->get('id')
                 ],
                 'order' => [
                     'currency' => $this->config['currency'],
                     'amount' => $this->prepareAmount($order->get('cost')),
-                    'description' => 'Description from lexicon' // Заказ #1503/3 в магазине sitename ? или даже в лексикон для разных языков  TODO
+                    'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order)
                 ],
                 'customer' => $this->getCustomerInfo($address)
             ]
@@ -234,6 +235,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     }
 
     /**
+     * @deprecated
      * @param msOrder $order
      * @param array $params
      * @return void

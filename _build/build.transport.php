@@ -64,6 +64,39 @@ $xpdo = xPDO::getInstance('db', [
 $xpdo->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 $xpdo->setLogTarget();
 
+class modCategory extends xPDOObject {
+    public function getFKDefinition($alias)
+    {
+        $aggregates = [
+            'Plugins' => [
+                'class' => 'modPlugin',
+                'local' => 'id',
+                'foreign' => 'category',
+                'cardinality' => 'many',
+                'owner' => 'local',
+            ]
+        ];
+
+        return isset($aggregates[$alias]) ? $aggregates[$alias] : [];
+    }
+}
+class modPlugin extends xPDOObject {
+    public function getFKDefinition($alias)
+    {
+        $aggregates = [
+            'PluginEvents' => [
+                'class' => 'modPluginEvent',
+                'local' => 'id',
+                'foreign' => 'pluginid',
+                'cardinality' => 'one',
+                'owner' => 'local',
+            ]
+        ];
+
+        return isset($aggregates[$alias]) ? $aggregates[$alias] : [];
+    }
+}
+class modPluginEvent extends xPDOObject {}
 class modSystemSetting extends xPDOObject {}
 class msPayment extends xPDOObject {}
 
@@ -74,10 +107,13 @@ $sources = [
     'docs' => $root . 'docs/',
     'resolvers' => $root . '_build/resolvers/',
     'validators' => $root . '_build/validators/',
+    'plugins' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/plugins/',
     'assets' => [
+        'components/mspbepaid/',
         'components/minishop2/payment/bepaid.php'
     ],
     'core' => [
+        'components/mspbepaid/',
         'components/minishop2/custom/payment/bepaid.class.php',
         'components/minishop2/lexicon/en/msp.bepaid.inc.php',
         'components/minishop2/lexicon/ru/msp.bepaid.inc.php',
@@ -103,7 +139,7 @@ if (file_exists($directory . $signature) && is_dir($directory . $signature)) {
 $package = new xPDOTransport($xpdo, $signature, $directory);
 
 /* load system settings */
-if (defined('BUILD_SETTING_UPDATE')) {
+if (defined('BUILD_SETTING_UPDATE')) {   // ????? убрать как в slackify
     $settings = include $sources['data'] . 'transport.settings.php';
     if (!is_array($settings)) {
         $xpdo->log(XPDO::LOG_LEVEL_ERROR, 'Could not package in settings.');
@@ -172,10 +208,46 @@ $package->put($payment, [
     'validate' => $validators,
 ]);
 
+$category = new modCategory($xpdo);
+$category->fromArray([
+    'id' => 1,
+    'category' => PKG_NAME,
+    'parent' => 0,
+]);
+
+$plugins = include $sources['data'] . 'transport.plugins.php';
+if (is_array($plugins)) {
+    $category->addMany($plugins, 'Plugins');
+}
+
+$package->put($category, [
+    xPDOTransport::UNIQUE_KEY => 'category',
+    xPDOTransport::PRESERVE_KEYS => false,
+    xPDOTransport::UPDATE_OBJECT => true,
+    xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true,
+    xPDOTransport::RELATED_OBJECTS => true,
+    xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
+        'Plugins' => [
+            xPDOTransport::UNIQUE_KEY => 'name',
+            xPDOTransport::PRESERVE_KEYS => false,
+            xPDOTransport::UPDATE_OBJECT => false,
+            xPDOTransport::RELATED_OBJECTS => true
+        ],
+        'PluginEvents' => [
+            xPDOTransport::UNIQUE_KEY => ['pluginid', 'event'],
+            xPDOTransport::PRESERVE_KEYS => true,
+            xPDOTransport::UPDATE_OBJECT => false,
+            xPDOTransport::RELATED_OBJECTS => true
+        ]
+    ],
+    xPDOTransport::NATIVE_KEY => true,
+    'package' => 'modx'
+]);
+
 $package->setAttribute('changelog', file_get_contents($sources['docs'] . 'changelog.txt'));
 $package->setAttribute('license', file_get_contents($sources['docs'] . 'license.txt'));
 $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.txt'));
-$package->setAttribute('requires', ['php' => '>=5.5']);
+$package->setAttribute('requires', ['php' => '>=5.5', 'modx' => '>=2.3']);
 $package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 
 if ($package->pack()) {
