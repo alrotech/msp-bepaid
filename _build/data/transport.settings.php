@@ -34,11 +34,11 @@
 $list = [
     'store_id' => [
         'xtype' => 'textfield',
-        'value' => '363'
+        'value' => '363' // убрать бы
     ],
     'secret_key' => [
         'xtype' => 'textfield',
-        'value' => '4f585d2709776e53d080f36872fd1b63b700733e7624dfcadd057296daa37df6'
+        'value' => '4f585d2709776e53d080f36872fd1b63b700733e7624dfcadd057296daa37df6' // убрать бы
     ],
     'checkout_url' => [
         'xtype' => 'textfield',
@@ -52,12 +52,12 @@ $list = [
         'xtype' => 'bepaid-combo-languages',
         'value' => 'ru',
     ],
-    'readonly_fields' => [ // как теги сделать бы комбик, если такое возможно в system settings
-        'xtype' => 'textfield',
+    'readonly_fields' => [
+        'xtype' => 'bepaid-combo-readonly',
         'value' => ''
     ],
-    'hidden_fields' => [ // как теги сделать бы комбик, если такое возможно в system settings
-        'xtype' => 'textfield',
+    'hidden_fields' => [
+        'xtype' => 'bepaid-combo-hidden',
         'value' => ''
     ],
     'currency' => [
@@ -69,24 +69,22 @@ $list = [
         'value' => true
     ],
     'success_status' => [
-        'xtype' => 'bepaid-combo-status',
-        'value' => 0 // ?
+        'xtype' => 'minishop2-combo-status',
+        'value' => 0
     ],
     'failure_status' => [
-        'xtype' => 'bepaid-combo-status',
-        'value' => 0 // ?
+        'xtype' => 'minishop2-combo-status',
+        'value' => 0
     ],
     'success_page' => [
-        'xtype' => 'bepaid-combo-resource', // set resource field - combobox?
+        'xtype' => 'minishop2-combo-resource',
         'value' => 0,
     ],
     'failure_page' => [
-        'xtype' => 'bepaid-combo-resource', // // set resource field - combobox?
+        'xtype' => 'minishop2-combo-resource',
         'value' => 0,
     ]
 ];
-
-// нужно написать плагин, который будет предзагружаться в админке в системных настройках и подменять нужный combobox для языка
 
 $settings = [];
 foreach ($list as $k => $v) {

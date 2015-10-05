@@ -247,7 +247,11 @@ $package->put($category, [
 $package->setAttribute('changelog', file_get_contents($sources['docs'] . 'changelog.txt'));
 $package->setAttribute('license', file_get_contents($sources['docs'] . 'license.txt'));
 $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.txt'));
-$package->setAttribute('requires', ['php' => '>=5.5', 'modx' => '>=2.3']);
+$package->setAttribute('requires', [
+    'php' => '>=5.5',
+    'modx' => '>=2.3',
+    'miniShop2' => '>=2.1'
+]);
 $package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 
 if ($package->pack()) {
