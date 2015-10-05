@@ -35,8 +35,8 @@ if (!$object->xpdo) {
     return false;
 }
 
-if (!version_compare(PHP_VERSION, '5.4', '>=')) {
-    $object->xpdo->log(modX::LOG_LEVEL_ERROR, 'Invalid php version. Minimal supported version – 5.4');
+if (!version_compare(PHP_VERSION, '5.5', '>=')) {
+    $object->xpdo->log(modX::LOG_LEVEL_ERROR, 'Invalid php version. Minimal supported version – 5.5, because less versions not supported more by PHP core team. Details here: http://php.net/supported-versions.php');
 
     return false;
 }

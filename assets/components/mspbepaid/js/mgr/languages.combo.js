@@ -1,0 +1,12 @@
+//en - English
+//es - Spanish
+//tr - Turkish
+//de - German
+//it - Italian
+//ru - Russian
+//zh - Chinese
+//fr - French
+//da - Danish
+//sv - Swedish
+//no - Norwegian
+//fi - Finnish

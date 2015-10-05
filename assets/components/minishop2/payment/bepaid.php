@@ -11,15 +11,17 @@ $miniShop2 = $modx->getService('minishop2');
 $miniShop2->loadCustomClasses('payment');
 
 if (!class_exists('bePaid')) {
+    $modx->log(modX::LOG_LEVEL_ERROR, 'Could not load payment class "bePaid"', '', '', __FILE__, __LINE__);
+
     exit('Error: could not load payment class "bePaid".');
 }
 
-$context = '';
-$params = [];
-
 $handler = new BePaid($modx->newObject('msOrder'));
 
+
+// TODO: переписать на новые обработчики, валидные для bepaid
 switch ($_GET['action']) {
+    //case 'decline':
     case 'notify':
         if (empty($_POST['site_order_id'])) {
             $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Returned empty order id.');
@@ -46,12 +48,13 @@ switch ($_GET['action']) {
 
 $success = $cancel = $modx->getOption('site_url');
 
-if ($id = $modx->getOption('ms2_payment_webpay_success_id', null, 0)) {
-    $success = $modx->makeUrl($id, $context, $params, 'full');
+if ($id = $modx->getOption('ms2_payment_bepaid_success_id', null, 0)) {
+    $success = $modx->makeUrl($id, '', [], 'full');
 }
-if ($id = $modx->getOption('ms2_payment_webpay_cancel_id', null, 0)) {
-    $cancel = $modx->makeUrl($id, $context, $params, 'full');
+if ($id = $modx->getOption('ms2_payment_bepaid_cancel_id', null, 0)) {
+    $cancel = $modx->makeUrl($id, '', [], 'full');
 }
 
 $redirect = !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'success') ? $success : $cancel;
+
 $modx->sendRedirect($redirect);

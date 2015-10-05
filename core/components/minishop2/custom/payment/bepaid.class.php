@@ -19,66 +19,28 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     {
         $this->modx = &$object->xpdo;
 
-        $site_url = $this->modx->getOption('site_url');
-        $assets_url = $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2/');
-        $payment_url = $site_url . substr($assets_url, 1) . 'payment/bepaid.php';
-
         $this->config = array_merge([
             'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id'),
             'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key'),
-            'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'), // ? нужно ли хардкодить
-            'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, 'ru'),
+            'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'),
+            'test_url' => $this->modx->getOption('ms2_payment_bepaid_test_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'),
+            'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('manager_language')),
             'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYR'),
+            'customer_fields' => [
+                'read_only' => explode(',', $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '')), // a string separated by comma
+                'hidden' => explode(',', $this->modx->getOption('ms2_payment_bepaid_hidden_fields', null, '')), // a string separated by comma
+            ],
+            'payment_url' => join('/', [
+                $this->modx->getOption('site_url'),
+                $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'),
+                'payment/bepaid.php'
+            ]),
             'json_response' => false
         ], $config);
 
-        //amount - summ of order        cost in minimal currency units, e.g. $32.45 must be sent as 3245 - usd and cents should be converted to cents
-        //currency - currency
-        //description - order desc
-
-        //language - list of
-//        en - English
-//es - Spanish
-//tr - Turkish
-//de - German
-//it - Italian
-//ru - Russian
-//zh - Chinese
-//fr - French
-//da - Danish
-//sv - Swedish
-//no - Norwegian
-//fi - Finnish
-
-
-//        authorization and payment.
-        //success_url
-        //decline_url
-        //fail_url
-        //cancel_url
-        //notification_url
-
-        // opt tracking_id wtF?
-        // opt dynamic_billing_descriptor wtF?
-
-        // opt customer_fields - It controls the input fields for customer details shown at the payment page
-        // read_only
-
-        //hidden ?
-
-
-
-//        email	Email of your Customer making a purchase at your shop
-//first_name	Customer's first name
-//last_name	Customer's last name
-//address	Customer's billing address
-//city	Customer's billing city
-//state	Customer's two-letter billing state only if the billing address country is US or CA
-//zip	conditionally optional. Customer's billing ZIP or postal code. The parameter is optional if country is from the list.
-//If country=US, zip format must be NNNNN or NNNNN-NNNN.
-//    phone	Customer's optional phone number
-//country	Customer's billing country in ISO 3166-1 Alpha-2 format
-
+        if ($this->modx->getOption('ms2_payment_bepaid_test_mode', null, true)) {
+            $this->config['checkout_url'] = $config['test_url'];
+        }
     }
 
     /**
@@ -100,37 +62,29 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      */
     protected function getPaymentToken(msOrder $order)
     {
+        /** @var msOrderAddress $address */
+        $address = $order->getOne('Address');
 
-        $address = $order->getOne('Address'); // все про customer
-
-        // TODO Add real data
+        $gateway = $this->config['payment_url'] . '?';
 
         $payload = [
             'checkout' => [
                 'transaction_type' => 'payment',
                 'settings' => [
-                    'success_url' => '',
-                    'decline_url' => '',
-                    'fail_url' => '',
-                    'cancel_url' => '',
-                    'notification_url' => '',
+                    'success_url' => $gateway . http_build_query(['action' => 'success']),
+                    'decline_url' => $gateway . http_build_query(['action' => 'decline']),
+                    'fail_url' => $gateway . http_build_query(['action' => 'fail']),
+                    'cancel_url' => $gateway . http_build_query(['action' => 'cancel']),
+                    'notification_url' => $gateway . http_build_query(['action' => 'notify']),
                     'language' => $this->config['language'],
-                    'customer_fields' => [
-                        'read_only' => [],
-                        'hidden' => []
-                    ]
+                    'customer_fields' => $this->config['customer_fields']
                 ],
                 'order' => [
                     'currency' => $this->config['currency'],
-                    'amount' => 20000, // рублей
-                    'description' => 'Description'
+                    'amount' => $this->prepareAmount($order->get('cost')),
+                    'description' => 'Description from lexicon' // Заказ #1503/3 в магазине sitename ? или даже в лексикон для разных языков  TODO
                 ],
-                'customer' => [
-                    'address' => 'Baker street 221b',
-                    'country' => 'GB',
-                    'city' => 'London',
-                    'email' => 'jake@example.com'
-                ]
+                'customer' => $this->getCustomerInfo($address)
             ]
         ];
 
@@ -150,23 +104,102 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $response = json_decode($response);
 
-        print_r($response);
-
-        exit;
-
         if (isset($response['checkout']) && isset($response['checkout']['redirect_url'])) {
             return $response['checkout']['redirect_url'];
         }
+
+        $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Response not valid and contains errors: ' . $response);
 
         return false;
     }
 
     /**
+     * Converts amount to amount in minimal units, example for USD: if 100.45$, should be 10045
+     * @param $amount
+     * @return int
+     */
+    protected function prepareAmount($amount)
+    {
+        if (!is_integer($amount)) {
+            $amount = intval(round($amount, 2) * 100);
+        }
+
+        return intval($amount);
+    }
+
+    /**
+     * @param msOrderAddress $address
+     * @return array $customer Array with prepared info about customer, valid for bePaid services
+     */
+    protected function getCustomerInfo(msOrderAddress $address)
+    {
+        $customer = ['email' => $address->get('email')];
+
+        $name = explode(' ', $address->get('receiver'), 2);
+
+        if (isset($name[0])) {
+            $customer['first_name'] = $name[0];
+        }
+
+        if (isset($name[1])) {
+            $customer['last_name'] = $name[1];
+        }
+
+        if ($address->get('city')) {
+            $customer['city'] = $address->get('city');
+        }
+
+        if ($address->get('region')) {
+            $customer['state'] = $address->get('region');
+        }
+
+        if ($address->get('phone')) {
+            $customer['phone'] = $address->get('phone');
+        }
+
+        if (mb_strlen($address->get('country')) == 2) { // country should be in ISO 3166-1 Alpha-2 format
+            $customer['country'] = $address->get('country');
+        }
+
+        if ($address->get('index')) {
+            // If country == US, zip format must be NNNNN or NNNNN-NNNN.
+            if ($customer['country'] == 'US' && preg_match('/([\d]{5}|[\d]{5}-[\d]{4})/g', $address->get('index'))) {
+                $customer['zip'] = $address->get('index');
+            }
+            if ($customer['country'] != 'US') {
+                $customer['zip'] = $address->get('index');
+            }
+        }
+
+        $line = [];
+        if ($address->get('street')) {
+            $line[] = $address->get('street');
+        }
+
+        if ($address->get('building')) {
+            $line[] = $address->get('building');
+        }
+
+        if ($address->get('room')) {
+            $line[] = $address->get('room');
+        }
+
+        if ($address->get('metro')) {
+            $line[] = $address->get('metro');
+        }
+
+        $customer['address'] = join(', ', $line);
+
+        return $customer;
+    }
+
+    /**
+     * Do request to checkout gateway
      * @param $url
      * @param $payload
      * @param array $headers
      * @param array $auth
-     * @return mixed
+     * @return mixed Response in JSON format
      */
     protected function request($url, $payload, $headers = [], $auth = [])
     {

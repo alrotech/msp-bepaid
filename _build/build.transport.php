@@ -175,7 +175,7 @@ $package->put($payment, [
 $package->setAttribute('changelog', file_get_contents($sources['docs'] . 'changelog.txt'));
 $package->setAttribute('license', file_get_contents($sources['docs'] . 'license.txt'));
 $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.txt'));
-$package->setAttribute('requires', ['php' => '>=5.4']);
+$package->setAttribute('requires', ['php' => '>=5.5']);
 $package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 
 if ($package->pack()) {

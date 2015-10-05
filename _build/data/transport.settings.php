@@ -44,21 +44,29 @@ $list = [
         'xtype' => 'textfield',
         'value' => 'https://checkout.bepaid.by/ctp/api/checkouts',
     ],
+    'test_url' => [
+        'xtype' => 'textfield',
+        'value' => 'https://checkout.begateway.com/ctp/api/checkouts',
+    ],
     'language' => [
         'xtype' => 'textfield', // mspbepaid-combo-languages
-        'value' => 'russian', // list of availables languages, combobox - нужен спец плагин
+        'value' => 'ru', // list of availables languages, combobox - нужен спец плагин
     ],
-    'read_only' => [ // как теги сделать бы комбик, если такое возможно в system settings
+    'readonly_fields' => [ // как теги сделать бы комбик, если такое возможно в system settings
         'xtype' => 'textfield',
         'value' => ''
     ],
-    'hidden' => [ // как теги сделать бы комбик, если такое возможно в system settings
+    'hidden_fields' => [ // как теги сделать бы комбик, если такое возможно в system settings
         'xtype' => 'textfield',
         'value' => ''
     ],
     'currency' => [
         'xtype' => 'textfield',
         'value' => 'BYR', // ? все по ISO http://en.wikipedia.org/wiki/ISO_4217
+    ],
+    'test_mode' => [
+        'xtype' => 'combo-boolean',
+        'value' => true
     ],
     'success_id' => [
         'xtype' => 'numberfield', // set resource field - combobox?
