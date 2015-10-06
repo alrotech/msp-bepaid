@@ -54,7 +54,7 @@ $list = [
     ],
     'readonly_fields' => [
         'xtype' => 'bepaid-combo-readonly',
-        'value' => ''
+        'value' => 'email,zip'
     ],
     'hidden_fields' => [
         'xtype' => 'bepaid-combo-hidden',
@@ -69,19 +69,19 @@ $list = [
         'value' => true
     ],
     'success_status' => [
-        'xtype' => 'minishop2-combo-status',
+        'xtype' => 'bepaid-combo-status',
         'value' => 0
     ],
     'failure_status' => [
-        'xtype' => 'minishop2-combo-status',
+        'xtype' => 'bepaid-combo-status',
         'value' => 0
     ],
     'success_page' => [
-        'xtype' => 'minishop2-combo-resource',
+        'xtype' => 'bepaid-combo-resource',
         'value' => 0,
     ],
     'failure_page' => [
-        'xtype' => 'minishop2-combo-resource',
+        'xtype' => 'bepaid-combo-resource',
         'value' => 0,
     ]
 ];

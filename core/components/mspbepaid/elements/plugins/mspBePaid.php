@@ -10,8 +10,10 @@ switch ($modx->event->name) {
         $files = [
             'bepaid.js',
             'language.combo.js',
+//            'resource.combo.js',
+//            'status.combo.js',
             'readonly.combo.js',
-            'hidden.combo.js'
+//            'hidden.combo.js'
         ];
 
         foreach ($files as $file) {

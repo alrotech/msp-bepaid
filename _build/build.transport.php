@@ -40,7 +40,7 @@ define('PKG_NAME_LOWER', strtolower(PKG_NAME));
 define('PKG_VERSION', '1.0.8');
 define('PKG_RELEASE', 'beta');
 
-define('BUILD_SETTING_UPDATE', true);
+define('BUILD_SETTING_UPDATE', true); // TODO: нужно удалить
 
 require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
 require_once __DIR__ . '/xpdo/xpdo/transport/xpdotransport.class.php';

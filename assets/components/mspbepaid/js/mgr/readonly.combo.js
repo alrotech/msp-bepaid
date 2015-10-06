@@ -1,30 +1,71 @@
-miniShop2.combo.Autocomplete = function(config) {
+BePaidPayment.combo.ReadOnly = function (config) {
     config = config || {};
 
-    Ext.applyIf(config,{
-        name: config.name
-        ,fieldLabel: _('ms2_product_' + config.name)
-        ,id: 'minishop2-product-' + config.name
-        ,hiddenName: config.name
-        ,displayField: config.name
-        ,valueField: config.name
-        ,anchor: '99%'
-        ,fields: [config.name]
-        //,pageSize: 20
-        ,forceSelection: false
-        ,url: miniShop2.config.connector_url
-        ,typeAhead: true
-        ,editable: true
-        ,allowBlank: true
-        ,baseParams: {
-            action: 'mgr/product/autocomplete'
-            ,name: config.name
-            ,combo:1
-            ,limit: 0
+    Ext.applyIf(config, {
+        xtype: 'superboxselect',
+        allowBlank: true,
+        msgTarget: 'qtip',
+        allowAddNewData: false,
+        forceFormValue: false,
+        resizable: true,
+        name: 'value',
+        anchor: '100%',
+        minChars: 1,
+        mode: 'local',
+        store: new Ext.data.SimpleStore({
+            fields: ['value'],
+            data: [
+                ['email'],
+                ['first_name'],
+                ['last_name'],
+                ['address'],
+                ['city'],
+                ['state'],
+                ['zip'],
+                ['phone'],
+                ['country']
+            ]
+        }),
+
+        hiddenName: 'value',
+        displayField: 'value',
+        valueField: 'value',
+        triggerAction: 'all',
+
+        extraItemCls: 'x-tag',
+        expandBtnCls: 'x-form-trigger',
+
+        clearBtnCls: 'x-form-trigger',
+
+
+        listeners: {
+            newitem: function(bs, v, f) {bs.addItem(v);},
+
         }
-        ,hideTrigger: true
+
+
     });
-    miniShop2.combo.Autocomplete.superclass.constructor.call(this,config);
+
+    //config.name += '[]';
+
+    BePaidPayment.combo.ReadOnly.superclass.constructor.call(this, config);
 };
-Ext.extend(miniShop2.combo.Autocomplete,MODx.combo.ComboBox);
-Ext.reg('bepaid-combo-readonly',miniShop2.combo.Autocomplete);
+
+Ext.extend(BePaidPayment.combo.ReadOnly, Ext.ux.form.SuperBoxSelect, {
+
+    getValue: function () {
+
+        console.log('ororor', this);
+        console.log(item);
+
+        var ret = [];
+        this.items.each(function(item){
+            ret.push(item.value);
+        });
+
+        //return ret.join(this.valueDelimiter);
+
+        return 1111;
+    }
+});
+Ext.reg('bepaid-combo-readonly', BePaidPayment.combo.ReadOnly);

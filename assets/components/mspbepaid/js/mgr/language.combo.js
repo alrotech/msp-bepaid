@@ -1,5 +1,6 @@
 BePaidPayment.combo.Languages = function(config) {
     config = config || {};
+
     Ext.applyIf(config,{
         store: new Ext.data.SimpleStore({
             fields: ['k','v'],
@@ -29,7 +30,9 @@ BePaidPayment.combo.Languages = function(config) {
         selectOnFocus: false,
         preventRender: true
     });
+
     BePaidPayment.combo.Languages.superclass.constructor.call(this, config);
 };
+
 Ext.extend(BePaidPayment.combo.Languages, MODx.combo.ComboBox);
 Ext.reg('bepaid-combo-languages', BePaidPayment.combo.Languages);
