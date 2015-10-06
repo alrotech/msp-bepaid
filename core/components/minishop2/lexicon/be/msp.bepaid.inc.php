@@ -29,7 +29,7 @@ $_lang['setting_ms2_payment_bepaid_developer_mode_desc'] = 'If the value "Yes", 
 $_lang['setting_ms2_payment_bepaid_currency'] = 'The proposed currency of payment';
 $_lang['setting_ms2_payment_bepaid_currency_desc'] = 'User can change it while paying. Literal-digit currency code according to ISO4271. Available variants: <strong>BYR</strong>, <strong>USD</strong>, <strong>EUR</strong>, <strong>RUB</strong>. In developer mode available only BYR.';
 
-$_lang['setting_ms2_payment_bepaid_language'] = 'bePaid language';
+$_lang['setting_ms2_payment_bepaid_language'] = 'Мова bePaid';
 $_lang['setting_ms2_payment_bepaid_language_desc'] = 'Specify the language code, which show\'s bePaid when paying. Available variants: <strong>russian</strong>, <strong>english</strong>.';
 
 $_lang['setting_ms2_payment_bepaid_success_id'] = 'bePaid successful page id';
@@ -41,15 +41,15 @@ $_lang['setting_ms2_payment_bepaid_failure_id_desc'] = 'The customer will be sen
 
 $_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';
 
-$_lang['ms2_payment_bepaid_lang_english'] = 'English';
-$_lang['ms2_payment_bepaid_lang_spanish'] = 'Spanish';
-$_lang['ms2_payment_bepaid_lang_turkish'] = 'Turkish';
-$_lang['ms2_payment_bepaid_lang_german'] = 'German';
-$_lang['ms2_payment_bepaid_lang_italian'] = 'Italian';
-$_lang['ms2_payment_bepaid_lang_russian'] = 'Russian';
-$_lang['ms2_payment_bepaid_lang_chinese'] = 'Chinese';
-$_lang['ms2_payment_bepaid_lang_french'] = 'French';
-$_lang['ms2_payment_bepaid_lang_danish'] = 'Danish';
-$_lang['ms2_payment_bepaid_lang_swedish'] = 'Swedish';
-$_lang['ms2_payment_bepaid_lang_norwegian'] = 'Norwegian';
-$_lang['ms2_payment_bepaid_lang_finnish'] = 'Finnish';
+$_lang['ms2_payment_bepaid_lang_english'] = 'Англійская';
+$_lang['ms2_payment_bepaid_lang_spanish'] = 'Іспанская';
+$_lang['ms2_payment_bepaid_lang_turkish'] = 'Турэцкая';
+$_lang['ms2_payment_bepaid_lang_german'] = 'Нямецкая';
+$_lang['ms2_payment_bepaid_lang_italian'] = 'Італьянская';
+$_lang['ms2_payment_bepaid_lang_russian'] = 'Руская';
+$_lang['ms2_payment_bepaid_lang_chinese'] = 'Кітайская';
+$_lang['ms2_payment_bepaid_lang_french'] = 'Французкая';
+$_lang['ms2_payment_bepaid_lang_danish'] = 'Дацкая';
+$_lang['ms2_payment_bepaid_lang_swedish'] = 'Шведская';
+$_lang['ms2_payment_bepaid_lang_norwegian'] = 'Нарвежская';
+$_lang['ms2_payment_bepaid_lang_finnish'] = 'Фінская';

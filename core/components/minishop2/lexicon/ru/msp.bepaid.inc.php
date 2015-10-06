@@ -45,3 +45,13 @@ $_lang['ms2_payment_bepaid_order_description'] = 'Оплата заказа #[[+
 
 $_lang['ms2_payment_bepaid_lang_english'] = 'Английский';
 $_lang['ms2_payment_bepaid_lang_spanish'] = 'Испанский';
+$_lang['ms2_payment_bepaid_lang_turkish'] = 'Турецкий';
+$_lang['ms2_payment_bepaid_lang_german'] = 'Немецкий';
+$_lang['ms2_payment_bepaid_lang_italian'] = 'Итальянский';
+$_lang['ms2_payment_bepaid_lang_russian'] = 'Русский';
+$_lang['ms2_payment_bepaid_lang_chinese'] = 'Китайский';
+$_lang['ms2_payment_bepaid_lang_french'] = 'Французский';
+$_lang['ms2_payment_bepaid_lang_danish'] = 'Датский';
+$_lang['ms2_payment_bepaid_lang_swedish'] = 'Шведский';
+$_lang['ms2_payment_bepaid_lang_norwegian'] = 'Норвежский';
+$_lang['ms2_payment_bepaid_lang_finnish'] = 'Финский';

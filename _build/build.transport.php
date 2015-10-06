@@ -117,6 +117,7 @@ $sources = [
         'components/minishop2/custom/payment/bepaid.class.php',
         'components/minishop2/lexicon/en/msp.bepaid.inc.php',
         'components/minishop2/lexicon/ru/msp.bepaid.inc.php',
+        'components/minishop2/lexicon/be/msp.bepaid.inc.php',
     ],
 ];
 
@@ -250,7 +251,7 @@ $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.tx
 $package->setAttribute('requires', [
     'php' => '>=5.5',
     'modx' => '>=2.3',
-    'miniShop2' => '>=2.1'
+    'miniShop2' => '>=2.1' // ?
 ]);
 $package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 
