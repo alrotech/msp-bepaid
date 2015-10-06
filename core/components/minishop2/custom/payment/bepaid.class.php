@@ -37,6 +37,12 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             ])
         ], $config);
 
+        if (!in_array($this->config['language'],
+            ['en', 'es', 'tr', 'de', 'it', 'ru', 'zh', 'fr', 'da', 'sv', 'no', 'fi']
+        )) {
+            $this->config['language'] = 'en'; // english by default in other unimaginable cases
+        }
+
         if ($this->modx->getOption('ms2_payment_bepaid_test_mode', null, true)) {
             $this->config['checkout_url'] = $config['test_url'];
         }

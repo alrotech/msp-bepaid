@@ -17,7 +17,9 @@ switch ($modx->event->name) {
             'language.combo.js',
             'status.combo.js',
             'resource.combo.js',
-            'readonly.combo.js',
+            // for now I have troubles with integrate superboxselect type into system settings grid
+            // so special types not used
+//            'readonly.combo.js',
 //            'hidden.combo.js'
         ];
 

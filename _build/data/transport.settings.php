@@ -32,57 +32,57 @@
  */
 
 $list = [
-    'store_id' => [ // OK
+    'store_id' => [
         'xtype' => 'textfield',
-        'value' => '363' // убрать бы
+        'value' => ''
     ],
-    'secret_key' => [ // OK
+    'secret_key' => [
         'xtype' => 'textfield',
-        'value' => '4f585d2709776e53d080f36872fd1b63b700733e7624dfcadd057296daa37df6' // убрать бы
+        'value' => ''
     ],
     'checkout_url' => [
         'xtype' => 'textfield',
-        'value' => 'https://checkout.bepaid.by/ctp/api/checkouts',
+        'value' => 'https://checkout.bepaid.by/ctp/api/checkouts'
     ],
     'test_url' => [
         'xtype' => 'textfield',
-        'value' => 'https://checkout.begateway.com/ctp/api/checkouts',
+        'value' => 'https://checkout.begateway.com/ctp/api/checkouts'
     ],
-    'language' => [ // OK
+    'language' => [
         'xtype' => 'bepaid-combo-languages',
-        'value' => 'ru',
+        'value' => 'ru'
     ],
     'readonly_fields' => [
         'xtype' => 'bepaid-combo-readonly',
-        'value' => 'email,zip'
+        'value' => 'email'
     ],
     'hidden_fields' => [
         'xtype' => 'bepaid-combo-hidden',
         'value' => ''
     ],
-    'currency' => [ // OK
+    'currency' => [
         'xtype' => 'textfield',
-        'value' => 'BYR',
+        'value' => 'BYR'
     ],
     'test_mode' => [
         'xtype' => 'combo-boolean',
         'value' => true
     ],
-    'success_status' => [ // OK
+    'success_status' => [
         'xtype' => 'bepaid-combo-status',
         'value' => 0
     ],
-    'failure_status' => [ // OK
+    'failure_status' => [
         'xtype' => 'bepaid-combo-status',
         'value' => 0
     ],
-    'success_page' => [ // OK
+    'success_page' => [
         'xtype' => 'bepaid-combo-resource',
-        'value' => 0,
+        'value' => 0
     ],
-    'failure_page' => [ // OK
+    'failure_page' => [
         'xtype' => 'bepaid-combo-resource',
-        'value' => 0,
+        'value' => 0
     ]
 ];
 

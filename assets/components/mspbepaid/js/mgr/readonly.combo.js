@@ -4,7 +4,6 @@ BePaidPayment.combo.ReadOnly = function (config) {
     Ext.applyIf(config, {
         xtype: 'superboxselect',
         allowBlank: true,
-        msgTarget: 'qtip',
         allowAddNewData: false,
         forceFormValue: false,
         resizable: true,
@@ -26,27 +25,14 @@ BePaidPayment.combo.ReadOnly = function (config) {
                 ['country']
             ]
         }),
-
         hiddenName: 'value',
         displayField: 'value',
         valueField: 'value',
         triggerAction: 'all',
-
         extraItemCls: 'x-tag',
         expandBtnCls: 'x-form-trigger',
-
-        clearBtnCls: 'x-form-trigger',
-
-
-        listeners: {
-            newitem: function(bs, v, f) {bs.addItem(v);},
-
-        }
-
-
+        clearBtnCls: 'x-form-trigger'
     });
-
-    //config.name += '[]';
 
     BePaidPayment.combo.ReadOnly.superclass.constructor.call(this, config);
 };
@@ -55,17 +41,15 @@ Ext.extend(BePaidPayment.combo.ReadOnly, Ext.ux.form.SuperBoxSelect, {
 
     getValue: function () {
 
-        console.log('ororor', this);
-        console.log(item);
+        console.log('test', this);
 
         var ret = [];
         this.items.each(function(item){
             ret.push(item.value);
         });
 
-        //return ret.join(this.valueDelimiter);
-
-        return 1111;
+        return ret.join(this.valueDelimiter);
     }
+
 });
 Ext.reg('bepaid-combo-readonly', BePaidPayment.combo.ReadOnly);
