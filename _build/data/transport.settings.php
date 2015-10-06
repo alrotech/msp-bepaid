@@ -32,11 +32,11 @@
  */
 
 $list = [
-    'store_id' => [
+    'store_id' => [ // OK
         'xtype' => 'textfield',
         'value' => '363' // убрать бы
     ],
-    'secret_key' => [
+    'secret_key' => [ // OK
         'xtype' => 'textfield',
         'value' => '4f585d2709776e53d080f36872fd1b63b700733e7624dfcadd057296daa37df6' // убрать бы
     ],
@@ -48,7 +48,7 @@ $list = [
         'xtype' => 'textfield',
         'value' => 'https://checkout.begateway.com/ctp/api/checkouts',
     ],
-    'language' => [
+    'language' => [ // OK
         'xtype' => 'bepaid-combo-languages',
         'value' => 'ru',
     ],
@@ -60,7 +60,7 @@ $list = [
         'xtype' => 'bepaid-combo-hidden',
         'value' => ''
     ],
-    'currency' => [
+    'currency' => [ // OK
         'xtype' => 'textfield',
         'value' => 'BYR',
     ],
@@ -68,19 +68,19 @@ $list = [
         'xtype' => 'combo-boolean',
         'value' => true
     ],
-    'success_status' => [
+    'success_status' => [ // OK
         'xtype' => 'bepaid-combo-status',
         'value' => 0
     ],
-    'failure_status' => [
+    'failure_status' => [ // OK
         'xtype' => 'bepaid-combo-status',
         'value' => 0
     ],
-    'success_page' => [
+    'success_page' => [ // OK
         'xtype' => 'bepaid-combo-resource',
         'value' => 0,
     ],
-    'failure_page' => [
+    'failure_page' => [ // OK
         'xtype' => 'bepaid-combo-resource',
         'value' => 0,
     ]
