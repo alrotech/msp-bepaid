@@ -160,10 +160,11 @@ if (defined('BUILD_SETTING_UPDATE')) {   // ????? убрать как в slackif
 }
 
 $validators = [];
-array_push($validators, [
-    'type' => 'php',
-    'source' => $sources['validators'] . 'validate.phpversion.php'
-]);
+array_push($validators,
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.phpversion.php'],
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.modxversion.php'],
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.ms2version.php']
+);
 
 $resolvers = [];
 foreach ($sources['assets'] as $file) {

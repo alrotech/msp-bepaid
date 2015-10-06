@@ -29,9 +29,13 @@ require_once __DIR__ . '/../../../index.php';
 
 $modx->initialize('mgr');
 
-$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
+$modx->setLogLevel(xPDO::LOG_LEVEL_ERROR);
 $modx->setLogTarget();
 
-$modx->runProcessor('workspace/packages/install',
+$answer = $modx->runProcessor('workspace/packages/install',
     ['signature' => 'mspbepaid-1.0.8-beta']
 );
+
+$response = $answer->getResponse();
+
+echo $response['message'], PHP_EOL;
