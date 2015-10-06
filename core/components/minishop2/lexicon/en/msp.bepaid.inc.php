@@ -23,7 +23,25 @@
  * THE SOFTWARE.
  */
 
+$_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';
+
+$_lang['ms2_payment_bepaid_lang_english'] = 'English';
+$_lang['ms2_payment_bepaid_lang_spanish'] = 'Spanish';
+$_lang['ms2_payment_bepaid_lang_turkish'] = 'Turkish';
+$_lang['ms2_payment_bepaid_lang_german'] = 'German';
+$_lang['ms2_payment_bepaid_lang_italian'] = 'Italian';
+$_lang['ms2_payment_bepaid_lang_russian'] = 'Russian';
+$_lang['ms2_payment_bepaid_lang_chinese'] = 'Chinese';
+$_lang['ms2_payment_bepaid_lang_french'] = 'French';
+$_lang['ms2_payment_bepaid_lang_danish'] = 'Danish';
+$_lang['ms2_payment_bepaid_lang_swedish'] = 'Swedish';
+$_lang['ms2_payment_bepaid_lang_norwegian'] = 'Norwegian';
+$_lang['ms2_payment_bepaid_lang_finnish'] = 'Finnish';
+
+//settings
 $_lang['area_ms2_payment_bepaid'] = 'bePaid';
+
+// TODO: translate from russian variant
 
 $_lang['setting_ms2_payment_bepaid_store_id'] = 'ID of shop in bePaid System';
 $_lang['setting_ms2_payment_bepaid_store_id_desc'] = 'It\'s contains an unique ID of shop. This ID was created after your registration in bePaid System and was sent by email.';
@@ -62,17 +80,6 @@ $_lang['setting_ms2_payment_bepaid_failure_id'] = 'bePaid failure page id';
 $_lang['setting_ms2_payment_bepaid_failure_id_desc'] = 'The customer will be sent to this page if something went wrong. It is recommended to specify the id of the page with the shopping cart to order output.';
 
 
-$_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';
 
-$_lang['ms2_payment_bepaid_lang_english'] = 'English';
-$_lang['ms2_payment_bepaid_lang_spanish'] = 'Spanish';
-$_lang['ms2_payment_bepaid_lang_turkish'] = 'Turkish';
-$_lang['ms2_payment_bepaid_lang_german'] = 'German';
-$_lang['ms2_payment_bepaid_lang_italian'] = 'Italian';
-$_lang['ms2_payment_bepaid_lang_russian'] = 'Russian';
-$_lang['ms2_payment_bepaid_lang_chinese'] = 'Chinese';
-$_lang['ms2_payment_bepaid_lang_french'] = 'French';
-$_lang['ms2_payment_bepaid_lang_danish'] = 'Danish';
-$_lang['ms2_payment_bepaid_lang_swedish'] = 'Swedish';
-$_lang['ms2_payment_bepaid_lang_norwegian'] = 'Norwegian';
-$_lang['ms2_payment_bepaid_lang_finnish'] = 'Finnish';
+
+

@@ -43,22 +43,30 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $this->modx = &$object->xpdo;
 
         $this->config = array_merge([
-            'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id'),
-            'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key'),
+            'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id', null),
+            'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key', null),
             'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'),
             'test_url' => $this->modx->getOption('ms2_payment_bepaid_test_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'),
             'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('cultureKey')),
             'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYR'),
-            'customer_fields' => [
-                'read_only' => explode(',', $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '')),
-                'hidden' => explode(',', $this->modx->getOption('ms2_payment_bepaid_hidden_fields', null, '')),
-            ],
             'payment_url' => join('/', [
-                $this->modx->getOption('site_url'),
-                $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'),
+                rtrim($this->modx->getOption('site_url'), '/'),
+                ltrim($this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'), '/'),
                 'payment/bepaid.php'
             ])
         ], $config);
+
+        $read_only = $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '');
+        $read_only = $read_only ? explode(',', $read_only) : null;
+        if ($read_only) {
+            $this->config['customer_fields']['read_only'] = $read_only;
+        }
+
+        $hidden = $this->modx->getOption('ms2_payment_bepaid_hidden_fields', null, '');
+        $hidden = $hidden ? explode(',', $hidden) : null;
+        if ($hidden) {
+            $this->config['customer_fields']['hidden'] = $hidden;
+        }
 
         if (!in_array($this->config['language'],
             ['en', 'es', 'tr', 'de', 'it', 'ru', 'zh', 'fr', 'da', 'sv', 'no', 'fi']
@@ -67,7 +75,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
 
         if ($this->modx->getOption('ms2_payment_bepaid_test_mode', null, true)) {
-            $this->config['checkout_url'] = $config['test_url'];
+            $this->config['checkout_url'] = $this->config['test_url'];
         }
     }
 
@@ -111,7 +119,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                 'order' => [
                     'currency' => $this->config['currency'],
                     'amount' => $this->prepareAmount($order->get('cost')),
-                    'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order)
+                    'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray())
                 ],
                 'customer' => $this->getCustomerInfo($address)
             ]
@@ -131,7 +139,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             ]
         );
 
-        $response = json_decode($response);
+        $response = json_decode($response, true);
 
         if (isset($response['checkout']) && isset($response['checkout']['redirect_url'])) {
             return $response['checkout']['redirect_url'];
@@ -217,7 +225,9 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             $line[] = $address->get('metro');
         }
 
-        $customer['address'] = join(', ', $line);
+        if (count($line)) {
+            $customer['address'] = join(', ', $line);
+        }
 
         return $customer;
     }
@@ -232,9 +242,8 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      */
     protected function request($url, $payload, $headers = [], $auth = [])
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, true);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -280,12 +289,12 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                 $postdata = '*API=&API_XML_REQUEST=' . urlencode('<?xml version="1.0" encoding="ISO-8859-1"?><wsb_api_request><command>get_transaction</command><authorization><username>' . $this->config['login'] . '</username><password>' . md5($this->config['password']) . '</password></authorization><fields><transaction_id>' . $transaction_id . '</transaction_id></fields></wsb_api_request>');
 
                 $curl = curl_init($this->config['gate_url']);
-                curl_setopt($curl, CURLOPT_HEADER, 0);
-                curl_setopt($curl, CURLOPT_POST, 1);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, false);
+                curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
                 $response = curl_exec($curl);
                 curl_close($curl);
 

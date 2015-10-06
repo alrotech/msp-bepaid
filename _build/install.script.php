@@ -39,3 +39,24 @@ $answer = $modx->runProcessor('workspace/packages/install',
 $response = $answer->getResponse();
 
 echo $response['message'], PHP_EOL;
+
+echo 'Need set system settings for work...', PHP_EOL;
+
+// Shop without 3-D Secure
+$id = 361;
+$sc = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
+
+// Shop with 3-D Secure
+//$id = 362;
+//$sc = '9ad8ad735945919845b9a1996af72d886ab43d3375502256dbf8dd16bca59a4e';
+
+$sid = $modx->getObject('modSystemSetting', 'ms2_payment_bepaid_store_id');
+$sid->set('value', $id);
+$sid->save();
+
+$ssc = $modx->getObject('modSystemSetting', 'ms2_payment_bepaid_secret_key');
+$ssc->set('value', $sc);
+$ssc->save();
+
+$modx->getCacheManager()->refresh(['system_settings' => []]);
+$modx->reloadConfig();
