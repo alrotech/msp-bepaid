@@ -3,10 +3,10 @@ BePaidPayment.combo.Languages = function(config) {
 
     Ext.applyIf(config,{
         store: new Ext.data.SimpleStore({
-            fields: ['k','v'],
+            fields: ['caption','key'],
             data: [
-                ['English', 'en'],
-                ['Spanish', 'es'],
+                [_('ms2_payment_bepaid_lang_english'), 'en'],
+                [_('ms2_payment_bepaid_lang_spanish'), 'es'],
                 ['Turkish', 'tr'],
                 ['German', 'de'],
                 ['Italian', 'it'],
@@ -21,8 +21,8 @@ BePaidPayment.combo.Languages = function(config) {
         }),
         name: 'language',
         hiddenName: 'language',
-        displayField: 'k',
-        valueField: 'v',
+        displayField: 'caption',
+        valueField: 'key',
         mode: 'local',
         triggerAction: 'all',
         editable: false,

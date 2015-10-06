@@ -1,4 +1,4 @@
-miniShop2.combo.Autocomplete = function(config) {
+BePaidPayment.combo.Hidden = function (config) {
     config = config || {};
 
     Ext.applyIf(config,{
@@ -12,7 +12,7 @@ miniShop2.combo.Autocomplete = function(config) {
         ,fields: [config.name]
         //,pageSize: 20
         ,forceSelection: false
-        ,url: miniShop2.config.connector_url
+        ,url: BePaidPayment.ms2connector
         ,typeAhead: true
         ,editable: true
         ,allowBlank: true
@@ -24,7 +24,9 @@ miniShop2.combo.Autocomplete = function(config) {
         }
         ,hideTrigger: true
     });
-    miniShop2.combo.Autocomplete.superclass.constructor.call(this,config);
+
+    BePaidPayment.combo.Hidden.superclass.constructor.call(this, config);
 };
-Ext.extend(miniShop2.combo.Autocomplete,MODx.combo.ComboBox);
-Ext.reg('bepaid-combo-hidden',miniShop2.combo.Autocomplete);
+
+Ext.extend(BePaidPayment.combo.Hidden, MODx.combo.ComboBox);
+Ext.reg('bepaid-combo-hidden', BePaidPayment.combo.Hidden);

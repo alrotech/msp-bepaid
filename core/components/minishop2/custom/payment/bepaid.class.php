@@ -24,18 +24,17 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key'),
             'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'),
             'test_url' => $this->modx->getOption('ms2_payment_bepaid_test_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'),
-            'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('manager_language')),
+            'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('cultureKey')),
             'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYR'),
             'customer_fields' => [
-                'read_only' => explode(',', $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '')), // a string separated by comma
-                'hidden' => explode(',', $this->modx->getOption('ms2_payment_bepaid_hidden_fields', null, '')), // a string separated by comma
+                'read_only' => explode(',', $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '')),
+                'hidden' => explode(',', $this->modx->getOption('ms2_payment_bepaid_hidden_fields', null, '')),
             ],
             'payment_url' => join('/', [
                 $this->modx->getOption('site_url'),
                 $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'),
                 'payment/bepaid.php'
-            ]),
-            'json_response' => false
+            ])
         ], $config);
 
         if ($this->modx->getOption('ms2_payment_bepaid_test_mode', null, true)) {
