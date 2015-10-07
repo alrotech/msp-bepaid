@@ -271,6 +271,16 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         return $response;
     }
 
+    public function cancel()
+    {
+        // cancel current order?
+    }
+
+    public function processResponse($token, $uid, $status)
+    {
+        // status?
+    }
+
     /**
      * @deprecated
      * @param msOrder $order
@@ -285,35 +295,8 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                     $this->paymentError("Could not get transaction id. Process stopped.");
                 }
 
-                $transaction_id = $params['wsb_tid'];
-                $postdata = '*API=&API_XML_REQUEST=' . urlencode('<?xml version="1.0" encoding="ISO-8859-1"?><wsb_api_request><command>get_transaction</command><authorization><username>' . $this->config['login'] . '</username><password>' . md5($this->config['password']) . '</password></authorization><fields><transaction_id>' . $transaction_id . '</transaction_id></fields></wsb_api_request>');
-
-                $curl = curl_init($this->config['gate_url']);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, false);
-                curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-                $response = curl_exec($curl);
-                curl_close($curl);
-
-                $xml = simplexml_load_string($response);
-
                 if ((string)$xml->status == 'success') {
                     $fields = (array)$xml->fields;
-
-                    $crc = md5(
-                        $fields['transaction_id']
-                        . $fields['batch_timestamp']
-                        . $fields['currency_id']
-                        . $fields['amount']
-                        . $fields['payment_method']
-                        . $fields['payment_type']
-                        . $fields['order_id']
-                        . $fields['rrn']
-                        . $this->config['secret']
-                    );
 
                     if ($crc == $fields['wsb_signature'] && in_array($fields['payment_type'], array(1, 4))) {
                         $miniShop2 = $this->modx->getService('miniShop2');
@@ -327,18 +310,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                 }
                 break;
             case 'notify':
-                $crc = md5(
-                    $params['batch_timestamp']
-                    . $params['currency_id']
-                    . $params['amount']
-                    . $params['payment_method']
-                    . $params['order_id']
-                    . $params['site_order_id']
-                    . $params['transaction_id']
-                    . $params['payment_type']
-                    . $params['rrn']
-                    . $this->config['secret']
-                );
+
                 if ($crc == $params['wsb_signature'] && in_array($params['payment_type'], array(1, 4))) {
                     $miniShop2 = $this->modx->getService('miniShop2');
                     @$this->modx->context->key = 'mgr';

@@ -31,75 +31,50 @@
  * @subpackage build
  */
 
-if ($object->xpdo) {
-    $modx =& $object->xpdo;
+if (!$object->xpdo && !$object->xpdo instanceof modX) {
+    return true;
+}
 
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
-            if (!empty($options['bepaid-store-id'])) {
-                if (!$tmp = $modx->getObject('modSystemSetting', array('key' => 'ms2_payment_bepaid_store_id'))) {
-                    $tmp = $modx->newObject('modSystemSetting');
-                }
-                $tmp->fromArray(array(
-                    'namespace' => 'minishop2',
-                    'area' => 'ms2_payment_bepaid',
-                    'xtype' => 'textfield',
-                    'value' => $options['bepaid-store-id'],
-                    'key' => 'ms2_payment_bepaid_store_id',
-                ), '', true, true);
-                $tmp->save();
-            }
-            if (!empty($options['bepaid-login'])) {
-                if (!$tmp = $modx->getObject('modSystemSetting', array('key' => 'ms2_payment_bepaid_login'))) {
-                    $tmp = $modx->newObject('modSystemSetting');
-                }
-                $tmp->fromArray(array(
-                    'namespace' => 'minishop2',
-                    'area' => 'ms2_payment_bepaid',
-                    'xtype' => 'textfield',
-                    'value' => $options['bepaid-login'],
-                    'key' => 'ms2_payment_bepaid_login',
-                ), '', true, true);
-                $tmp->save();
-            }
-            if (!empty($options['bepaid-password'])) {
-                if (!$tmp = $modx->getObject('modSystemSetting', array('key' => 'ms2_payment_bepaid_password'))) {
-                    $tmp = $modx->newObject('modSystemSetting');
-                }
-                $tmp->fromArray(array(
-                    'namespace' => 'minishop2',
-                    'area' => 'ms2_payment_bepaid',
-                    'xtype' => 'textfield',
-                    'value' => $options['bepaid-password'],
-                    'key' => 'ms2_payment_bepaid_password',
-                ), '', true, true);
-                $tmp->save();
-            }
-            if (!empty($options['bepaid-secret-key'])) {
-                if (!$tmp = $modx->getObject('modSystemSetting', array('key' => 'ms2_payment_bepaid_secret_key'))) {
-                    $tmp = $modx->newObject('modSystemSetting');
-                }
-                $tmp->fromArray(array(
-                    'namespace' => 'minishop2',
-                    'area' => 'ms2_payment_bepaid',
-                    'xtype' => 'textfield',
-                    'value' => $options['bepaid-secret-key'],
-                    'key' => 'ms2_payment_bepaid_secret_key',
-                ), '', true, true);
-                $tmp->save();
-            }
-            break;
+switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+    case xPDOTransport::ACTION_INSTALL:
+        if (isset($options['bepaid_store_id'])) {
+            $ss = $modx->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_store_id'])
+                ?: $modx->newObject('modSystemSetting');
 
-        case xPDOTransport::ACTION_UPGRADE:
-            break;
+            $ss->fromArray([
+                'namespace' => 'minishop2',
+                'area' => 'ms2_payment_bepaid',
+                'xtype' => 'textfield',
+                'key' => 'ms2_payment_bepaid_store_id',
+                'value' => $options['bepaid_store_id']
+            ], '', true, true);
+            $ss->save();
+        }
+        if (isset($options['bepaid_secret_key'])) {
+            $ss = $modx->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_secret_key'])
+                ?: $modx->newObject('modSystemSetting');
 
-        case xPDOTransport::ACTION_UNINSTALL:
-            $modelPath = $modx->getOption('minishop2.core_path', null, $modx->getOption('core_path') . 'components/minishop2/') . 'model/';
-            $modx->addPackage('minishop2', $modelPath);
-            $modx->removeCollection('msPayment', array('class' => 'WebPay'));
-            $modx->removeCollection('modSystemSetting', array('key:LIKE' => 'ms2\_payment\_bepaid\_%'));
-            break;
-    }
+            $ss->fromArray([
+                'namespace' => 'minishop2',
+                'area' => 'ms2_payment_bepaid',
+                'xtype' => 'textfield',
+                'key' => 'ms2_payment_bepaid_secret_key',
+                'value' => $options['bepaid_secret_key'],
+            ], '', true, true);
+            $ss->save();
+        }
+        break;
+
+    case xPDOTransport::ACTION_UPGRADE:
+        break;
+
+    case xPDOTransport::ACTION_UNINSTALL:
+        $modelPath = $modx->getOption('minishop2.core_path', null, $modx->getOption('core_path') . 'components/minishop2/') . 'model/';
+        $modx->addPackage('minishop2', $modelPath);
+
+        $modx->removeCollection('msPayment', ['class' => 'bePaid']);
+        $modx->removeCollection('modSystemSetting', ['key:LIKE' => 'ms2\_payment\_bepaid\_%']);
+        break;
 }
 
 return true;

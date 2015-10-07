@@ -28,7 +28,7 @@ require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/index.php';
 
 $modx->getService('error', 'error.modError');
 $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
-$modx->setLogTarget('FILE');
+$modx->setLogTarget();
 
 $miniShop2 = $modx->getService('minishop2');
 $miniShop2->loadCustomClasses('payment');
@@ -36,7 +36,7 @@ $miniShop2->loadCustomClasses('payment');
 if (!class_exists('bePaid')) {
     $modx->log(modX::LOG_LEVEL_ERROR, 'Could not load payment class "bePaid"', '', '', __FILE__, __LINE__);
 
-    exit('Error: could not load payment class "bePaid".');
+    exit('[ms2::payment::bePaid] Сould not load payment class "bePaid".');
 }
 
 $handler = new BePaid($modx->newObject('msOrder'));
@@ -44,8 +44,9 @@ $handler = new BePaid($modx->newObject('msOrder'));
 
 // TODO: переписать на новые обработчики, валидные для bepaid
 switch ($_GET['action']) {
-    //case 'decline':
     case 'notify':
+        $modx->log(modX::LOG_LEVEL_ERROR, json_encode($_REQUEST));
+
         if (empty($_POST['site_order_id'])) {
             $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Returned empty order id.');
         }
@@ -58,23 +59,28 @@ switch ($_GET['action']) {
         break;
     case 'success':
     case 'cancel':
-        if (empty($_REQUEST['wsb_order_num'])) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Returned empty order id.');
+    case 'fail':
+    case 'decline':
+        if (empty($_GET['uid'])
+            || empty($_GET['token'])
+            || empty($_GET['status'])
+        ) {
+            $modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Invalid response. Should contain uid, token ans status fields in GET request query.', '', '', __FILE__, __LINE__);
+
+            $handler->cancel();
         }
-        if ($order = $modx->getObject('msOrder', $_REQUEST['wsb_order_num'])) {
-            $handler->receive($order, $_REQUEST);
-        } else {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Could not retrieve order with id ' . $_REQUEST['wsb_order_num']);
-        }
+
+        $handler->processResponse($_GET['token'], $_GET['uid'], $_GET['status']);
+
         break;
 }
 
 $success = $cancel = $modx->getOption('site_url');
 
-if ($id = $modx->getOption('ms2_payment_bepaid_success_id', null, 0)) {
+if ($id = $modx->getOption('ms2_payment_bepaid_success_page', null, 0)) {
     $success = $modx->makeUrl($id, '', [], 'full');
 }
-if ($id = $modx->getOption('ms2_payment_bepaid_cancel_id', null, 0)) {
+if ($id = $modx->getOption('ms2_payment_bepaid_failure_page', null, 0)) {
     $cancel = $modx->makeUrl($id, '', [], 'full');
 }
 

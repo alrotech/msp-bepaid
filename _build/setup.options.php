@@ -30,63 +30,63 @@
  */
 
 $exists = false;
-$output = null;
 
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
         $exists = $modx->getCount('modSystemSetting', array('key:LIKE' => '%_bepaid_%'));
         break;
-
-    case xPDOTransport::ACTION_UPGRADE:
-    case xPDOTransport::ACTION_UNINSTALL:
-        break;
 }
 
-if (!$exists) {
-    if ($modx->getOption('manager_language') == 'ru') {
-        $text = '
-            Для полноценной работы оплаты bePaid необходимо заполнить параметры, выданные вам после заключения договора.
-            <label for="bepaid-store-id">Идентификатор магазина:</label>
-            <input type="text" name="bepaid-store-id" id="bepaid-store-id" width="300" value="" />
-
-            <label for="bepaid-login">Логин в системе bePaid:</label>
-            <input type="text" name="bepaid-login" id="bepaid-login" width="300" value="" />
-
-            <label for="bepaid-password">Пароль в системе bePaid:</label>
-            <input type="text" name="bepaid-password" id="bepaid-password" width="300" value="" />
-
-            <label for="bepaid-secret-key">Секретный ключ:</label>
-            <input type="text" name="bepaid-secret-key" id="bepaid-secret-key" width="300" value="" />
-
-			<small>Вы можете пропустить этот шаг и заполнить эти поля позже в системных настройках.</small>';
-    } else {
-        $text = '
-            To complete the work necessary to complete the payment bePaid options given to you after the conclusion of the contract.
-            <label for="bepaid-store-id">Store ID:</label>
-            <input type="text" name="bepaid-store-id" id="bepaid-store-id" width="300" value="" />
-
-            <label for="bepaid-login">Login in WebPay System:</label>
-            <input type="text" name="bepaid-login" id="bepaid-login" width="300" value="" />
-
-            <label for="bepaid-password">Password in WebPay System:</label>
-            <input type="text" name="bepaid-password" id="bepaid-password" width="300" value="" />
-
-            <label for="bepaid-secret-key">Secret Key:</label>
-            <input type="text" name="bepaid-secret-key" id="bepaid-secret-key" width="300" value="" />
-
-			<small>You can skip this step and complete these fields later in the system settings.</small>';
-    }
-
-    $output = '
-		<style>
-			#setup_form_wrapper {font: normal 12px Arial;line-height:18px;}
-			#setup_form_wrapper ul {margin-left: 5px; font-size: 10px; list-style: disc inside;}
-			#setup_form_wrapper a {color: #08C;}
-			#setup_form_wrapper small {font-size: 10px; color:#555; font-style:italic;}
-			#setup_form_wrapper label {color: black; font-weight: bold;}
-		</style>
-		<div id="setup_form_wrapper">' . $text . '</div>
-	';
+if ($exists) {
+    return;
 }
+
+$lexicon = array(
+    'ru' => array(
+        'title' => 'Настройка платежного модуля bePaid',
+        'description' => 'По умолчанию заданы номер и секретный ключ тестового магазина. <a href="https://github.com/beGateway/begateway-api-php#test-data" target="_blank">Подробности тут.</a>',
+        'info' => 'Вы можете пропустить этот шаг и изменить эти поля позже в системных настройках.',
+        'store_id' => 'Идентификатор магазина',
+        'secret_key' => 'Секретный ключ'
+    ),
+    'en' => array(
+        'title' => '',
+        'description' => 'By default set id and secret key of test store. <a href="https://github.com/beGateway/begateway-api-php#test-data" target="_blank">Detail here.</a>',
+        'info' => 'You can skip this step and change this fields later in system settings.',
+        'store_id' => 'Store ID',
+        'secret_key' => 'Secret key'
+    ),
+    'be' => array(
+        'title' => 'Наладка плацёжнага модуля bePaid',
+        'description' => 'Па змоўчанню зададзены нумар і сакрэтны ключ тэставага магазіну. <a href="https://github.com/beGateway/begateway-api-php#test-data" target="_blank">Падрабязнасці тут.</a>',
+        'info' => 'Вы можаце прапусціць гэты крок і змяніць гэтыя палі пазней у сістэмных наладках.',
+        'store_id' => 'Ідэнтыфікатар магазіна',
+        'secret_key' => 'Cакрэтны ключ'
+    )
+);
+
+$locale = $modx->getOption('manager_language');
+$language = array_key_exists($locale, $lexicon) ? $locale : 'en';
+$translate = $lexicon[$language];
+
+$output = <<<HTML
+    <style>
+        #setup_form_wrapper {font: normal 12px Arial;line-height:18px;}
+        #setup_form_wrapper ul {margin-left: 5px; font-size: 10px; list-style: disc inside;}
+        #setup_form_wrapper a {color: #08C;}
+        #setup_form_wrapper small {font-size: 10px; color:#555; font-style:italic;}
+        #setup_form_wrapper label {color: black; font-weight: bold;}
+    </style>
+
+    <div id="setup-form-wrapper">
+        <h4>{$translate['title']}</h4>
+        <span>{$translate['description']}</span>
+        <label for="bepaid_store_id">{$translate['store_id']}</label>
+        <input type="text" name="bepaid_store_id" id="bepaid_store_id" width="300" value="361" />
+        <label for="bepaid_secret_key">{$translate['secret_key']}</label>
+        <input type="text" name="bepaid_secret_key" id="bepaid_secret_key" width="300" value="b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d" />
+        <small>{$translate['info']}</small>
+    </div>
+HTML;
 
 return $output;
