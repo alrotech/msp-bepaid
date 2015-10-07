@@ -114,7 +114,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                 ],
                 'order' => [
                     'currency' => $this->config['currency'],
-                    'amount' => $this->amount($order->get('cost')),
+                    'amount' => $this->amount($order->get('cost'), $this->modx->getOption('ms2_payment_bepaid_currency')),
                     'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray()),
                     'tracking_id' => $order->get('id')
                 ],
@@ -139,13 +139,53 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      * @param $amount
      * @return int
      */
-    protected function amount($amount)
+    protected function amount($amount, $currency)
     {
-        if (!is_integer($amount)) {
-            $amount = intval(round($amount, 2) * 100);
-        }
+        $precision = [
+            'BIF' => 1,
+            'BYR' => 1,
+            'CLF' => 1,
+            'CLP' => 1,
+            'CVE' => 1,
+            'DJF' => 1,
+            'GNF' => 1,
+            'IDR' => 1,
+            'IQD' => 1,
+            'IRR' => 1,
+            'ISK' => 1,
+            'JPY' => 1,
+            'KMF' => 1,
+            'KPW' => 1,
+            'KRW' => 1,
+            'LAK' => 1,
+            'LBP' => 1,
+            'MMK' => 1,
+            'PYG' => 1,
+            'RWF' => 1,
+            'SLL' => 1,
+            'STD' => 1,
+            'UYI' => 1,
+            'VND' => 1,
+            'VUV' => 1,
+            'XAF' => 1,
+            'XOF' => 1,
+            'XPF' => 1,
+            'MOP' => 10,
+            'BHD' => 1000,
+            'JOD' => 1000,
+            'KWD' => 1000,
+            'LYD' => 1000,
+            'OMR' => 1000,
+            'TND' => 1000
+        ];
 
-        return intval($amount);
+        $amount = (float) $amount;
+
+        $multiplyer = array_key_exists($currency, $precision)
+            ? $precision[$currency]
+            : 100; // default
+
+        return intval($amount * $multiplyer);
     }
 
     /**
