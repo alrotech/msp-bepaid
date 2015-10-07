@@ -83,7 +83,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     public function send(msOrder $order)
     {
         if (!$link = $this->getPaymentToken($order)) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Token and redirect url can not be requested.', '', '', __FILE__, __LINE__);
+            $this->log('Token and redirect url can not be requested.', __FILE__, __LINE__);
         }
 
         return $this->success('', ['redirect' => $link]);
@@ -129,7 +129,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             return $response['checkout']['redirect_url'];
         }
 
-        $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Response not valid and contains errors: ' . print_r($response, 1), '', '', __FILE__, __LINE__);
+        $this->log('Response not valid and contains errors: ' . print_r($response, 1),  __FILE__, __LINE__);
 
         return false;
     }
@@ -257,11 +257,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         curl_close($ch);
 
         if ($response === false) {
-            $this->modx->log(
-                modX::LOG_LEVEL_ERROR,
-                '[ms2::payment::bePaid] CURL Error, can not process request via path "' . $url . '". Error info: ' . $error,
-                '', '', __FILE__, __LINE__
-            );
+            $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error, __FILE__, __LINE__);
         }
 
         return $response;
