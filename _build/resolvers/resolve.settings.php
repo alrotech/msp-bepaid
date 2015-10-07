@@ -38,8 +38,8 @@ if (!$object->xpdo && !$object->xpdo instanceof modX) {
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
         if (isset($options['bepaid_store_id'])) {
-            $ss = $modx->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_store_id'])
-                ?: $modx->newObject('modSystemSetting');
+            $ss = $object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_store_id'])
+                ?: $object->xpdo->newObject('modSystemSetting');
 
             $ss->fromArray([
                 'namespace' => 'minishop2',
@@ -51,8 +51,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             $ss->save();
         }
         if (isset($options['bepaid_secret_key'])) {
-            $ss = $modx->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_secret_key'])
-                ?: $modx->newObject('modSystemSetting');
+            $ss = $object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_secret_key'])
+                ?: $object->xpdo->newObject('modSystemSetting');
 
             $ss->fromArray([
                 'namespace' => 'minishop2',
@@ -69,11 +69,11 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         break;
 
     case xPDOTransport::ACTION_UNINSTALL:
-        $modelPath = $modx->getOption('minishop2.core_path', null, $modx->getOption('core_path') . 'components/minishop2/') . 'model/';
-        $modx->addPackage('minishop2', $modelPath);
+        $modelPath = $object->xpdo->getOption('minishop2.core_path', null, $object->xpdo->getOption('core_path') . 'components/minishop2/') . 'model/';
+        $object->xpdo->addPackage('minishop2', $modelPath);
 
-        $modx->removeCollection('msPayment', ['class' => 'bePaid']);
-        $modx->removeCollection('modSystemSetting', ['key:LIKE' => 'ms2\_payment\_bepaid\_%']);
+        $object->xpdo->removeCollection('msPayment', ['class' => 'bePaid']);
+        $object->xpdo->removeCollection('modSystemSetting', ['key:LIKE' => 'ms2\_payment\_bepaid\_%']);
         break;
 }
 

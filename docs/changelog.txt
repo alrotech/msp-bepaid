@@ -1,5 +1,11 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 1.1.0-beta (October 8, 2015)
+- Fixed resolver for install options
+
+mspBePaid 1.1.1-beta (October 7, 2015)
+- long list
+
 mspBePaid 1.0.6-beta (July 16, 2015)
 ==============
 - Added require of minimal php version
