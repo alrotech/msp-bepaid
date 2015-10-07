@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-BePaidPayment.combo.Languages = function(config) {
+BePaidPayment.combo.Language = function(config) {
     config = config || {};
 
     Ext.applyIf(config,{
@@ -55,8 +55,8 @@ BePaidPayment.combo.Languages = function(config) {
         preventRender: true
     });
 
-    BePaidPayment.combo.Languages.superclass.constructor.call(this, config);
+    BePaidPayment.combo.Language.superclass.constructor.call(this, config);
 };
 
-Ext.extend(BePaidPayment.combo.Languages, MODx.combo.ComboBox);
-Ext.reg('bepaid-combo-languages', BePaidPayment.combo.Languages);
+Ext.extend(BePaidPayment.combo.Language, MODx.combo.ComboBox);
+Ext.reg('bepaid-combo-language', BePaidPayment.combo.Language);

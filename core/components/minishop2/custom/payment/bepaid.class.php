@@ -219,7 +219,11 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
 
         if (mb_strlen($address->get('country')) == 2) { // country should be in ISO 3166-1 Alpha-2 format
-            $customer['country'] = $address->get('country');
+            $customer['country'] = strtoupper($address->get('country'));
+        }
+
+        if (!$customer['country']) {
+            $customer['country'] = strtoupper($this->modx->getOption('ms2_payment_bepaid_country'));
         }
 
         if ($address->get('index')) {

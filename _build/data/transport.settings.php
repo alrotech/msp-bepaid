@@ -49,14 +49,13 @@ $list = [
         'value' => 'https://checkout.begateway.com/ctp/api/checkouts'
     ],
     'language' => [
-        'xtype' => 'bepaid-combo-languages',
+        'xtype' => 'bepaid-combo-language',
         'value' => 'ru'
     ],
-//    'country' => [
-//        'xtype' => '?',
-//        'value' => 'by'
-//    ],
-
+    'country' => [
+        'xtype' => 'bepaid-combo-country',
+        'value' => 'by'
+    ],
     'readonly_fields' => [
         'xtype' => 'bepaid-combo-readonly',
         'value' => 'email'

@@ -38,6 +38,7 @@ switch ($modx->event->name) {
 
         $files = [
             'language.combo.js',
+            'country.combo.js',
             'status.combo.js',
             'resource.combo.js',
             // for now I have troubles with integrate superboxselect type into system settings grid
