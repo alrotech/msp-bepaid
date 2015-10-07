@@ -28,60 +28,48 @@ require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/index.php';
 
 $modx->getService('error', 'error.modError');
 $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
-$modx->setLogTarget();
 
 $miniShop2 = $modx->getService('minishop2');
 $miniShop2->loadCustomClasses('payment');
 
 if (!class_exists('bePaid')) {
-    $modx->log(modX::LOG_LEVEL_ERROR, 'Could not load payment class "bePaid"', '', '', __FILE__, __LINE__);
+    $modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Could not load payment class "bePaid"', '', '', __FILE__, __LINE__);
 
-    exit('[ms2::payment::bePaid] Сould not load payment class "bePaid".');
+    die('[ms2::payment::bePaid] Could not load payment class "bePaid".');
 }
 
 $handler = new BePaid($modx->newObject('msOrder'));
 
-
-// TODO: переписать на новые обработчики, валидные для bepaid
 switch ($_GET['action']) {
     case 'notify':
-        $modx->log(modX::LOG_LEVEL_ERROR, json_encode($_REQUEST));
-
-        if (empty($_POST['site_order_id'])) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Returned empty order id.');
-        }
-        if ($order = $modx->getObject('msOrder', $_POST['site_order_id'])) {
-            $_POST['action'] = $_GET['action'];
-            $handler->receive($order, $_POST);
-        } else {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] Could not retrieve order with id ' . $_POST['site_order_id']);
-        }
+        $handler->notify();
         break;
-    case 'success':
     case 'cancel':
+        $handler->log("Payment of order ({$_GET['order']}) was canceled by user.", __FILE__, __LINE__);
+        break;
     case 'fail':
     case 'decline':
+    case 'success':
         if (empty($_GET['uid'])
             || empty($_GET['token'])
             || empty($_GET['status'])
         ) {
-            $modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Invalid response. Should contain uid, token ans status fields in GET request query.', '', '', __FILE__, __LINE__);
-
-            $handler->cancel();
+            $handler->fail('Invalid response. Should contain uid, token ans status fields in GET request query.', __FILE__, __LINE__);
         }
 
-        $handler->processResponse($_GET['token'], $_GET['uid'], $_GET['status']);
+        $handler->process($_GET['token'], $_GET['uid'], $_GET['status']);
 
         break;
 }
 
 $success = $cancel = $modx->getOption('site_url');
 
-if ($id = $modx->getOption('ms2_payment_bepaid_success_page', null, 0)) {
-    $success = $modx->makeUrl($id, '', [], 'full');
+if ($page = $modx->getOption('ms2_payment_bepaid_success_page', null, 0)) {
+    $success = $modx->makeUrl($page, '', ['msorder' => $_GET['order']], 'full');
 }
-if ($id = $modx->getOption('ms2_payment_bepaid_failure_page', null, 0)) {
-    $cancel = $modx->makeUrl($id, '', [], 'full');
+
+if ($page = $modx->getOption('ms2_payment_bepaid_failure_page', null, 0)) {
+    $cancel = $modx->makeUrl($page, '', ['msorder' => $_GET['order']], 'full');
 }
 
 $redirect = !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'success') ? $success : $cancel;

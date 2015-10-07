@@ -52,6 +52,11 @@ $list = [
         'xtype' => 'bepaid-combo-languages',
         'value' => 'ru'
     ],
+//    'country' => [
+//        'xtype' => '?',
+//        'value' => 'by'
+//    ],
+
     'readonly_fields' => [
         'xtype' => 'bepaid-combo-readonly',
         'value' => 'email'
@@ -70,11 +75,11 @@ $list = [
     ],
     'success_status' => [
         'xtype' => 'bepaid-combo-status',
-        'value' => 0
+        'value' => 2
     ],
     'failure_status' => [
         'xtype' => 'bepaid-combo-status',
-        'value' => 0
+        'value' => 4
     ],
     'success_page' => [
         'xtype' => 'bepaid-combo-resource',

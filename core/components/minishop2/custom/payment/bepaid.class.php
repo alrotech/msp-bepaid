@@ -31,16 +31,13 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 {
     public $config;
 
-    /** @var modX */
-    public $modx;
-
     /**
      * @param xPDOObject $object
      * @param array $config
      */
     function __construct(xPDOObject $object, $config = [])
     {
-        $this->modx = &$object->xpdo;
+        parent::__construct($object, $config);
 
         $this->config = array_merge([
             'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id', null),
@@ -101,7 +98,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         /** @var msOrderAddress $address */
         $address = $order->getOne('Address');
 
-        $gateway = $this->config['payment_url'] . '?';
+        $gateway = $this->config['payment_url'] . '?order=' . $order->get('id') . '&';
 
         $payload = [
             'checkout' => [
@@ -113,39 +110,26 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                     'cancel_url' => $gateway . http_build_query(['action' => 'cancel']),
                     'notification_url' => $gateway . http_build_query(['action' => 'notify']),
                     'language' => $this->config['language'],
-                    'customer_fields' => $this->config['customer_fields'],
-                    'tracking_id' => $order->get('id')
+                    'customer_fields' => $this->config['customer_fields']
                 ],
                 'order' => [
                     'currency' => $this->config['currency'],
-                    'amount' => $this->prepareAmount($order->get('cost')),
-                    'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray())
+                    'amount' => $this->amount($order->get('cost')),
+                    'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray()),
+                    'tracking_id' => $order->get('id')
                 ],
-                'customer' => $this->getCustomerInfo($address)
+                'customer' => $this->customer($address)
             ]
         ];
 
-        $response = $this->request(
-            $this->config['checkout_url'],
-            $payload,
-            [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'Cache-Control' => 'no-cache'
-            ],
-            [
-                $this->config['store_id'],
-                $this->config['secret_key']
-            ]
-        );
-
+        $response = $this->request($this->config['checkout_url'], $payload);
         $response = json_decode($response, true);
 
         if (isset($response['checkout']) && isset($response['checkout']['redirect_url'])) {
             return $response['checkout']['redirect_url'];
         }
 
-        $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Response not valid and contains errors: ' . $response);
+        $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] Response not valid and contains errors: ' . print_r($response, 1), '', '', __FILE__, __LINE__);
 
         return false;
     }
@@ -155,7 +139,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      * @param $amount
      * @return int
      */
-    protected function prepareAmount($amount)
+    protected function amount($amount)
     {
         if (!is_integer($amount)) {
             $amount = intval(round($amount, 2) * 100);
@@ -168,7 +152,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      * @param msOrderAddress $address
      * @return array $customer Array with prepared info about customer, valid for bePaid services
      */
-    protected function getCustomerInfo(msOrderAddress $address)
+    protected function customer(msOrderAddress $address)
     {
         $customer = ['email' => $address->get('email')];
 
@@ -240,11 +224,17 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      * @param array $auth
      * @return mixed Response in JSON format
      */
-    protected function request($url, $payload, $headers = [], $auth = [])
+    protected function request($url, $payload = null, $headers = [])
     {
+        $headers = array_merge([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Cache-Control' => 'no-cache'
+        ], $headers);
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POST, $payload ? true : false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -252,8 +242,14 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             return join(': ', [$key, $value]);
         }, array_keys($headers), $headers));
 
-        curl_setopt($ch, CURLOPT_USERPWD, join(':', $auth));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
+        curl_setopt($ch, CURLOPT_USERPWD, join(':', [
+            $this->config['store_id'],
+            $this->config['secret_key']
+        ]));
+
+        if ($payload) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload, JSON_UNESCAPED_UNICODE));
+        }
 
         $response = curl_exec($ch);
         $error = curl_error($ch);
@@ -271,73 +267,143 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         return $response;
     }
 
-    public function cancel()
+    /**
+     * @param msOrder $order
+     * @param $status
+     */
+    protected function changeOrderStatus(msOrder $order, $status)
     {
-        // cancel current order?
-    }
+        if (!$status) {
+            return;
+        }
 
-    public function processResponse($token, $uid, $status)
-    {
-        // status?
+        $currentContext = $this->modx->context->get('key');
+        $this->modx->switchContext('mgr');
+        $this->ms2->changeOrderStatus($order->get('id'), $status);
+        $this->modx->switchContext($currentContext);
     }
 
     /**
-     * @deprecated
-     * @param msOrder $order
-     * @param array $params
-     * @return void
+     * Process notify webhook from payment system
      */
-    public function receive(msOrder $order, $params = [])
+    public function notify()
     {
-        switch ($params['action']) {
-            case 'success':
-                if (empty($params['wsb_tid'])) {
-                    $this->paymentError("Could not get transaction id. Process stopped.");
-                }
-
-                if ((string)$xml->status == 'success') {
-                    $fields = (array)$xml->fields;
-
-                    if ($crc == $fields['wsb_signature'] && in_array($fields['payment_type'], array(1, 4))) {
-                        $miniShop2 = $this->modx->getService('miniShop2');
-                        @$this->modx->context->key = 'mgr';
-                        $miniShop2->changeOrderStatus($order->get('id'), 2);
-                    } else {
-                        $this->paymentError('Transaction with id ' . $transaction_id . ' is not valid.');
-                    }
-                } else {
-                    $this->paymentError('Could not check transaction with id ' . $transaction_id);
-                }
-                break;
-            case 'notify':
-
-                if ($crc == $params['wsb_signature'] && in_array($params['payment_type'], array(1, 4))) {
-                    $miniShop2 = $this->modx->getService('miniShop2');
-                    @$this->modx->context->key = 'mgr';
-                    $miniShop2->changeOrderStatus($order->get('id'), 2);
-                    header("HTTP/1.0 200 OK");
-                    exit;
-                } else {
-                    $this->paymentError('Transaction with id ' . $params['transaction_id'] . ' is not valid.');
-                }
-                break;
-            case 'cancel':
-                $miniShop2 = $this->modx->getService('miniShop2');
-                @$this->modx->context->key = 'mgr';
-                $miniShop2->changeOrderStatus($order->get('id'), 4);
-                break;
+        if ($_SERVER['PHP_AUTH_USER'] != $this->modx->getOption('ms2_payment_bepaid_store_id', null)
+            || $_SERVER['PHP_AUTH_PW'] != $this->modx->getOption('ms2_payment_bepaid_secret_key', null)
+        ) {
+            $this->fail('Notify response can not be authorized.', __FILE__, __LINE__);
         }
+
+        $response = json_decode(file_get_contents('php://input'));
+
+        if (isset($response['transaction']) && isset($response['transaction']['tracking_id'])
+            && isset($response['transaction']['type']) && $response['transaction']['type'] == 'payment'
+        ) {
+            /** @var msOrder $order */
+            if (!$order = $this->modx->getObject('msOrder', ['id' => $response['transaction']['tracking_id']])) {
+                $this->fail('Requested order not found.', __FILE__, __LINE__);
+            }
+
+            // save info about transaction into order
+            $props = $order->get('properties');
+            $payment = $response['transaction']['payments'];
+            $payment['uid'] = $response['transaction']['uid'];
+            $payment['type'] = $response['transaction']['type'];
+            $props['payments'][] = $payment;
+            $order->set('properties', $props);
+            $order->save();
+
+            // check status of transaction
+            if (isset($response['transaction']['status']) && $response['transaction']['status'] == 'successful') {
+                $this->changeOrderStatus($order, $this->modx->getOption('ms2_payment_bepaid_success_status'));
+
+                header("HTTP/1.0 200 OK"); // stop notify
+                exit;
+            }
+
+            $this->fail('Transaction not processed yet.', __FILE__, __LINE__);
+        }
+
+        $this->fail('Notify response not valid.', __FILE__, __LINE__, $response);
+    }
+
+    /**
+     * @param $action
+     * @param $token
+     * @param $uid
+     * @param $status
+     */
+    public function process($token, $uid, $status)
+    {
+        $url = join('/', [$this->config['checkout_url'], $token]);
+
+        $response = json_decode($this->request($url), true);
+
+        if ($response['checkout']['shop_id'] != $this->modx->getOption('ms2_payment_bepaid_store_id')) {
+            $this->log("Returned transaction not for this store, invalid store id ({$response['checkout']['shop_id']}). ", __FILE__, __LINE__);
+
+            return;
+        }
+
+        if ($response['checkout']['gateway_response']['payment']['uid'] != $uid) {
+            $this->log("Returned transaction uid ({$response['checkout']['gateway_response']['payment']['uid']}) not valid.", __FILE__, __LINE__);
+
+            return;
+        }
+
+        /** @var msOrder $order*/
+        if (!$order = $this->modx->getObject('msOrder', ['id' => $response['checkout']['order']['tracking_id']])) {
+            $this->log("Cannot find order with id ({$response['checkout']['order']['payment']['tracking_id']}) for transaction accept.", __FILE__, __LINE__);
+
+            return;
+        }
+
+        // save info about transaction into order
+        $props = $order->get('properties');
+        $payment = $response['checkout']['gateway_response']['payment'];
+        $props['payments'][] = $payment;
+        $order->set('properties', $props);
+        $order->save();
+
+        if ($status != 'successful') {
+            $this->log($response['checkout']['message'] . " for order " . $order->get('id'), __FILE__, __LINE__);
+
+            $this->changeOrderStatus($order, $this->modx->getOption('ms2_payment_bepaid_failure_status'));
+
+            return;
+        }
+
+        if (!$response['checkout']['finished']) {
+            $this->log('Transaction not finished yet.', __FILE__, __LINE__);
+
+            return;
+        }
+
+        $this->changeOrderStatus($order, $this->modx->getOption('ms2_payment_bepaid_success_status'));
+    }
+
+    /**
+     * @param $msg
+     * @param $file
+     * @param $line
+     */
+    public function log($msg, $file, $line)
+    {
+        $msg = '[ms2::payment::bePaid] ' . $msg;
+
+        $this->modx->log(modX::LOG_LEVEL_ERROR, $msg, '', '', $file, $line);
     }
 
     /**
      * @param $text
      * @param array $request
      */
-    public function paymentError($text, $request = [])
+    public function fail($text, $file, $line, $request = [])
     {
-        $this->modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:bePaid] ' . $text . ', request: ' . print_r($request, 1));
-        header("HTTP/1.0 400 Bad Request");
+        $text .= $request ? ', request: ' . print_r($request, 1) : '';
+        $this->log($text, $file, $line);
 
+        header("HTTP/1.0 400 Bad Request");
         die('ERROR: ' . $text);
     }
 }
