@@ -31,6 +31,16 @@
  * @subpackage build
  */
 
-// TODO написать валидатор, версия 2.3+
+if (!$object->xpdo) {
+    return false;
+}
+
+$modx_version = $object->xpdo->getVersionData();
+
+if (!version_compare($modx_version['full_version'], '2.3', '>=')) {
+    $object->xpdo->log(modX::LOG_LEVEL_ERROR, 'Invalid MODX version. Minimal supported version – 2.3.');
+
+    return false;
+}
 
 return true;
