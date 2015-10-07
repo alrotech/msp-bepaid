@@ -37,8 +37,8 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.0.8');
-define('PKG_RELEASE', 'beta');
+define('PKG_VERSION', '1.1.0');
+define('PKG_RELEASE', 'pl');
 
 define('BUILD_SETTING_UPDATE', true); // TODO: нужно удалить
 
