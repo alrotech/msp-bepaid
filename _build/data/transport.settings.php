@@ -57,11 +57,13 @@ $list = [
         'value' => 'by'
     ],
     'readonly_fields' => [
-        'xtype' => 'bepaid-combo-readonly',
+//        'xtype' => 'bepaid-combo-readonly',
+        'xtype' => 'textfield',
         'value' => 'email'
     ],
     'hidden_fields' => [
-        'xtype' => 'bepaid-combo-hidden',
+//        'xtype' => 'bepaid-combo-hidden',
+        'xtype' => 'textfield',
         'value' => ''
     ],
     'currency' => [

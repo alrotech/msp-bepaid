@@ -41,43 +41,47 @@ $_lang['ms2_payment_bepaid_lang_finnish'] = 'Finnish';
 //settings
 $_lang['area_ms2_payment_bepaid'] = 'bePaid';
 
-// TODO: translate from russian variant
-
-$_lang['setting_ms2_payment_bepaid_store_id'] = 'ID of shop in bePaid System';
-$_lang['setting_ms2_payment_bepaid_store_id_desc'] = 'It\'s contains an unique ID of shop. This ID was created after your registration in bePaid System and was sent by email.';
+$_lang['setting_ms2_payment_bepaid_store_id'] = 'ID of shop in bePaid system';
+$_lang['setting_ms2_payment_bepaid_store_id_desc'] = 'This ID are created during the registration of shop in bePaid system and sent via email.';
 
 $_lang['setting_ms2_payment_bepaid_secret_key'] = 'Secret Key';
-$_lang['setting_ms2_payment_bepaid_secret_key_desc'] = 'The sequence of random characters, given in panel bePaid. Participates in the formation of an signature and is used to verify the payment.';
+$_lang['setting_ms2_payment_bepaid_secret_key_desc'] = 'The sequence of random characters involved in the formation of the signature of order, was sent during the registration shop in the bePaid system.';
 
-$_lang['setting_ms2_payment_bepaid_login'] = 'Login in bePaid System';
-$_lang['setting_ms2_payment_bepaid_login_desc'] = 'Login, with that you enter to control panel of bePaid. Needed for payment\'s check.';
+$_lang['setting_ms2_payment_bepaid_language'] = 'bePaid Language';
+$_lang['setting_ms2_payment_bepaid_language_desc'] = 'Choose language, on which will be showed bePaid website during payment. By default will be used language set in system setting cultureKey.';
 
-$_lang['setting_ms2_payment_bepaid_password'] = 'Password in bePaid System';
-$_lang['setting_ms2_payment_bepaid_password_desc'] = 'Password, with that you enter to control panel of bePaid. Needed for payment\'s check.';
+$_lang['setting_ms2_payment_bepaid_country'] = 'Country by default';
+$_lang['setting_ms2_payment_bepaid_country_desc'] = 'Choose country, which will be used by default during payment. Choosing of the country can be redefined via cart functionality. Recommended to choose country where shop is placed.';
 
-$_lang['setting_ms2_payment_bepaid_checkout_url'] = 'Address for checkout queries';
-$_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'Address to be sent to the user to execute the payment order.';
+$_lang['setting_ms2_payment_bepaid_success_status'] = 'Order status if payment was successful';
+$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'If order processed without errors and transaction are authorized, status of order will be changed to the specified.';
 
-$_lang['setting_ms2_payment_bepaid_gate_url'] = 'Address for payment\'s check';
-$_lang['setting_ms2_payment_bepaid_gate_url_desc'] = 'Address to be sent to a request to check the payment. ';
+$_lang['setting_ms2_payment_bepaid_success_status'] = 'Order status if payment was failed';
+$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'If order not processed or errors occurred during payment, status of order will be changed to the specified.';
 
-$_lang['setting_ms2_payment_bepaid_version'] = 'Version of the payment form';
-$_lang['setting_ms2_payment_bepaid_version_desc'] = 'Current version = 2.';
+$_lang['setting_ms2_payment_bepaid_success_page'] = 'Destination page after successful payment';
+$_lang['setting_ms2_payment_bepaid_success_page_desc'] = 'User will be redirected to the specified page after successful payment. Recommended to specify page with cart for show details of order.';
 
-$_lang['setting_ms2_payment_bepaid_developer_mode'] = 'Test mode of payments';
-$_lang['setting_ms2_payment_bepaid_developer_mode_desc'] = 'If the value "Yes", all requests payments will be send to a bePaid testing environment of payment processing. If you enabled this mode settings checkout_url and gate_url will be ignored.';
+$_lang['setting_ms2_payment_bepaid_failure_page'] = 'Destination page after failed/canceled payment';
+$_lang['setting_ms2_payment_bepaid_failure_page_desc'] = 'User will be redirected to the specified page after failed or canceled payment. Recommended to specify page with cart for show details of order.';
 
-$_lang['setting_ms2_payment_bepaid_currency'] = 'The proposed currency of payment';
-$_lang['setting_ms2_payment_bepaid_currency_desc'] = 'User can change it while paying. Literal-digit currency code according to ISO4271. Available variants: <strong>BYR</strong>, <strong>USD</strong>, <strong>EUR</strong>, <strong>RUB</strong>. In developer mode available only BYR.';
+$_lang['setting_ms2_payment_bepaid_currency'] = 'Currency of payment';
+$_lang['setting_ms2_payment_bepaid_currency_desc'] = 'Literal three-digit code of currency according to <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">ISO 4271</a>.';
 
-$_lang['setting_ms2_payment_bepaid_language'] = 'bePaid language';
-$_lang['setting_ms2_payment_bepaid_language_desc'] = 'Specify the language code, which show\'s bePaid when paying. Available variants: <strong>russian</strong>, <strong>english</strong>.';
+$_lang['setting_ms2_payment_bepaid_checkout_url'] = 'API entry point';
+$_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'URL to which will be sent payment queries.';
 
-$_lang['setting_ms2_payment_bepaid_success_id'] = 'bePaid successful page id';
-$_lang['setting_ms2_payment_bepaid_success_id_desc'] = 'The customer will be sent to this page after the completion of the payment. It is recommended to specify the id of the page with the shopping cart to order output.';
+$_lang['setting_ms2_payment_bepaid_test_url'] = 'API entry point for <b>test</b> queries';
+$_lang['setting_ms2_payment_bepaid_test_url_desc'] = 'URL to which will be sent payment queries for <b>test</b> orders. This address will be used if test_mode is specified.';
 
-$_lang['setting_ms2_payment_bepaid_failure_id'] = 'bePaid failure page id';
-$_lang['setting_ms2_payment_bepaid_failure_id_desc'] = 'The customer will be sent to this page if something went wrong. It is recommended to specify the id of the page with the shopping cart to order output.';
+$_lang['setting_ms2_payment_bepaid_test_mode'] = 'Test mode';
+$_lang['setting_ms2_payment_bepaid_test_mode_desc'] = 'If specified "Yes" all requests will be sent to sandbox. Real card in this mode are not working.';
+
+$_lang['setting_ms2_payment_bepaid_readonly_fields'] = 'Read only orders properties';
+$_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Orders fields, listed here, on payment page will be showed as read only fields (not able to edit). List of available fields (separate by comma): <b>email</b>, <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
+
+$_lang['setting_ms2_payment_bepaid_hidden_fields'] = 'Hidden orders properties';
+$_lang['setting_ms2_payment_bepaid_hidden_fields_desc'] = 'Orders fields, listed here, on payment page will be hidden, but still will be stored in payment details. List of available fields (separate by comma): <b>phone</b>, <b>address</b>.';
 
 // countries
 $_lang['ms2_payment_bepaid country au'] = 'Australia';

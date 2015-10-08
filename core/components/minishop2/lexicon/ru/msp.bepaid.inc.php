@@ -54,25 +54,25 @@ $_lang['setting_ms2_payment_bepaid_country'] = 'Страна по умолчан
 $_lang['setting_ms2_payment_bepaid_country_desc'] = 'Выберите страну, которая будет использоваться по умолчанию при совершении оплаты. Выбор страны можно переопределить через корзину. Рекомендуется выбирать страну, где расположен магазин.';
 
 $_lang['setting_ms2_payment_bepaid_success_status'] = 'Статус заказа в случае успешной оплаты';
-$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'Если заказ обработан без ошибок и со стороны банка транзакция авторизована, статус заказа будет изменен на указанный';
+$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'Если заказ обработан без ошибок и со стороны банка транзакция авторизована, статус заказа будет изменен на указанный.';
 
 $_lang['setting_ms2_payment_bepaid_success_status'] = 'Статус заказа в случае ошибок оплаты';
-$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'Если заказ не обработан или были ошибки в процессе оплаты, статус заказа будет изменен на указанный';
+$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'Если заказ не обработан или были ошибки в процессе оплаты, статус заказа будет изменен на указанный.';
 
 $_lang['setting_ms2_payment_bepaid_success_page'] = 'Страница успешной оплаты bePaid';
 $_lang['setting_ms2_payment_bepaid_success_page_desc'] = 'Пользователь будет отправлен на эту страницу после успешного завершения оплаты. Рекомендуется указать страницу с корзиной для вывода деталей заказа.';
 
 $_lang['setting_ms2_payment_bepaid_failure_page'] = 'Страница отмены оплаты bePaid';
-$_lang['setting_ms2_payment_bepaid_failure_page_desc'] = 'Пользователь будет отправлен на эту страницу при неудачной оплате. Рекомендуется указать страницу с корзиной для вывода деталей заказа';
+$_lang['setting_ms2_payment_bepaid_failure_page_desc'] = 'Пользователь будет отправлен на эту страницу при неудачной оплате. Рекомендуется указать страницу с корзиной для вывода деталей заказа.';
 
 $_lang['setting_ms2_payment_bepaid_currency'] = 'Валюта платежа';
 $_lang['setting_ms2_payment_bepaid_currency_desc'] = 'Буквенный трехзначный код валюты согласно <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">ISO 4271</a>.';
 
-$_lang['setting_ms2_payment_bepaid_checkout_url'] = 'Адрес для выполнения запросов';
-$_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'Адрес, куда будет отправляться пользователь для выполнения оплаты заказа.';
+$_lang['setting_ms2_payment_bepaid_checkout_url'] = 'Входная точка API';
+$_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'URL, куда будут отправляться запросы на оплату.';
 
-$_lang['setting_ms2_payment_bepaid_test_url'] = 'Адрес для выполнения <b>тестовых</b> запросов';
-$_lang['setting_ms2_payment_bepaid_test_url_desc'] = 'Адрес, куда будет отправляться пользователь для выполнения оплаты <b>тестового</b> заказа. Данный адрес используется, если установлен тестовый режим.';
+$_lang['setting_ms2_payment_bepaid_test_url'] = 'Входная точка API для <b>тестовых</b> запросов';
+$_lang['setting_ms2_payment_bepaid_test_url_desc'] = 'URL, куда будут отправляться запросы на оплату для <b>тестовых</b> заказов. Данный адрес используется, если установлен тестовый режим.';
 
 $_lang['setting_ms2_payment_bepaid_test_mode'] = 'Режим совершения тестовых платежей';
 $_lang['setting_ms2_payment_bepaid_test_mode_desc'] = 'При значении "Да", все запросы оплаты будут отправляться на тестовую среду обработки платежей bePaid. Реальные карты в данном режиме не работают.';

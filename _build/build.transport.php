@@ -37,10 +37,8 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.1.1');
+define('PKG_VERSION', '1.1.2');
 define('PKG_RELEASE', 'pl');
-
-define('BUILD_SETTING_UPDATE', true); // TODO: нужно удалить
 
 require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
 require_once __DIR__ . '/xpdo/xpdo/transport/xpdotransport.class.php';
@@ -139,31 +137,23 @@ if (file_exists($directory . $signature) && is_dir($directory . $signature)) {
 
 $package = new xPDOTransport($xpdo, $signature, $directory);
 
-/* load system settings */
-if (defined('BUILD_SETTING_UPDATE')) {   // ????? убрать как в slackify
-    $settings = include $sources['data'] . 'transport.settings.php';
-    if (!is_array($settings)) {
-        $xpdo->log(XPDO::LOG_LEVEL_ERROR, 'Could not package in settings.');
-    } else {
-        foreach ($settings as $setting) {
-            $package->put($setting, [
-                xPDOTransport::UNIQUE_KEY => 'key',
-                xPDOTransport::PRESERVE_KEYS => true,
-                xPDOTransport::UPDATE_OBJECT => BUILD_SETTING_UPDATE,
-                'class' => 'modSystemSetting',
-                'resolve' => null,
-                'validate' => null,
-                'package' => 'modx',
-            ]);
-        }
-    }
+$settings = include $sources['data'] . 'transport.settings.php';
+foreach ($settings as $setting) {
+    $package->put($setting, [
+        xPDOTransport::UNIQUE_KEY => 'key',
+        xPDOTransport::PRESERVE_KEYS => true,
+        xPDOTransport::UPDATE_OBJECT => true,
+        'class' => 'modSystemSetting',
+        'resolve' => null,
+        'validate' => null,
+        'package' => 'modx',
+    ]);
 }
 
 $validators = [];
 array_push($validators,
     ['type' => 'php', 'source' => $sources['validators'] . 'validate.phpversion.php'],
-    ['type' => 'php', 'source' => $sources['validators'] . 'validate.modxversion.php'],
-    ['type' => 'php', 'source' => $sources['validators'] . 'validate.ms2version.php']
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.modxversion.php']
 );
 
 $resolvers = [];
@@ -252,7 +242,7 @@ $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.tx
 $package->setAttribute('requires', [
     'php' => '>=5.5',
     'modx' => '>=2.3',
-    'miniShop2' => '>=2.1' // ?
+    'miniShop2' => '>=2.1'
 ]);
 $package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 

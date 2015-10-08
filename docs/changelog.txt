@@ -1,15 +1,31 @@
 This file shows the changes in recent releases of mspBePaid.
 
-mspBePaid 1.1.0-beta (October 8, 2015)
+mspBePaid 1.1.2-pl (October 8, 2015)
+====================================
+- Added translates of system setting for English
+- Fixed some minor bugs
+
+mspBePaid 1.1.1-pl (October 8, 2015)
+====================================
 - Fixed resolver for install options
 
-mspBePaid 1.1.1-beta (October 7, 2015)
-- long list
+mspBePaid 1.1.0-pl (October 7, 2015)
+====================================
+- Moved order description to lexicon for easy tuning
+- Added options for tune statuses after successful or failed payment request
+- Sorted system setting, for less mess
+- Added license info to all files of component
+- Added script for install package from cli, for dev purposes
+- Test mode by default, fixes in setup options
+- Rewritten resolver for system settings
+- Rewritten handler of answers from payment system
+- Added method for calc right units of amount for checkout
+- Added country for payments by default (bePaid required country for billing data)
 
 mspBePaid 1.0.6-beta (July 16, 2015)
-==============
+====================================
 - Added require of minimal php version
 
 mspBePaid 1.0.6-beta (July 16, 2015)
-==============
+====================================
 - Copy of mspWebPay

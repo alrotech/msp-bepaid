@@ -286,7 +286,6 @@ BePaidPayment.combo.Country = function(config) {
         mode: 'local',
         triggerAction: 'all',
         editable: false,
-        pageSize: 20,
         selectOnFocus: false,
         preventRender: true
     });
