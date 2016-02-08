@@ -56,8 +56,8 @@ $_lang['setting_ms2_payment_bepaid_country_desc'] = 'Choose country, which will 
 $_lang['setting_ms2_payment_bepaid_success_status'] = 'Order status if payment was successful';
 $_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'If order processed without errors and transaction are authorized, status of order will be changed to the specified.';
 
-$_lang['setting_ms2_payment_bepaid_success_status'] = 'Order status if payment was failed';
-$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'If order not processed or errors occurred during payment, status of order will be changed to the specified.';
+$_lang['setting_ms2_payment_bepaid_failure_status'] = 'Order status if payment was failed';
+$_lang['setting_ms2_payment_bepaid_failure_status_desc'] = 'If order not processed or errors occurred during payment, status of order will be changed to the specified.';
 
 $_lang['setting_ms2_payment_bepaid_success_page'] = 'Destination page after successful payment';
 $_lang['setting_ms2_payment_bepaid_success_page_desc'] = 'User will be redirected to the specified page after successful payment. Recommended to specify page with cart for show details of order.';

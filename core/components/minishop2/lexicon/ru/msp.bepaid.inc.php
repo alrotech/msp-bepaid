@@ -56,8 +56,8 @@ $_lang['setting_ms2_payment_bepaid_country_desc'] = 'Выберите стран
 $_lang['setting_ms2_payment_bepaid_success_status'] = 'Статус заказа в случае успешной оплаты';
 $_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'Если заказ обработан без ошибок и со стороны банка транзакция авторизована, статус заказа будет изменен на указанный.';
 
-$_lang['setting_ms2_payment_bepaid_success_status'] = 'Статус заказа в случае ошибок оплаты';
-$_lang['setting_ms2_payment_bepaid_success_status_desc'] = 'Если заказ не обработан или были ошибки в процессе оплаты, статус заказа будет изменен на указанный.';
+$_lang['setting_ms2_payment_bepaid_failure_status'] = 'Статус заказа в случае ошибок оплаты';
+$_lang['setting_ms2_payment_bepaid_failure_status_desc'] = 'Если заказ не обработан или были ошибки в процессе оплаты, статус заказа будет изменен на указанный.';
 
 $_lang['setting_ms2_payment_bepaid_success_page'] = 'Страница успешной оплаты bePaid';
 $_lang['setting_ms2_payment_bepaid_success_page_desc'] = 'Пользователь будет отправлен на эту страницу после успешного завершения оплаты. Рекомендуется указать страницу с корзиной для вывода деталей заказа.';

@@ -37,7 +37,7 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.1.2');
+define('PKG_VERSION', '1.1.3');
 define('PKG_RELEASE', 'pl');
 
 require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
@@ -120,8 +120,8 @@ $sources = [
 ];
 
 $signature = join('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
-//$directory = $root . '_packages/';
-$directory = __DIR__ . '/../../../core/packages/'; // local place
+$directory = $root . '_packages/';
+//$directory = __DIR__ . '/../../../core/packages/'; // local place
 $filename = $directory . $signature . '.transport.zip';
 
 /* remove the package if it's already been made */
