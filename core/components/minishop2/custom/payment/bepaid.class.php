@@ -45,7 +45,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'),
             'test_url' => $this->modx->getOption('ms2_payment_bepaid_test_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'),
             'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('cultureKey')),
-            'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYR'),
+            'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYN'),
             'payment_url' => join('/', [
                 rtrim($this->modx->getOption('site_url'), '/'),
                 ltrim($this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'), '/'),
@@ -143,7 +143,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     {
         $precision = [
             'BIF' => 1,
-            'BYR' => 1,
             'CLF' => 1,
             'CLP' => 1,
             'CVE' => 1,

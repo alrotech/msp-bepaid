@@ -68,7 +68,7 @@ $list = [
     ],
     'currency' => [
         'xtype' => 'textfield',
-        'value' => 'BYR'
+        'value' => 'BYN'
     ],
     'test_mode' => [
         'xtype' => 'combo-boolean',

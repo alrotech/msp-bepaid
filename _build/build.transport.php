@@ -37,7 +37,7 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '1.1.3');
+define('PKG_VERSION', '2.0.0');
 define('PKG_RELEASE', 'pl');
 
 require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
