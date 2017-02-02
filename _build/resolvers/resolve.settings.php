@@ -37,31 +37,31 @@ if (!$object->xpdo && !$object->xpdo instanceof modX) {
 
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
-        if (isset($options['bepaid_store_id'])) {
-            $ss = $object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_store_id'])
-                ?: $object->xpdo->newObject('modSystemSetting');
+        if (isset($options['bepaid_store_id'])
+            && !$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_store_id'])) {
+            $sid = $object->xpdo->newObject('modSystemSetting');
 
-            $ss->fromArray([
+            $sid->fromArray([
                 'namespace' => 'minishop2',
                 'area' => 'ms2_payment_bepaid',
                 'xtype' => 'textfield',
                 'key' => 'ms2_payment_bepaid_store_id',
                 'value' => $options['bepaid_store_id']
             ], '', true, true);
-            $ss->save();
+            $sid->save();
         }
-        if (isset($options['bepaid_secret_key'])) {
-            $ss = $object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_secret_key'])
-                ?: $object->xpdo->newObject('modSystemSetting');
+        if (isset($options['bepaid_secret_key'])
+            && !$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_secret_key'])) {
+            $sk = $object->xpdo->newObject('modSystemSetting');
 
-            $ss->fromArray([
+            $sk->fromArray([
                 'namespace' => 'minishop2',
                 'area' => 'ms2_payment_bepaid',
                 'xtype' => 'textfield',
                 'key' => 'ms2_payment_bepaid_secret_key',
                 'value' => $options['bepaid_secret_key'],
             ], '', true, true);
-            $ss->save();
+            $sk->save();
         }
         break;
 
