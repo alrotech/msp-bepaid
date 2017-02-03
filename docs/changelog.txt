@@ -1,5 +1,9 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.1.0-pl (February 3, 2017)
+====================================
+- Added support different API versions of bePaid service 
+
 mspBePaid 2.0.0-pl (February 2, 2017)
 ====================================
 - Change BYR to BYN

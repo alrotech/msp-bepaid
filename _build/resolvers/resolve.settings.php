@@ -39,33 +39,47 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
         if (isset($options['bepaid_store_id'])
             && !$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_store_id'])) {
-            $sid = $object->xpdo->newObject('modSystemSetting');
+            /** @var modSystemSetting $storeId */
+            $storeId = $object->xpdo->newObject('modSystemSetting');
 
-            $sid->fromArray([
+            $storeId->fromArray([
                 'namespace' => 'minishop2',
                 'area' => 'ms2_payment_bepaid',
                 'xtype' => 'textfield',
                 'key' => 'ms2_payment_bepaid_store_id',
                 'value' => $options['bepaid_store_id']
             ], '', true, true);
-            $sid->save();
+            $storeId->save();
         }
         if (isset($options['bepaid_secret_key'])
             && !$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_secret_key'])) {
-            $sk = $object->xpdo->newObject('modSystemSetting');
+            /** @var modSystemSetting $secretKey */
+            $secretKey = $object->xpdo->newObject('modSystemSetting');
 
-            $sk->fromArray([
+            $secretKey->fromArray([
                 'namespace' => 'minishop2',
                 'area' => 'ms2_payment_bepaid',
                 'xtype' => 'textfield',
                 'key' => 'ms2_payment_bepaid_secret_key',
                 'value' => $options['bepaid_secret_key'],
             ], '', true, true);
-            $sk->save();
+            $secretKey->save();
         }
         break;
 
     case xPDOTransport::ACTION_UPGRADE:
+        if (!$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_api_version'])) {
+            /** @var modSystemSetting $apiVersion */
+            $apiVersion = $object->xpdo->newObject('modSystemSetting');
+            $apiVersion->fromArray([
+                'namespace' => 'minishop2',
+                'area' => 'ms2_payment_bepaid',
+                'xtype' => 'textfield',
+                'key' => 'ms2_payment_bepaid_api_version',
+                'value' => 2
+            ], '', true, true);
+            $apiVersion->save();
+        }
         break;
 
     case xPDOTransport::ACTION_UNINSTALL:

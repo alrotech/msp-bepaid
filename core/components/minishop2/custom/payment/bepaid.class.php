@@ -42,6 +42,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $this->config = array_merge([
             'store_id' => $this->modx->getOption('ms2_payment_bepaid_store_id', null),
             'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key', null),
+            'api_version' => $this->modx->getOption('ms2_payment_bepaid_api_version', 2),
             'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'),
             'test_url' => $this->modx->getOption('ms2_payment_bepaid_test_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'),
             'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('cultureKey')),
@@ -102,6 +103,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $payload = [
             'checkout' => [
+                'version' => $this->config['api_version'],
                 'transaction_type' => 'payment',
                 'settings' => [
                     'success_url' => $gateway . http_build_query(['action' => 'success']),
@@ -333,7 +335,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             $this->fail('Notify response can not be authorized.', __FILE__, __LINE__);
         }
 
-        $response = json_decode(file_get_contents('php://input'));
+        $response = json_decode(file_get_contents('php://input'), true);
 
         if (isset($response['transaction']) && isset($response['transaction']['tracking_id'])
             && isset($response['transaction']['type']) && $response['transaction']['type'] == 'payment'

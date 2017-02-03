@@ -89,6 +89,10 @@ $list = [
     'failure_page' => [
         'xtype' => 'bepaid-combo-resource',
         'value' => 0
+    ],
+    'api_version' => [
+        'xtype' => 'textfield',
+        'value' => 2
     ]
 ];
 
