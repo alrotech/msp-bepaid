@@ -71,9 +71,6 @@ $_lang['setting_ms2_payment_bepaid_currency_desc'] = 'Literal three-digit code o
 $_lang['setting_ms2_payment_bepaid_checkout_url'] = 'API entry point';
 $_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'URL to which will be sent payment queries.';
 
-$_lang['setting_ms2_payment_bepaid_test_url'] = 'API entry point for <b>test</b> queries';
-$_lang['setting_ms2_payment_bepaid_test_url_desc'] = 'URL to which will be sent payment queries for <b>test</b> orders. This address will be used if test_mode is specified.';
-
 $_lang['setting_ms2_payment_bepaid_test_mode'] = 'Test mode';
 $_lang['setting_ms2_payment_bepaid_test_mode_desc'] = 'If specified "Yes" all requests will be sent to sandbox. Real card in this mode are not working.';
 

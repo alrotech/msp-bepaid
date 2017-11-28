@@ -54,7 +54,7 @@ switch ($_GET['action']) {
             || empty($_GET['token'])
             || empty($_GET['status'])
         ) {
-            $handler->fail('Invalid response. Should contain uid, token ans status fields in GET request query.', __FILE__, __LINE__);
+            $handler->fail('Invalid response. Should contain uid, token and status fields in GET request query.', __FILE__, __LINE__);
         }
 
         $handler->process($_GET['token'], $_GET['uid'], $_GET['status']);

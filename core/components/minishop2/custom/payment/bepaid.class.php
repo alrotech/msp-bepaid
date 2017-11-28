@@ -44,7 +44,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             'secret_key' => $this->modx->getOption('ms2_payment_bepaid_secret_key', null),
             'api_version' => $this->modx->getOption('ms2_payment_bepaid_api_version', 2),
             'checkout_url' => $this->modx->getOption('ms2_payment_bepaid_checkout_url', null, 'https://checkout.bepaid.by/ctp/api/checkouts'),
-            'test_url' => $this->modx->getOption('ms2_payment_bepaid_test_url', null, 'https://checkout.begateway.com/ctp/api/checkouts'),
             'language' => $this->modx->getOption('ms2_payment_bepaid_language', null, $this->modx->getOption('cultureKey')),
             'currency' => $this->modx->getOption('ms2_payment_bepaid_currency', null, 'BYN'),
             'payment_url' => join('/', [
@@ -70,10 +69,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             ['en', 'es', 'tr', 'de', 'it', 'ru', 'zh', 'fr', 'da', 'sv', 'no', 'fi']
         )) {
             $this->config['language'] = 'en'; // english by default in other unimaginable cases
-        }
-
-        if ($this->modx->getOption('ms2_payment_bepaid_test_mode', null, true)) {
-            $this->config['checkout_url'] = $this->config['test_url'];
         }
     }
 
@@ -131,7 +126,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             return $response['checkout']['redirect_url'];
         }
 
-        $this->log('Response not valid and contains errors: ' . print_r($response, 1),  __FILE__, __LINE__);
+        $this->log('Response not valid and contains errors: ' . print_r($response, true),  __FILE__, __LINE__);
 
         return false;
     }

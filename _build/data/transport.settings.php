@@ -44,10 +44,6 @@ $list = [
         'xtype' => 'textfield',
         'value' => 'https://checkout.bepaid.by/ctp/api/checkouts'
     ],
-    'test_url' => [
-        'xtype' => 'textfield',
-        'value' => 'https://checkout.begateway.com/ctp/api/checkouts'
-    ],
     'language' => [
         'xtype' => 'bepaid-combo-language',
         'value' => 'ru'
