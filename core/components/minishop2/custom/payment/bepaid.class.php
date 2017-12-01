@@ -35,7 +35,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      * @param xPDOObject $object
      * @param array $config
      */
-    function __construct(xPDOObject $object, $config = [])
+    public function __construct(xPDOObject $object, $config = [])
     {
         parent::__construct($object, $config);
 
@@ -50,7 +50,9 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                 rtrim($this->modx->getOption('site_url'), '/'),
                 ltrim($this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'), '/'),
                 'payment/bepaid.php'
-            ])
+            ]),
+            'payment_types' => $this->modx->getOption('ms2_payment_bepaid_payment_types', null, ''),
+            'erip_service_no' => $this->modx->getOption('ms2_payment_bepaid_erip_service_id', null, '99999999') // test value
         ], $config);
 
         $read_only = $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '');
@@ -96,6 +98,9 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $gateway = $this->config['payment_url'] . '?order=' . $order->get('id') . '&';
 
+        $orderDescription = $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray());
+        $paymentTypes = explode(',', $this->config['payment_types']);
+
         $payload = [
             'checkout' => [
                 'version' => $this->config['api_version'],
@@ -109,15 +114,25 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                     'language' => $this->config['language'],
                     'customer_fields' => $this->config['customer_fields']
                 ],
+                'payment_method' => ['types' => $paymentTypes],
                 'order' => [
                     'currency' => $this->config['currency'],
                     'amount' => $this->amount($order->get('cost'), $this->modx->getOption('ms2_payment_bepaid_currency')),
-                    'description' => $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray()),
+                    'description' => $orderDescription,
                     'tracking_id' => $order->get('id')
                 ],
                 'customer' => $this->customer($address)
             ]
         ];
+
+        if (in_array('erip', $paymentTypes)) {
+            $payload['checkout']['payment_method']['erip'] = [
+                'order_id' => $order->get('id'),
+                'account_number' => $order->get('num'),
+                'service_no' => $this->config['erip_service_no'],
+                'service_info' => [$orderDescription]
+            ];
+        }
 
         $response = $this->request($this->config['checkout_url'], $payload);
         $response = json_decode($response, true);
@@ -261,7 +276,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      * @param $url
      * @param $payload
      * @param array $headers
-     * @param array $auth
      * @return mixed Response in JSON format
      */
     protected function request($url, $payload = null, $headers = [])
@@ -292,9 +306,12 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
 
         $response = curl_exec($ch);
+        $info = curl_getinfo($ch);
         $error = curl_error($ch);
 
         curl_close($ch);
+
+        $this->log(print_r($info, true), __FILE__, __LINE__);
 
         if ($response === false) {
             $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error, __FILE__, __LINE__);
@@ -364,7 +381,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     }
 
     /**
-     * @param $action
      * @param $token
      * @param $uid
      * @param $status
@@ -401,7 +417,11 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $order->set('properties', $props);
         $order->save();
 
-        if ($status != 'successful') {
+        $this->log($status, __FILE__, __LINE__);
+
+        if ($status != 'successful'
+            && !in_array($status, ['pending', 'auto_created', 'expired', 'permanent']) // ERIP
+        ) {
             $this->log($response['checkout']['message'] . " for order " . $order->get('id'), __FILE__, __LINE__);
 
             $this->changeOrderStatus($order, $this->modx->getOption('ms2_payment_bepaid_failure_status'));
@@ -441,5 +461,13 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         header("HTTP/1.0 400 Bad Request");
         die('ERROR: ' . $text);
+    }
+
+    /**
+     * @param $text
+     */
+    public function debug($text)
+    {
+        $this->modx->log(modX::LOG_LEVEL_DEBUG, $text);
     }
 }
