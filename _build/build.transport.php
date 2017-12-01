@@ -113,6 +113,8 @@ $sources = [
     'core' => [
         'components/mspbepaid/',
         'components/minishop2/custom/payment/bepaid.class.php',
+        'components/minishop2/custom/payment/bepaiderip.class.php',
+        'components/minishop2/custom/payment/bepaidhalva.class.php',
         'components/minishop2/lexicon/en/msp.bepaid.inc.php',
         'components/minishop2/lexicon/ru/msp.bepaid.inc.php',
         'components/minishop2/lexicon/be/msp.bepaid.inc.php',
@@ -120,8 +122,8 @@ $sources = [
 ];
 
 $signature = join('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
-$directory = $root . '_packages/';
-//$directory = __DIR__ . '/../../../core/packages/'; // local place
+//$directory = $root . '_packages/';
+$directory = __DIR__ . '/../../../core/packages/'; // local place
 $filename = $directory . $signature . '.transport.zip';
 
 /* remove the package if it's already been made */
@@ -178,27 +180,34 @@ array_push($resolvers,
     ['type' => 'php', 'source' => $sources['resolvers'] . 'resolve.settings.php']
 );
 
-$payment = new msPayment($xpdo);
-$payment->fromArray([
-    'id' => null,
-    'name' => 'BePaid',
-    'description' => null,
-    'price' => 0,
-    'logo' => null,
-    'rank' => 0,
-    'active' => 0,
-    'class' => 'BePaid',
-    'properties' => null
-]);
+foreach (['Default', 'ERIP', 'Halva'] as $type) {
+    $name = join(' ', ['BePaid', '–', $type]);
 
-$package->put($payment, [
-    xPDOTransport::UNIQUE_KEY => 'name',
-    xPDOTransport::PRESERVE_KEYS => false,
-    xPDOTransport::UPDATE_OBJECT => false,
-    'package' => 'minishop2',
-    'resolve' => $resolvers,
-    'validate' => $validators,
-]);
+    $class = $type !== 'Default'
+        ? join('', ['BePaid', ucfirst(strtolower($type))])
+        : 'BePaid';
+
+    $payment = new msPayment($xpdo);
+    $payment->fromArray([
+        'id' => null,
+        'name' => $name,
+        'description' => null,
+        'price' => 0,
+        'logo' => null,
+        'rank' => 0,
+        'active' => 0,
+        'class' => $class,
+        'properties' => null
+    ]);
+    $package->put($payment, [
+        xPDOTransport::UNIQUE_KEY => 'class',
+        xPDOTransport::PRESERVE_KEYS => false,
+        xPDOTransport::UPDATE_OBJECT => false,
+        'resolve' => null,
+        'validate' => null,
+        'package' => 'minishop2'
+    ]);
+}
 
 $category = new modCategory($xpdo);
 $category->fromArray([
@@ -233,7 +242,9 @@ $package->put($category, [
         ]
     ],
     xPDOTransport::NATIVE_KEY => true,
-    'package' => 'modx'
+    'package' => 'modx',
+    'resolve' => $resolvers,
+    'validate' => $validators
 ]);
 
 $package->setAttribute('changelog', file_get_contents($sources['docs'] . 'changelog.txt'));
