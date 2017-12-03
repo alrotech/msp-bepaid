@@ -1,5 +1,11 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.2.0-pl (December 3, 2017)
+====================================
+- Added two new methods of payment: Halva and ERIP
+- Added new system settings for support new payment methods
+- API version updated to 2.1
+
 mspBePaid 2.1.0-pl (February 3, 2017)
 ====================================
 - Added support different API versions of bePaid service 
