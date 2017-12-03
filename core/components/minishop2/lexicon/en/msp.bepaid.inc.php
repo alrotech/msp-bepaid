@@ -80,6 +80,12 @@ $_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Orders fields, list
 $_lang['setting_ms2_payment_bepaid_hidden_fields'] = 'Hidden orders properties';
 $_lang['setting_ms2_payment_bepaid_hidden_fields_desc'] = 'Orders fields, listed here, on payment page will be hidden, but still will be stored in payment details. List of available fields (separate by comma): <b>phone</b>, <b>address</b>.';
 
+$_lang['setting_ms2_payment_bepaid_payment_types'] = 'Available payment methods';
+$_lang['setting_ms2_payment_bepaid_payment_types_desc'] = 'An array of payment methods for displaying on the payment page. The following values are available: <b>credit_card</b>, <b>erip</b>, <b>halva</b>. For ERIP, you also need to specify the value of <b>erip_service_id</b>.';
+
+$_lang['setting_ms2_payment_bepaid_erip_service_id'] = 'ERIP service code';
+$_lang['setting_ms2_payment_bepaid_erip_service_id_desc'] = 'Unique code of a store or service registered for the seller in the "Raschet" system. For tests, use the value: <b>99999999</b>.';
+
 // countries
 $_lang['ms2_payment_bepaid country au'] = 'Australia';
 $_lang['ms2_payment_bepaid_country_at'] = 'Austria';

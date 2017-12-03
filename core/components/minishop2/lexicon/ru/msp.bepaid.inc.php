@@ -80,6 +80,12 @@ $_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Поля заказ
 $_lang['setting_ms2_payment_bepaid_hidden_fields'] = 'Скрытые свойства заказа';
 $_lang['setting_ms2_payment_bepaid_hidden_fields_desc'] = 'Поля заказа, перечисленные в данном параметре, будут скрыты на странице оплаты, но при это будут записаны в параметры платежа. Список доступных полей (указывается через запятую): <b>phone</b>, <b>address</b>.';
 
+$_lang['setting_ms2_payment_bepaid_payment_types'] = 'Доступные способы оплаты';
+$_lang['setting_ms2_payment_bepaid_payment_types_desc'] = 'Массив способов оплаты для отображения на странице оплаты. Доступны следующие значения: <b>credit_card</b>, <b>erip</b>, <b>halva</b>. Для ЕРИП так же необходимо указать значение <b>erip_service_id</b>.';
+
+$_lang['setting_ms2_payment_bepaid_erip_service_id'] = 'Код услуги ЕРИП';
+$_lang['setting_ms2_payment_bepaid_erip_service_id_desc'] = 'Уникальный код магазина или услуги, зарегистрированной для продавца в системе "Расчет". Для тестов используйте значение: <b>99999999</b>.';
+
 // countries
 $_lang['ms2_payment_bepaid_country_au'] = 'Австралия';
 $_lang['ms2_payment_bepaid_country_at'] = 'Австрия';
