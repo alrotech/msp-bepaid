@@ -89,6 +89,14 @@ $list = [
     'api_version' => [
         'xtype' => 'textfield',
         'value' => 2
+    ],
+    'payment_types' => [
+        'xtype' => 'textfield',
+        'value' => ''
+    ],
+    'erip_service_id' => [
+        'xtype' => 'textfield',
+        'value' => ''
     ]
 ];
 

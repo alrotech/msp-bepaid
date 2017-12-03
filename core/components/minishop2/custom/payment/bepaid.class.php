@@ -52,7 +52,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                 'payment/bepaid.php'
             ]),
             'payment_types' => $this->modx->getOption('ms2_payment_bepaid_payment_types', null, ''),
-            'erip_service_no' => $this->modx->getOption('ms2_payment_bepaid_erip_service_id', null, '99999999') // test value
+            'erip_service' => $this->modx->getOption('ms2_payment_bepaid_erip_service_id', null, '99999999') // test value
         ], $config);
 
         $read_only = $this->modx->getOption('ms2_payment_bepaid_readonly_fields', null, '');
@@ -99,7 +99,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $gateway = $this->config['payment_url'] . '?order=' . $order->get('id') . '&';
 
         $orderDescription = $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray());
-        $paymentTypes = explode(',', $this->config['payment_types']);
 
         $payload = [
             'checkout' => [
@@ -114,7 +113,6 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
                     'language' => $this->config['language'],
                     'customer_fields' => $this->config['customer_fields']
                 ],
-                'payment_method' => ['types' => $paymentTypes],
                 'order' => [
                     'currency' => $this->config['currency'],
                     'amount' => $this->amount($order->get('cost'), $this->modx->getOption('ms2_payment_bepaid_currency')),
@@ -125,11 +123,18 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             ]
         ];
 
+        if (!empty($this->config['payment_types'])) {
+            $paymentTypes = explode(',', $this->config['payment_types']);
+            $payload['checkout']['payment_method']['types'] = $paymentTypes;
+        } else {
+            $paymentTypes = [];
+        }
+
         if (in_array('erip', $paymentTypes)) {
             $payload['checkout']['payment_method']['erip'] = [
                 'order_id' => $order->get('id'),
                 'account_number' => $order->get('num'),
-                'service_no' => $this->config['erip_service_no'],
+                'service_no' => $this->config['erip_service'],
                 'service_info' => [$orderDescription]
             ];
         }
@@ -417,11 +422,10 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $order->set('properties', $props);
         $order->save();
 
-        $this->log($status, __FILE__, __LINE__);
-
         if ($status != 'successful'
             && !in_array($status, ['pending', 'auto_created', 'expired', 'permanent']) // ERIP
         ) {
+            // need new page
             $this->log($response['checkout']['message'] . " for order " . $order->get('id'), __FILE__, __LINE__);
 
             $this->changeOrderStatus($order, $this->modx->getOption('ms2_payment_bepaid_failure_status'));
@@ -461,13 +465,5 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         header("HTTP/1.0 400 Bad Request");
         die('ERROR: ' . $text);
-    }
-
-    /**
-     * @param $text
-     */
-    public function debug($text)
-    {
-        $this->modx->log(modX::LOG_LEVEL_DEBUG, $text);
     }
 }
