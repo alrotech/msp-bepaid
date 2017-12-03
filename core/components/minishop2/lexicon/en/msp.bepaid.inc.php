@@ -86,6 +86,9 @@ $_lang['setting_ms2_payment_bepaid_payment_types_desc'] = 'An array of payment m
 $_lang['setting_ms2_payment_bepaid_erip_service_id'] = 'ERIP service code';
 $_lang['setting_ms2_payment_bepaid_erip_service_id_desc'] = 'Unique code of a store or service registered for the seller in the "Raschet" system. For tests, use the value: <b>99999999</b>.';
 
+$_lang['setting_ms2_payment_bepaid_api_version'] = 'Billing page version';
+$_lang['setting_ms2_payment_bepaid_api_version_desc'] = 'Currently, the actual version of the protocol is <b>2.1</b>. If you installed the component earlier, this value should be updated manually.';
+
 // countries
 $_lang['ms2_payment_bepaid country au'] = 'Australia';
 $_lang['ms2_payment_bepaid_country_at'] = 'Austria';

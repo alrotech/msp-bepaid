@@ -86,6 +86,9 @@ $_lang['setting_ms2_payment_bepaid_payment_types_desc'] = 'Массив спос
 $_lang['setting_ms2_payment_bepaid_erip_service_id'] = 'Код услуги ЕРИП';
 $_lang['setting_ms2_payment_bepaid_erip_service_id_desc'] = 'Уникальный код магазина или услуги, зарегистрированной для продавца в системе "Расчет". Для тестов используйте значение: <b>99999999</b>.';
 
+$_lang['setting_ms2_payment_bepaid_api_version'] = 'Версия платежной страницы';
+$_lang['setting_ms2_payment_bepaid_api_version_desc'] = 'На текущий момент актуальная версия протокола <b>2.1</b>. Если вы устанавливали компонент ранее, это значение следует обновить вручную.';
+
 // countries
 $_lang['ms2_payment_bepaid_country_au'] = 'Австралия';
 $_lang['ms2_payment_bepaid_country_at'] = 'Австрия';

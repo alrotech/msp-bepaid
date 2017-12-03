@@ -88,7 +88,7 @@ $list = [
     ],
     'api_version' => [
         'xtype' => 'textfield',
-        'value' => 2
+        'value' => '2.1'
     ],
     'payment_types' => [
         'xtype' => 'textfield',
