@@ -316,7 +316,8 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         curl_close($ch);
 
-        $this->log(print_r($info, true), __FILE__, __LINE__);
+        // Special method for debugging requests
+        // $this->log(print_r($info, true), __FILE__, __LINE__);
 
         if ($response === false) {
             $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error, __FILE__, __LINE__);
