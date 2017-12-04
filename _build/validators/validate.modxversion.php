@@ -38,8 +38,8 @@ if (!$object->xpdo) {
 $version_data = $object->xpdo->getVersionData();
 $version = join('.', [$version_data['version'], $version_data['major_version'], $version_data['minor_version']]);
 
-if (!version_compare($version, '2.3', '>=')) {
-    $object->xpdo->log(modX::LOG_LEVEL_ERROR, 'Invalid MODX version. Minimal supported version – 2.3.');
+if (!version_compare($version, '2.4', '>=')) {
+    $object->xpdo->log(modX::LOG_LEVEL_ERROR, 'Invalid MODX version. Minimal supported version – 2.4.');
 
     return false;
 }

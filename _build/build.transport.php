@@ -252,8 +252,8 @@ $package->setAttribute('license', file_get_contents($sources['docs'] . 'license.
 $package->setAttribute('readme', file_get_contents($sources['docs'] . 'readme.txt'));
 $package->setAttribute('requires', [
     'php' => '>=5.5',
-    'modx' => '>=2.3',
-    'miniShop2' => '>=2.1'
+    'modx' => '>=2.4',
+    'miniShop2' => '>=2.4'
 ]);
 $package->setAttribute('setup-options', ['source' => $sources['build'] . 'setup.options.php']);
 
