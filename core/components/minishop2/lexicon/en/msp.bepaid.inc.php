@@ -23,6 +23,8 @@
  * THE SOFTWARE.
  */
 
+$_lang['ms2_payment_bepaid_select_setting'] = 'Select a setting';
+
 $_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';
 
 $_lang['ms2_payment_bepaid_lang_english'] = 'English';
