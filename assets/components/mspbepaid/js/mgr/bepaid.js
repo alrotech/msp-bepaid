@@ -26,9 +26,7 @@ var BePaidPayment = function(config) {
     config = config || {};
     BePaidPayment.superclass.constructor.call(this, config);
 };
-Ext.extend(BePaidPayment, Ext.Component, {
-    combo: {}
-});
+Ext.extend(BePaidPayment, Ext.Component, { combo: {}, grid: {}, window: {} });
 Ext.reg('bepaidpayment', BePaidPayment);
 
 BePaidPayment = new BePaidPayment();

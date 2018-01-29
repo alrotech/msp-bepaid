@@ -23,23 +23,87 @@
  */
 
 BePaidPayment.window.PaymentProperty = function (config) {
-    config = config || { new: false };
+    config = config || {};
 
     if (!config.id) {
         config.id = 'bepaid-window-payment-property'
     }
 
     Ext.applyIf(config, {
-        modal: false,
-        width: 820,
+        url: BePaidPayment.ownConnector,
+        layout: 'anchor',
+        cls: 'modx-window',
+        modal: true,
+        width: 400,
+        autoHeight: true,
+        allowDrop: false,
         baseParams: {
-            // action: config.action || 'mgr/videos/' + (config.new ? 'create' : 'update')
+            action: 'mgr/properties/create',
+            payment: config.payment
         },
+        fields: this.getFields(config),
+        keys: this.getKeys(config),
+        buttons: this.getButtons(config),
         closeAction: 'close'
     });
 
-    BePaidPayment.window.PaymentProperty.superclass.constructor.call(config);
+    BePaidPayment.window.PaymentProperty.superclass.constructor.call(this, config);
+
+    this.on('hide', function () {
+        var self = this;
+        window.setTimeout(function () {
+            self.close();
+        }, 200);
+    });
 };
 
-Ext.extend(BePaidPayment.window.PaymentProperty, MODx.Window);
+Ext.extend(BePaidPayment.window.PaymentProperty, MODx.Window, {
+
+    getFields: function getFields() {
+        return [{
+            layout: 'form',
+            defaults: { msgTarget: 'under', autoHeight: true },
+            items: [{
+                fieldLabel: _('name'),
+                xtype: 'bepaid-combo-settings',
+                name: 'setting',
+                anchor: '100%'
+            }, {
+                fieldLabel: _('value'),
+                xtype: 'textarea',
+                name: 'value',
+                anchor: '100%',
+                id: 'bepaid-property-value'
+            }]
+        }];
+    },
+
+    getKeys: function getKeys() {
+        return [{
+            key: Ext.EventObject.ENTER,
+            shift: true,
+            fn: function () {
+                this.submit();
+            }, scope: this
+        }];
+    },
+
+    getButtons: function getButtons(config) {
+        return [{
+            scope: this,
+            text: _('cancel'),
+            handler: function () {
+                config.closeAction !== 'close'
+                    ? this.hide()
+                    : this.close();
+            }
+        }, {
+            scope: this,
+            text: _('save'),
+            handler: this.submit,
+            cls: 'primary-button'
+        }]
+    }
+
+});
 Ext.reg('bepaid-window-payment-property', BePaidPayment.window.PaymentProperty);

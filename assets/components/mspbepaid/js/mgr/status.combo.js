@@ -37,7 +37,7 @@ BePaidPayment.combo.Status = function (config) {
         value: 0,
         editable: true,
         hideMode: 'offsets',
-        url: BePaidPayment.ms2connector,
+        url: BePaidPayment.ms2Connector,
         baseParams: {
             action: 'mgr/settings/status/getlist',
             combo: true
