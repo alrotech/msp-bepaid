@@ -25,6 +25,10 @@
 
 require_once __DIR__ . '/bepaid.class.php';
 
+/**
+ * Class BePaidErip
+ * @deprecated
+ */
 class BePaidErip extends BePaid
 {
     const PAYMENT_TYPE = 'erip';

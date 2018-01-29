@@ -25,6 +25,10 @@
 
 require_once __DIR__ . '/bepaid.class.php';
 
+/**
+ * Class BePaidHalva
+ * @deprecated 
+ */
 class BePaidHalva extends BePaid
 {
     const PAYMENT_TYPE = 'halva';
