@@ -30,9 +30,7 @@ class mspBePaidPaymentPropertiesGetListProcessor extends modProcessor
 {
     public function process()
     {
-        // note: only first level
         // todo: pagination
-        // todo: sort?
         $payment = $this->modx->getObject('msPayment', $this->getProperty('payment'));
         $properties = $payment->get('properties');
 

@@ -32,6 +32,7 @@ $_lang['ms2_payment_bepaid_remove_all'] = 'Удалить все парамет�
 $_lang['ms2_payment_bepaid_remove_all_desc'] = 'Вы уверены, что хотите удалить все параметры?';
 
 $_lang['ms2_payment_bepaid_save_props_err'] = 'Can not save payment properties.';
+$_lang['ms2_payment_bepaid_duplicated_props_err'] = 'Этот параметр уже добавлен. Отредактируйте значение, выбрав соответствующий параметр в таблице.';
 
 $_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';
 

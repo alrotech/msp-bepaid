@@ -40,6 +40,10 @@ class mspBePaidPaymentPropertiesCreateProcessor extends modProcessor
         $key = $this->getProperty(self::PROPERTY_KEY);
         $value = $this->getProperty(self::PROPERTY_VALUE);
 
+        if (array_key_exists($key, $properties)) {
+            return $this->failure($this->modx->lexicon('ms2_payment_bepaid_duplicated_props_err'));
+        }
+
         $properties[$key] = $value;
 
         $payment->set('properties', $properties);
