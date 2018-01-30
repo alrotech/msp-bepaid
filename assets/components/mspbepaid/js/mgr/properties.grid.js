@@ -41,15 +41,16 @@ BePaidPayment.grid.PaymentProperties = function(config) {
         columns: [{
             header: _('property'),
             dataIndex: 'key',
-            width: 45,
+            width: 55,
             editable: false,
-            sortable: false
+            sortable: false,
+            renderer: this.propertyKeyRenderer.createDelegate(this, [this], true),
         }, {
             header: _('value'),
             dataIndex: 'value',
             sortable: false,
             editable: true,
-            width: 65
+            width: 45
         }]
     });
 
@@ -69,6 +70,18 @@ Ext.extend(BePaidPayment.grid.PaymentProperties, MODx.grid.Grid, {
             handler: this.clearAll,
             scope: this
         }];
+    },
+
+    propertyKeyRenderer: function propertyKeyRenderer(value, metaData, record) {
+
+        record.data.human = _('setting_' + value);
+
+        var tpl = '<div>' +
+            '<span>{human}</span>' +
+            '<br><small><b>{key}</b></small>' +
+        '</div>';
+
+        return new Ext.XTemplate(tpl).applyTemplate(record.data);
     },
 
     addProperty: function addProperty() {
