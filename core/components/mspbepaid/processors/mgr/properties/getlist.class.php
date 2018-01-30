@@ -30,7 +30,6 @@ class mspBePaidPaymentPropertiesGetListProcessor extends modProcessor
 {
     public function process()
     {
-        // todo: pagination
         $payment = $this->modx->getObject('msPayment', $this->getProperty('payment'));
         $properties = $payment->get('properties');
 
@@ -39,7 +38,9 @@ class mspBePaidPaymentPropertiesGetListProcessor extends modProcessor
             $list[] = ['key' => $key, 'value' => $value];
         }
 
-        return $this->outputArray($list, count($list));
+        $output = array_slice($list, $this->getProperty('start'), $this->getProperty('limit'));
+
+        return $this->outputArray($output, count($list));
     }
 }
 
