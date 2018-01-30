@@ -36,7 +36,6 @@ BePaidPayment.combo.Settings = function (config) {
         preselectValue: false,
         allowBlank: true,
         emptyText: _('ms2_payment_bepaid_select_setting'),
-        listEmptyText: '123',
         editable: false,
         hideMode: 'offsets',
         url: MODx.config.connector_url,
@@ -44,11 +43,6 @@ BePaidPayment.combo.Settings = function (config) {
             action: 'system/settings/getList',
             namespace: 'minishop2',
             area: 'ms2_payment_bepaid'
-        },
-        listeners: {
-            select: function (combo, record, index) {
-                Ext.getCmp('bepaid-property-value').setValue(record.data.value);
-            }
         }
     });
 

@@ -23,7 +23,7 @@
  */
 
 BePaidPayment.window.PaymentProperty = function (config) {
-    config = config || {};
+    config = config || { new: false };
 
     if (!config.id) {
         config.id = 'bepaid-window-payment-property'
@@ -38,7 +38,7 @@ BePaidPayment.window.PaymentProperty = function (config) {
         autoHeight: true,
         allowDrop: false,
         baseParams: {
-            action: 'mgr/properties/create',
+            action: 'mgr/properties/' + (config.new ? 'create' : 'update'),
             payment: config.payment
         },
         fields: this.getFields(config),
@@ -59,15 +59,21 @@ BePaidPayment.window.PaymentProperty = function (config) {
 
 Ext.extend(BePaidPayment.window.PaymentProperty, MODx.Window, {
 
-    getFields: function getFields() {
+    getFields: function getFields(config) {
         return [{
             layout: 'form',
             defaults: { msgTarget: 'under', autoHeight: true },
             items: [{
-                fieldLabel: _('name'),
+                fieldLabel: _('parameter'),
                 xtype: 'bepaid-combo-settings',
-                name: 'setting',
-                anchor: '100%'
+                name: 'key',
+                anchor: '100%',
+                readOnly: !config.new,
+                listeners: {
+                    select: function (combo, record) {
+                        Ext.getCmp('bepaid-property-value').setValue(record.data.value);
+                    }
+                }
             }, {
                 fieldLabel: _('value'),
                 xtype: 'textarea',

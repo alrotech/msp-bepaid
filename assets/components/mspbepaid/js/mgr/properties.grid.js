@@ -71,10 +71,10 @@ Ext.extend(BePaidPayment.grid.PaymentProperties, MODx.grid.Grid, {
         return tb;
     },
 
-    addProperty: function addProperty(config) {
+    addProperty: function addProperty() {
         MODx.load({
             xtype: 'bepaid-window-payment-property',
-            title: _('property_options'),
+            new: true,
             grid: this,
             payment: this.config.payment,
             listeners: {
@@ -112,8 +112,23 @@ Ext.extend(BePaidPayment.grid.PaymentProperties, MODx.grid.Grid, {
         });
     },
 
-    editProperty: function editProperty() {
+    editProperty: function editProperty(btn, e) {
+        var window = MODx.load({
+            xtype: 'bepaid-window-payment-property',
+            grid: this,
+            payment: this.config.payment,
+            listeners: {
+                success: {
+                    fn: function () {
+                        this.refresh();
+                    }, scope: this
+                }
+            }
+        });
 
+        window.reset();
+        window.setValues(this.menu.record);
+        window.show(e.target);
     },
 
     getMenu: function getMenu() {
