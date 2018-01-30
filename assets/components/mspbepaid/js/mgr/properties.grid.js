@@ -39,7 +39,7 @@ BePaidPayment.grid.PaymentProperties = function(config) {
         tbar: this.getTopBar(),
         fields: ['key', 'value'],
         columns: [{
-            header: _('key'),
+            header: _('property'),
             dataIndex: 'key',
             width: 45,
             editable: false,
@@ -87,12 +87,46 @@ Ext.extend(BePaidPayment.grid.PaymentProperties, MODx.grid.Grid, {
         }).show();
     },
 
+    deleteProperty: function deleteProperty() {
+        MODx.msg.confirm({
+            title: _('ms2_payment_bepaid_remove_setting'),
+            text: _('ms2_payment_bepaid_remove_setting_desc'),
+            url: BePaidPayment.ownConnector,
+            params: {
+                action: 'mgr/properties/delete',
+                payment: this.config.payment,
+                key: this.menu.record.key
+            },
+            listeners: {
+                success: {
+                    fn: function () {
+                        this.refresh();
+                    }, scope: this
+                },
+                failure: {
+                    fn: function (response) {
+                        MODx.msg.alert(response.message);
+                    }, scope: this
+                }
+            }
+        });
+    },
+
+    editProperty: function editProperty() {
+
+    },
+
     getMenu: function getMenu() {
         this.addContextMenuItem([{
-            text: 'Menu Item (should be implemented)',
-            handler: null
+            text: String.format('<span><i class="x-menu-item-icon icon {0}"></i>{1}</span>',
+                'icon-edit', _('edit')),
+            handler: this.editProperty
+        },'-',{
+            text: String.format('<span><i class="x-menu-item-icon icon {0}"></i>{1}</span>',
+                'icon-trash-o', _('delete')),
+            handler: this.deleteProperty
         }]);
-    },
+    }
 
 });
 Ext.reg('bepaid-grid-payment-properties', BePaidPayment.grid.PaymentProperties);

@@ -25,6 +25,11 @@
 
 $_lang['ms2_payment_bepaid_select_setting'] = 'Выберите настройку';
 
+$_lang['ms2_payment_bepaid_remove_setting'] = 'Удалить параметр';
+$_lang['ms2_payment_bepaid_remove_setting_desc'] = 'Вы уверены, что хотите удалить этот параметр?';
+
+$_lang['ms2_payment_bepaid_save_props_err'] = 'Не получается сохранить параметры способа оплаты.';
+
 $_lang['ms2_payment_bepaid_order_description'] = 'Оплата заказа #[[+num]]';
 
 $_lang['ms2_payment_bepaid_lang_english'] = 'Английский';

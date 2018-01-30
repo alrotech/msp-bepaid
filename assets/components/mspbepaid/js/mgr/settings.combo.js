@@ -35,7 +35,7 @@ BePaidPayment.combo.Settings = function (config) {
         typeAhead: false,
         preselectValue: false,
         allowBlank: true,
-        emptyText: _('ms2_payment_bepaid_select_setting')+'asdfsdf',
+        emptyText: _('ms2_payment_bepaid_select_setting'),
         listEmptyText: '123',
         editable: false,
         hideMode: 'offsets',

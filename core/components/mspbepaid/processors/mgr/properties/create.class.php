@@ -44,7 +44,7 @@ class mspBePaidPaymentPropertiesCreateProcessor extends modProcessor
 
         $payment->set('properties', $properties);
         if (!$payment->save()) {
-            return $this->failure('Can not save payment properties');
+            return $this->failure($this->modx->lexicon('ms2_payment_bepaid_save_props_err'));
         }
 
         return $this->success();
