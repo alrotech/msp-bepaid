@@ -28,6 +28,9 @@ $_lang['ms2_payment_bepaid_select_setting'] = 'Select a setting';
 $_lang['ms2_payment_bepaid_remove_setting'] = 'Удалить параметр';
 $_lang['ms2_payment_bepaid_remove_setting_desc'] = 'Вы уверены, что хотите удалить этот параметр?';
 
+$_lang['ms2_payment_bepaid_remove_all'] = 'Удалить все параметры';
+$_lang['ms2_payment_bepaid_remove_all_desc'] = 'Вы уверены, что хотите удалить все параметры?';
+
 $_lang['ms2_payment_bepaid_save_props_err'] = 'Can not save payment properties.';
 
 $_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';

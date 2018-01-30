@@ -39,11 +39,15 @@ class mspBePaidPaymentPropertiesDeleteProcessor extends modProcessor
 
         $key = $this->getProperty(self::PROPERTY_KEY);
 
-        if (!array_key_exists($key, $properties)) {
+        if (!array_key_exists($key, $properties) && $key !== 'all') {
             $this->failure('Key not found in properties array.'); // todo: translation?
         }
 
-        unset($properties[$key]);
+        if ($key === 'all') {
+            $properties = [];
+        } else {
+            unset($properties[$key]);
+        }
 
         $payment->set('properties', $properties);
 

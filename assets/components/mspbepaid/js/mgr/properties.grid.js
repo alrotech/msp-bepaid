@@ -59,16 +59,16 @@ BePaidPayment.grid.PaymentProperties = function(config) {
 Ext.extend(BePaidPayment.grid.PaymentProperties, MODx.grid.Grid, {
 
     getTopBar: function getTopBar() {
-        var tb = [];
-
-        tb.unshift({
+        return [{
             cls: 'primary-button',
             text: '<i class="icon icon-large icon-wrench"></i>&nbsp;&nbsp;&nbsp;' + _('property_create'),
             handler: this.addProperty,
             scope: this
-        });
-
-        return tb;
+        }, '->', {
+            text: '<i class="icon icon-large icon-remove"></i>&nbsp;&nbsp;&nbsp;' + _('ms2_menu_clear_all'),
+            handler: this.clearAll,
+            scope: this
+        }];
     },
 
     addProperty: function addProperty() {
@@ -141,6 +141,31 @@ Ext.extend(BePaidPayment.grid.PaymentProperties, MODx.grid.Grid, {
                 'icon-trash-o', _('delete')),
             handler: this.deleteProperty
         }]);
+    },
+
+    clearAll: function clearAll() {
+        MODx.msg.confirm({
+            title: _('ms2_payment_bepaid_remove_all'),
+            text: _('ms2_payment_bepaid_remove_all_desc'),
+            url: BePaidPayment.ownConnector,
+            params: {
+                action: 'mgr/properties/delete',
+                payment: this.config.payment,
+                key: 'all'
+            },
+            listeners: {
+                success: {
+                    fn: function () {
+                        this.refresh();
+                    }, scope: this
+                },
+                failure: {
+                    fn: function (response) {
+                        MODx.msg.alert(response.message);
+                    }, scope: this
+                }
+            }
+        });
     }
 
 });
