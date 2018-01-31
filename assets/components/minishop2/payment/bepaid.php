@@ -38,14 +38,21 @@ if (!class_exists('bePaid')) {
     die('[ms2::payment::bePaid] Could not load payment class "bePaid".');
 }
 
-$handler = new BePaid($modx->newObject('msOrder'));
+$orderId = intval($_GET['order']);
+$order = $modx->getObject('msOrder', $orderId);
+
+if (!$order || !$order instanceof msOrder) {
+    BePaid::fail("Order with id '$orderId' not found. Exit.");
+}
+
+$handler = new BePaid($order->getOne('Payment'));
 
 switch ($_GET['action']) {
     case 'notify':
         $handler->notify();
         break;
     case 'cancel':
-        $handler->log("Payment of order ({$_GET['order']}) was canceled by user.", __FILE__, __LINE__);
+        $handler->log("Payment of order ($orderId) was canceled by user.");
         break;
     case 'fail':
     case 'decline':
@@ -54,7 +61,7 @@ switch ($_GET['action']) {
             || empty($_GET['token'])
             || empty($_GET['status'])
         ) {
-            $handler->fail('Invalid response. Should contain uid, token and status fields in GET request query.', __FILE__, __LINE__);
+            $handler->fail('Invalid response. Should contain uid, token and status fields in GET request query.');
         }
 
         $handler->process($_GET['token'], $_GET['uid'], $_GET['status']);
@@ -64,12 +71,12 @@ switch ($_GET['action']) {
 
 $success = $cancel = $modx->getOption('site_url');
 
-if ($page = $modx->getOption('ms2_payment_bepaid_success_page', null, 0)) {
-    $success = $modx->makeUrl($page, '', ['msorder' => $_GET['order']], 'full');
+if ($page = $handler->config[BePaid::OPTION_SUCCESS_PAGE]) {
+    $success = $modx->makeUrl($page, '', ['msorder' => $orderId], 'full');
 }
 
-if ($page = $modx->getOption('ms2_payment_bepaid_failure_page', null, 0)) {
-    $cancel = $modx->makeUrl($page, '', ['msorder' => $_GET['order']], 'full');
+if ($page = $handler->config[BePaid::OPTION_FAILURE_PAGE]) {
+    $cancel = $modx->makeUrl($page, '', ['msorder' => $orderId], 'full');
 }
 
 $redirect = !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'success') ? $success : $cancel;

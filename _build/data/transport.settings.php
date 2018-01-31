@@ -23,6 +23,10 @@
  * THE SOFTWARE.
  */
 
+interface msPaymentInterface {};
+class msPaymentHandler {};
+require_once '../core/components/minishop2/custom/payment/bepaid.class.php';
+
 /**
  * System settings for package
  *
@@ -32,71 +36,71 @@
  */
 
 $list = [
-    'store_id' => [
+    BePaid::OPTION_STORE_ID => [
         'xtype' => 'textfield',
         'value' => ''
     ],
-    'secret_key' => [
+    BePaid::OPTION_SECRET_KEY => [
         'xtype' => 'textfield',
         'value' => ''
     ],
-    'checkout_url' => [
+    BePaid::OPTION_CHECKOUT_URL => [
         'xtype' => 'textfield',
         'value' => 'https://checkout.bepaid.by/ctp/api/checkouts'
     ],
-    'language' => [
+    BePaid::OPTION_LANGUAGE => [
         'xtype' => 'bepaid-combo-language',
         'value' => 'ru'
     ],
-    'country' => [
+    BePaid::OPTION_COUNTRY => [
         'xtype' => 'bepaid-combo-country',
         'value' => 'by'
     ],
-    'readonly_fields' => [
+    BePaid::OPTION_READONLY_FIELDS => [
 //        'xtype' => 'bepaid-combo-readonly',
         'xtype' => 'textfield',
         'value' => 'email'
     ],
-    'hidden_fields' => [
+    BePaid::OPTION_HIDDEN_FIELDS => [
 //        'xtype' => 'bepaid-combo-hidden',
         'xtype' => 'textfield',
         'value' => ''
     ],
-    'currency' => [
+    BePaid::OPTION_CURRENCY => [
         'xtype' => 'textfield',
         'value' => 'BYN'
     ],
-    'test_mode' => [
+    BePaid::OPTION_TEST_MODE => [
         'xtype' => 'combo-boolean',
         'value' => true
     ],
-    'success_status' => [
+    BePaid::OPTION_SUCCESS_STATUS => [
         'xtype' => 'bepaid-combo-status',
         'value' => 2
     ],
-    'failure_status' => [
+    BePaid::OPTION_FAILURE_STATUS => [
         'xtype' => 'bepaid-combo-status',
         'value' => 4
     ],
-    'success_page' => [
+    BePaid::OPTION_SUCCESS_PAGE => [
         'xtype' => 'bepaid-combo-resource',
         'value' => 0
     ],
-    'failure_page' => [
+    BePaid::OPTION_FAILURE_PAGE => [
         'xtype' => 'bepaid-combo-resource',
         'value' => 0
     ],
-    'api_version' => [
+    BePaid::OPTION_API_VERSION => [
         'xtype' => 'textfield',
         'value' => '2.1'
     ],
-    'payment_types' => [
+    BePaid::OPTION_PAYMENT_TYPES => [
         'xtype' => 'textfield',
         'value' => ''
     ],
-    'erip_service_id' => [
+    BePaid::OPTION_ERIP_SERVICE_ID => [
         'xtype' => 'textfield',
-        'value' => ''
+        'value' => '99999999'
     ]
 ];
 
@@ -104,9 +108,9 @@ $settings = [];
 foreach ($list as $k => $v) {
     $setting = new modSystemSetting($xpdo);
     $setting->fromArray(array_merge([
-        'key' => 'ms2_payment_bepaid_' . $k,
+        'key' => BePaid::PREFIX . '_' . $k,
         'namespace' => 'minishop2',
-        'area' => 'ms2_payment_bepaid',
+        'area' => BePaid::PREFIX,
         'editedon' => null,
     ], $v), '', true, true);
 

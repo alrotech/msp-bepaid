@@ -181,11 +181,12 @@ array_push($resolvers,
 );
 
 foreach (['Default', 'ERIP', 'Halva'] as $type) {
-    $name = join(' ', ['BePaid', '–', $type]);
+    $name = $class = 'BePaid';
 
-    $class = $type !== 'Default'
-        ? join('', ['BePaid', ucfirst(strtolower($type))])
-        : 'BePaid';
+    if ($type !== 'Default') {
+        $name = 'BePaid – ' . $type;
+        $class = join('', ['BePaid', ucfirst(strtolower($type))]);
+    }
 
     $payment = new msPayment($xpdo);
     $payment->fromArray([
