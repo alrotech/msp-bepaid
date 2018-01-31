@@ -23,19 +23,16 @@
  * THE SOFTWARE.
  */
 
+include_once 'base.class.php';
+
 /**
  * Class mspBePaidPaymentPropertiesCreateProcessor
  */
-class mspBePaidPaymentPropertiesCreateProcessor extends modProcessor
+class mspBePaidPaymentPropertiesCreateProcessor extends mspBePaidPaymentPropertiesBaseProcessor
 {
-    const PROPERTY_PAYMENT = 'payment';
-    const PROPERTY_KEY = 'key';
-    const PROPERTY_VALUE = 'value';
-
     public function process()
     {
-        $payment = $this->modx->getObject('msPayment', $this->getProperty(self::PROPERTY_PAYMENT));
-        $properties = $payment->get('properties');
+        $properties = $this->getPaymentProperties();
 
         $key = $this->getProperty(self::PROPERTY_KEY);
         $value = $this->getProperty(self::PROPERTY_VALUE);
@@ -46,12 +43,9 @@ class mspBePaidPaymentPropertiesCreateProcessor extends modProcessor
 
         $properties[$key] = $value;
 
-        $payment->set('properties', $properties);
-        if (!$payment->save()) {
-            return $this->failure($this->modx->lexicon('ms2_payment_bepaid_save_props_err'));
-        }
-
-        return $this->success();
+        return $this->savePaymentProperties($properties)
+            ? $this->success()
+            : $this->failure($this->modx->lexicon('ms2_payment_bepaid_save_props_err'));
     }
 }
 

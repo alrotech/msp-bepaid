@@ -23,15 +23,16 @@
  * THE SOFTWARE.
  */
 
+include_once 'base.class.php';
+
 /**
  * Class mspBePaidPaymentPropertiesGetListProcessor
  */
-class mspBePaidPaymentPropertiesGetListProcessor extends modProcessor
+class mspBePaidPaymentPropertiesGetListProcessor extends mspBePaidPaymentPropertiesBaseProcessor
 {
     public function process()
     {
-        $payment = $this->modx->getObject('msPayment', $this->getProperty('payment'));
-        $properties = $payment->get('properties');
+        $properties = $this->getPaymentProperties();
 
         $list = [];
         foreach ($properties as $key => $value) {

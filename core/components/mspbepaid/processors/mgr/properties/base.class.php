@@ -23,33 +23,48 @@
  * THE SOFTWARE.
  */
 
-include_once 'base.class.php';
-
 /**
- * Class mspBePaidPaymentPropertiesDeleteProcessor
+ * Class mspBePaidPaymentPropertiesBaseProcessor
  */
-class mspBePaidPaymentPropertiesDeleteProcessor extends mspBePaidPaymentPropertiesBaseProcessor
+class mspBePaidPaymentPropertiesBaseProcessor extends modProcessor
 {
-    public function process()
+    const PROPERTY_PAYMENT = 'payment';
+    const PROPERTY_KEY = 'key';
+    const PROPERTY_VALUE = 'value';
+
+    /** @var msPayment */
+    protected $payment;
+
+    /**
+     * @return msPayment|null|object
+     */
+    protected function getPayment()
     {
-        $properties = $this->getPaymentProperties();
-
-        $key = $this->getProperty(self::PROPERTY_KEY);
-
-        if (!array_key_exists($key, $properties) && $key !== 'all') {
-            $this->failure('ms2_payment_bepaid_props_key_nf');
+        if (!$this->payment) {
+            $this->payment = $this->modx->getObject('msPayment', $this->getProperty(self::PROPERTY_PAYMENT));
         }
 
-        if ($key === 'all') {
-            $properties = [];
-        } else {
-            unset($properties[$key]);
-        }
-
-        return $this->savePaymentProperties($properties)
-            ? $this->success()
-            : $this->failure($this->modx->lexicon('ms2_payment_bepaid_save_props_err'));
+        return $this->payment;
     }
-}
 
-return mspBePaidPaymentPropertiesDeleteProcessor::class;
+    /**
+     * @return mixed
+     */
+    protected function getPaymentProperties()
+    {
+        return $this->getPayment()->get('properties');
+    }
+
+    /**
+     * @param array $properties
+     * @return bool
+     */
+    protected function savePaymentProperties(array $properties)
+    {
+        $this->payment->set('properties', $properties);
+
+        return $this->payment->save();
+    }
+
+    public function process() {}
+}
