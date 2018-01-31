@@ -24,13 +24,13 @@
  */
 
 // custom processors
-$_lang['ms2_payment_bepaid_select_setting'] = 'Select a setting';
-$_lang['ms2_payment_bepaid_remove_setting'] = 'Удалить параметр';
-$_lang['ms2_payment_bepaid_remove_setting_desc'] = 'Вы уверены, что хотите удалить этот параметр?';
-$_lang['ms2_payment_bepaid_remove_all'] = 'Удалить все параметры';
-$_lang['ms2_payment_bepaid_remove_all_desc'] = 'Вы уверены, что хотите удалить все параметры?';
+$_lang['ms2_payment_bepaid_select_setting'] = 'Select a parameter';
+$_lang['ms2_payment_bepaid_remove_setting'] = 'Delete parameter';
+$_lang['ms2_payment_bepaid_remove_setting_desc'] = 'Are you sure you want to delete this parameter?';
+$_lang['ms2_payment_bepaid_remove_all'] = 'Clear all parameters';
+$_lang['ms2_payment_bepaid_remove_all_desc'] = 'Are you sure you want to delete all parameters?';
 $_lang['ms2_payment_bepaid_save_props_err'] = 'Can not save payment properties.';
-$_lang['ms2_payment_bepaid_duplicated_props_err'] = 'Этот параметр уже добавлен. Отредактируйте значение, выбрав соответствующий параметр в таблице.';
+$_lang['ms2_payment_bepaid_duplicated_props_err'] = 'This parameter has already been added. Edit the value by selecting the appropriate parameter in the table.';
 $_lang['ms2_payment_bepaid_props_key_nf'] = 'Key not found in properties array.';
 
 $_lang['ms2_payment_bepaid_order_description'] = 'Payment for order #[[+num]]';
