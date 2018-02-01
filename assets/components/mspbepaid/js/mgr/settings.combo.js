@@ -30,7 +30,7 @@ BePaidPayment.combo.Settings = function (config) {
         hiddenName: 'key',
         displayField: 'name_trans',
         valueField: 'key',
-        fields: ['key', 'value', 'name_trans'],
+        fields: ['key', 'value', 'name_trans', 'xtype'],
         pageSize: 20,
         typeAhead: false,
         preselectValue: false,

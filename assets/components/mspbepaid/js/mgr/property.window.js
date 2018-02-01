@@ -59,10 +59,27 @@ BePaidPayment.window.PaymentProperty = function (config) {
 
 Ext.extend(BePaidPayment.window.PaymentProperty, MODx.Window, {
 
+    dynamicValueField: function dynamicValueField(xtype, value) {
+        var form = Ext.getCmp('bepaid-window-payment-property-form');
+        var field = Ext.getCmp('bepaid-property-value');
+
+        form.remove(field);
+        form.add({
+            name: 'value',
+            fieldLabel: _('value'),
+            xtype: xtype,
+            value: value,
+            anchor: '100%',
+            id: 'bepaid-property-value'
+        });
+        form.doLayout();
+    },
+
     getFields: function getFields(config) {
         return [{
             layout: 'form',
             defaults: { msgTarget: 'under', autoHeight: true },
+            id: 'bepaid-window-payment-property-form',
             items: [{
                 fieldLabel: _('parameter'),
                 xtype: 'bepaid-combo-settings',
@@ -70,8 +87,16 @@ Ext.extend(BePaidPayment.window.PaymentProperty, MODx.Window, {
                 anchor: '100%',
                 readOnly: !config.new,
                 listeners: {
-                    select: function (combo, record) {
-                        Ext.getCmp('bepaid-property-value').setValue(record.data.value);
+                    loaded: {
+                        fn: function (combo) {
+                            var record = combo.getStore().getAt(0);
+                            this.dynamicValueField(record.get('xtype'), record.get('value'));
+                        }, scope: this
+                    },
+                    select: {
+                        fn: function (combo, record) {
+                            this.dynamicValueField(record.data.xtype, record.data.value);
+                        }, scope: this
                     }
                 }
             }, {
