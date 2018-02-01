@@ -33,7 +33,7 @@ $modx->setLogLevel(xPDO::LOG_LEVEL_ERROR);
 $modx->setLogTarget();
 
 $answer = $modx->runProcessor('workspace/packages/install',
-    ['signature' => 'mspbepaid-2.1.0-pl']
+    ['signature' => 'mspbepaid-2.3.0-pl']
 );
 
 $response = $answer->getResponse();
