@@ -24,6 +24,7 @@
 
 Ext.ComponentMgr.onAvailable('minishop2-window-payment-update', function () {
     this.on('beforerender', function (paymentWindow) {
+        if (!/bepaid/i.test(paymentWindow.record.class)) { return; }
         var tabs = this.findByType('modx-tabs').pop();
         tabs.add({
             title: _('properties'),
