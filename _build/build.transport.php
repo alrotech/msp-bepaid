@@ -155,7 +155,8 @@ foreach ($settings as $setting) {
 $validators = [];
 array_push($validators,
     ['type' => 'php', 'source' => $sources['validators'] . 'validate.phpversion.php'],
-    ['type' => 'php', 'source' => $sources['validators'] . 'validate.modxversion.php']
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.modxversion.php'],
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.bcmath.php']
 );
 
 $resolvers = [];

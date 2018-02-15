@@ -159,7 +159,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         ];
 
         if (!empty($this->config[self::OPTION_PAYMENT_TYPES])) {
-            $paymentTypes = explode(',', $this->config[self::OPTION_PAYMENT_TYPES]);
+            $paymentTypes = explode(',', strtolower($this->config[self::OPTION_PAYMENT_TYPES]));
             $payload['checkout']['payment_method']['types'] = $paymentTypes;
         } else {
             $paymentTypes = [];
@@ -237,7 +237,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             ? $precision[$currency]
             : 100; // default
 
-        return intval($amount * $multiplier);
+        return intval(bcmul(abs($amount), $multiplier));
     }
 
     /**
