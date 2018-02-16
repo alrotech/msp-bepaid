@@ -32,8 +32,9 @@ $modx->initialize('mgr');
 $modx->setLogLevel(xPDO::LOG_LEVEL_ERROR);
 $modx->setLogTarget();
 
+$modx->runProcessor('workspace/packages/scanlocal');
 $answer = $modx->runProcessor('workspace/packages/install',
-    ['signature' => 'mspbepaid-2.3.0-pl']
+    ['signature' => 'mspbepaid-2.3.1-pl']
 );
 
 $response = $answer->getResponse();
