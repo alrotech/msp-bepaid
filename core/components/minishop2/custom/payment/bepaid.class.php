@@ -57,60 +57,75 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     public $config = [];
 
     /**
+     * BePaid constructor.
      * @param xPDOObject $object
      * @param array $config
-     * @throws ReflectionException
      */
-    public function __construct(xPDOObject $object, $config = [])
+    public function __construct(xPDOObject $object, array $config = [])
     {
         parent::__construct($object, $config);
 
-        if (!$object instanceof msPayment) {
+        $this->config = $config;
+    }
+
+    /**
+     * @param msPayment $payment
+     * @throws ReflectionException
+     * @return void
+     */
+    protected function configure(msPayment $payment)
+    {
+        $config = [];
+
+        if (!is_subclass_of(get_class($payment), msPayment::class)) {
             $this->log('Passed object is not a payment object');
         }
 
-        $properties = $object->get('properties') ?: [];
+        $properties = $payment->get('properties') ?: [];
 
         $reflection = new ReflectionClass(self::class);
         foreach ($reflection->getConstants() as $constant => $value) {
             if ($constant === 'PREFIX') { continue; }
             $key = self::PREFIX . '_' . $value;
-            $this->config[$value] = array_key_exists($key, $properties)
+            $config[$value] = array_key_exists($key, $properties)
                 ? $properties[$key]
                 : $this->modx->getOption($key, null);
         }
 
-        $this->config['payment_url'] = join('/', [
+        $config['payment_url'] = join('/', [
             rtrim($this->modx->getOption('site_url'), '/'),
             ltrim($this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'), '/'),
             'payment/bepaid.php'
         ]);
 
-        $this->config = array_merge($this->config, $config);
+        $config = array_merge($config, $this->config);
 
-        $read_only = $this->config[self::OPTION_READONLY_FIELDS];
+        $read_only = $config[self::OPTION_READONLY_FIELDS];
         $read_only = $read_only ? explode(',', $read_only) : null;
         if ($read_only) {
-            $this->config['customer_fields']['read_only'] = $read_only;
+            $config['customer_fields']['read_only'] = $read_only;
         }
 
-        $hidden = $this->config[self::OPTION_HIDDEN_FIELDS];
+        $hidden = $config[self::OPTION_HIDDEN_FIELDS];
         $hidden = $hidden ? explode(',', $hidden) : null;
         if ($hidden) {
-            $this->config['customer_fields']['hidden'] = $hidden;
+            $config['customer_fields']['hidden'] = $hidden;
         }
 
-        if (!in_array($this->config[self::OPTION_LANGUAGE],
+        if (!in_array($config[self::OPTION_LANGUAGE],
             ['en', 'es', 'tr', 'de', 'it', 'ru', 'zh', 'fr', 'da', 'sv', 'no', 'fi']
         )) {
             // english by default in other unimaginable cases
-            $this->config[self::OPTION_LANGUAGE] = 'en';
+            $config[self::OPTION_LANGUAGE] = 'en';
         }
+
+        $this->config = $config;
     }
 
     /**
      * @param msOrder $order
      * @return array|string
+     * @throws ReflectionException
      */
     public function send(msOrder $order)
     {
@@ -124,11 +139,16 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     /**
      * @param msOrder $order
      * @return bool|string
+     * @throws ReflectionException
      */
     protected function getPaymentToken(msOrder $order)
     {
+        /** @var msPayment $payment */
+        $payment = $order->getOne('Payment');
         /** @var msOrderAddress $address */
         $address = $order->getOne('Address');
+
+        $this->configure($payment);
 
         $gateway = $this->config['payment_url'] . '?order=' . $order->get('id') . '&';
 
@@ -353,7 +373,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         curl_close($ch);
 
         // Special method for debugging requests
-        // $this->log(print_r($info, true), __FILE__, __LINE__);
+        // $this->log(print_r($info, true));
 
         if ($response === false) {
             $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error, __FILE__, __LINE__);
@@ -380,9 +400,16 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
     /**
      * Process notify webhook from payment system
+     * @param $order
+     * @throws ReflectionException
      */
-    public function notify()
+    public function notify(msOrder $order)
     {
+        /** @var msPayment $payment */
+        $payment = $order->getOne('Payment');
+
+        $this->configure($payment);
+
         if ($_SERVER['PHP_AUTH_USER'] != $this->config[self::OPTION_STORE_ID]
             || $_SERVER['PHP_AUTH_PW'] != $this->config[self::OPTION_SECRET_KEY]
         ) {
@@ -430,12 +457,19 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     }
 
     /**
+     * @param msOrder $order
      * @param $token
      * @param $uid
      * @param $status
+     * @throws ReflectionException
      */
-    public function process($token, $uid, $status)
+    public function process(msOrder $order, $token, $uid, $status)
     {
+        /** @var msPayment $payment */
+        $payment = $order->getOne('Payment');
+
+        $this->configure($payment);
+
         $url = join('/', [$this->config[self::OPTION_CHECKOUT_URL], $token]);
 
         $response = json_decode($this->request($url), true);

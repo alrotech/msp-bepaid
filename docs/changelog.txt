@@ -1,5 +1,13 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.3.1-pl (February ??, 2018)
+- Fixed issue with missed payment object in returned requests (notify, success etc)
+
+mspBePaid 2.3.0-pl (February 1, 2018)
+- Fixed issue with inaccurate calculations of money amounts (now used BC Math extensions for PHP)
+- Added overriding system options for each payment method based on bePaid
+- Returned proper work of test mode
+
 mspBePaid 2.2.0-pl (December 3, 2017)
 ====================================
 - Added two new methods of payment: Halva and ERIP

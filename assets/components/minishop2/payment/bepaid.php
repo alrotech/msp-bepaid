@@ -45,11 +45,11 @@ if (!$order || !$order instanceof msOrder) {
     BePaid::fail("Order with id '$orderId' not found. Exit.");
 }
 
-$handler = new BePaid($order->getOne('Payment'));
+$handler = new BePaid($order);
 
 switch ($_GET['action']) {
     case 'notify':
-        $handler->notify();
+        $handler->notify($order);
         break;
     case 'cancel':
         $handler->log("Payment of order ($orderId) was canceled by user.");
@@ -64,7 +64,7 @@ switch ($_GET['action']) {
             $handler->fail('Invalid response. Should contain uid, token and status fields in GET request query.');
         }
 
-        $handler->process($_GET['token'], $_GET['uid'], $_GET['status']);
+        $handler->process($order, $_GET['token'], $_GET['uid'], $_GET['status']);
 
         break;
 }
