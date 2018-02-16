@@ -1,7 +1,8 @@
 This file shows the changes in recent releases of mspBePaid.
 
-mspBePaid 2.3.1-pl (February ??, 2018)
+mspBePaid 2.3.1-pl (February 16, 2018)
 - Fixed issue with missed payment object in returned requests (notify, success etc)
+- Refactored payment class due to bad design of payment handlers in minishop2
 
 mspBePaid 2.3.0-pl (February 1, 2018)
 - Fixed issue with inaccurate calculations of money amounts (now used BC Math extensions for PHP)
