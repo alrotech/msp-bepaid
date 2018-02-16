@@ -25,7 +25,7 @@
 
 interface msPaymentInterface {};
 class msPaymentHandler {};
-require_once '../core/components/minishop2/custom/payment/bepaid.class.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/core/components/minishop2/custom/payment/bepaid.class.php';
 
 /**
  * System settings for package
