@@ -1,5 +1,13 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.3.2-pl (March 1, 2018)
+- Removed Belorussian language from package because it is not supported in minishop2
+- Replaced all classes and files into own package instead injecting them into minishop2 folders
+- Added Makefile for fast build and install operations during the development of the package
+- Removed outdated special classes for Halva and ERIP payment methods
+- Added registration payment service during the installation and removing it after uninstalling
+- Fixed removing plugins and related objects during uninstalling
+
 mspBePaid 2.3.1-pl (February 16, 2018)
 - Fixed issue with missed payment object in returned requests (notify, success etc)
 - Refactored payment class due to bad design of payment handlers in minishop2

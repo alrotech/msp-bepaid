@@ -37,7 +37,7 @@ ini_set('date.timezone', 'Europe/Minsk');
 
 define('PKG_NAME', 'mspBePaid');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '2.3.1');
+define('PKG_VERSION', '2.3.2');
 define('PKG_RELEASE', 'pl');
 
 require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
@@ -107,17 +107,12 @@ $sources = [
     'validators' => $root . '_build/validators/',
     'plugins' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/plugins/',
     'assets' => [
-        'components/mspbepaid/',
-        'components/minishop2/payment/bepaid.php'
+        'components/mspbepaid/'
     ],
     'core' => [
         'components/mspbepaid/',
-        'components/minishop2/custom/payment/bepaid.class.php',
-        'components/minishop2/custom/payment/bepaiderip.class.php',
-        'components/minishop2/custom/payment/bepaidhalva.class.php',
         'components/minishop2/lexicon/en/msp.bepaid.inc.php',
-        'components/minishop2/lexicon/ru/msp.bepaid.inc.php',
-        'components/minishop2/lexicon/be/msp.bepaid.inc.php',
+        'components/minishop2/lexicon/ru/msp.bepaid.inc.php'
     ],
 ];
 
@@ -178,38 +173,32 @@ foreach ($sources['core'] as $file) {
 }
 
 array_push($resolvers,
-    ['type' => 'php', 'source' => $sources['resolvers'] . 'resolve.settings.php']
+    ['type' => 'php', 'source' => $sources['resolvers'] . 'resolve.settings.php'],
+    ['type' => 'php', 'source' => $sources['resolvers'] . 'resolve.service.php']
 );
 
-foreach (['Default', 'ERIP', 'Halva'] as $type) {
-    $name = $class = 'BePaid';
+// creating payment
+$payment = new msPayment($xpdo);
+$payment->fromArray([
+    'id' => null,
+    'name' => 'BePaid',
+    'description' => null,
+    'price' => 0,
+    'logo' => null,
+    'rank' => 0,
+    'active' => 0,
+    'class' => 'BePaid',
+    'properties' => null
+]);
 
-    if ($type !== 'Default') {
-        $name = 'BePaid – ' . $type;
-        $class = join('', ['BePaid', ucfirst(strtolower($type))]);
-    }
-
-    $payment = new msPayment($xpdo);
-    $payment->fromArray([
-        'id' => null,
-        'name' => $name,
-        'description' => null,
-        'price' => 0,
-        'logo' => null,
-        'rank' => 0,
-        'active' => 0,
-        'class' => $class,
-        'properties' => null
-    ]);
-    $package->put($payment, [
-        xPDOTransport::UNIQUE_KEY => 'class',
-        xPDOTransport::PRESERVE_KEYS => false,
-        xPDOTransport::UPDATE_OBJECT => false,
-        'resolve' => null,
-        'validate' => null,
-        'package' => 'minishop2'
-    ]);
-}
+$package->put($payment, [
+    xPDOTransport::UNIQUE_KEY => 'class',
+    xPDOTransport::PRESERVE_KEYS => false,
+    xPDOTransport::UPDATE_OBJECT => false,
+    'resolve' => null,
+    'validate' => null,
+    'package' => 'minishop2'
+]);
 
 $category = new modCategory($xpdo);
 $category->fromArray([
@@ -233,14 +222,18 @@ $package->put($category, [
         'Plugins' => [
             xPDOTransport::UNIQUE_KEY => 'name',
             xPDOTransport::PRESERVE_KEYS => false,
-            xPDOTransport::UPDATE_OBJECT => false,
-            xPDOTransport::RELATED_OBJECTS => true
-        ],
-        'PluginEvents' => [
-            xPDOTransport::UNIQUE_KEY => ['pluginid', 'event'],
-            xPDOTransport::PRESERVE_KEYS => true,
-            xPDOTransport::UPDATE_OBJECT => false,
-            xPDOTransport::RELATED_OBJECTS => true
+            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UNINSTALL_OBJECT => true,
+            xPDOTransport::RELATED_OBJECTS => true,
+            xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
+                'PluginEvents' => [
+                    xPDOTransport::UNIQUE_KEY => ['pluginid', 'event'],
+                    xPDOTransport::PRESERVE_KEYS => true,
+                    xPDOTransport::UPDATE_OBJECT => true,
+                    xPDOTransport::UNINSTALL_OBJECT => true,
+                    xPDOTransport::RELATED_OBJECTS => false
+                ]
+            ]
         ]
     ],
     xPDOTransport::NATIVE_KEY => true,

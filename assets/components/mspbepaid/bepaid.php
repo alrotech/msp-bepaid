@@ -24,7 +24,7 @@
  */
 
 define('MODX_API_MODE', true);
-require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/index.php';
+require dirname(dirname(dirname(dirname(__FILE__)))) . '/index.php';
 
 $modx->getService('error', 'error.modError');
 $modx->setLogLevel(modX::LOG_LEVEL_ERROR);

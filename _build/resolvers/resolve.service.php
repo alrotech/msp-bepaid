@@ -2,7 +2,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Ivan Klimchuk <ivan@klimchuk.com>
+ * Copyright (c) 2018 Ivan Klimchuk <ivan@klimchuk.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,23 +23,36 @@
  * THE SOFTWARE.
  */
 
-require_once __DIR__ . '/bepaid.class.php';
-
 /**
- * Class BePaidHalva
- * @deprecated 
+ * System settings resolver
+ *
+ * @author Ivan Klimchuk <ivan@klimchuk.com>
+ * @package mspbepaid
+ * @subpackage build
  */
-class BePaidHalva extends BePaid
-{
-    const PAYMENT_TYPE = 'halva';
-    
-    /**
-     * @param xPDOObject $object
-     * @param array $config
-     */
-    function __construct(xPDOObject $object, $config = [])
-    {
-        parent::__construct($object, $config);
-        $this->config['payment_types'] = self::PAYMENT_TYPE;
-    }
+
+if (!$object->xpdo && !$object->xpdo instanceof modX) {
+    return true;
+}
+
+switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+
+    case xPDOTransport::ACTION_INSTALL:
+    case xPDOTransport::ACTION_UPGRADE:
+
+        /** @var miniShop2 $ms */
+        if ($ms = $object->xpdo->getService('miniShop2')) {
+            $ms->addService('payment', BePaid::class, '{core_path}components/mspbepaid/bepaid.class.php');
+        }
+
+        break;
+
+    case xPDOTransport::ACTION_UNINSTALL:
+
+        /** @var miniShop2 $ms */
+        if ($ms = $object->xpdo->getService('miniShop2')) {
+            $ms->removeService('payment', BePaid::class);
+        }
+
+        break;
 }

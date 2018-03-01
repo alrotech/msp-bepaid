@@ -24,7 +24,7 @@
  */
 
 if (!class_exists('msPaymentInterface')) {
-    $path = dirname(dirname(dirname(__FILE__))) . '/model/minishop2/mspaymenthandler.class.php';
+    $path = dirname(dirname(dirname(dirname(__FILE__)))) . '/minishop2/model/minishop2/mspaymenthandler.class.php';
     if (is_readable($path)) {
         require_once $path;
     }

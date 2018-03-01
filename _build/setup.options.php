@@ -55,13 +55,6 @@ $lexicon = array(
         'info' => 'You can skip this step and change this fields later in system settings.',
         'store_id' => 'Store ID',
         'secret_key' => 'Secret key'
-    ),
-    'be' => array(
-        'title' => 'Наладка плацёжнага модуля bePaid',
-        'description' => 'Па змоўчанню зададзены нумар і сакрэтны ключ тэставага магазіну. <a href="https://github.com/beGateway/begateway-api-php#test-data" target="_blank">Падрабязнасці тут.</a>',
-        'info' => 'Вы можаце прапусціць гэты крок і змяніць гэтыя палі пазней у сістэмных наладках.',
-        'store_id' => 'Ідэнтыфікатар магазіна',
-        'secret_key' => 'Cакрэтны ключ'
     )
 );
 
