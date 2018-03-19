@@ -48,7 +48,7 @@ require_once __DIR__ . '/xpdo/xpdo/transport/xpdoscriptvehicle.class.php';
 require_once __DIR__ . '/xpdo/xpdo/transport/xpdoobjectvehicle.class.php';
 
 require_once __DIR__ . '/helpers/ArrayXMLConverter.php';
-require_once __DIR__ . '/implants/EncryptedVehicle.class.php';
+require_once __DIR__ . '/implants/encryptedvehicle.class.php';
 
 $xpdo = xPDO::getInstance('db', [
     xPDO::OPT_CACHE_PATH => __DIR__ . '/../cache/',
@@ -185,7 +185,7 @@ $package = new xPDOTransport($xpdo, $signature, $directory);
 $package->put(new xPDOFileVehicle, [
     'vehicle_class' => 'xPDOFileVehicle',
     'object' => [
-        'source' => $sources['implants'] . 'EncryptedVehicle.class.php',
+        'source' => $sources['implants'] . 'encryptedvehicle.class.php',
         'target' => "return MODX_CORE_PATH . 'components/" . PKG_NAME_LOWER . "/';"
     ]
 ]);

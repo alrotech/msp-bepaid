@@ -1,4 +1,5 @@
 This file shows the changes in recent releases of mspBePaid.
+
 mspBePaid 2.4.0-pl (March 19, 2018)
 - Fixed length of state field because bepaid requires it less than 20 symbols
 - Encrypted package
