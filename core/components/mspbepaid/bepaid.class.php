@@ -283,7 +283,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
 
         if ($address->get('region')) {
-            $customer['state'] = $address->get('region');
+            $customer['state'] = mb_substr($address->get('region'), 0, 20);
         }
 
         if ($address->get('phone')) {
