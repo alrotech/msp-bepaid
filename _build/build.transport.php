@@ -141,11 +141,11 @@ if (file_exists($directory . $signature) && is_dir($directory . $signature)) {
     }
 }
 
-$credentials = file_get_contents(__DIR__ . '../.encryption');
+$credentials = file_get_contents(__DIR__ . '/../.encryption');
 list($username, $key) = explode(':', $credentials);
 
 if (empty($username) || empty($key)) {
-    $xpdo->log(xPDO::LOG_LEVEL_ERROR, "Credentials not found");
+    $xpdo->log(xPDO::LOG_LEVEL_ERROR, "Credentials not found.");
     exit;
 }
 
