@@ -1,4 +1,8 @@
 This file shows the changes in recent releases of mspBePaid.
+mspBePaid 2.4.0-pl (March 19, 2018)
+- Fixed length of state field because bepaid requires it less than 20 symbols
+- Encrypted package
+- Removed setup options as no needed more
 
 mspBePaid 2.3.2-pl (March 1, 2018)
 - Removed Belorussian language from package because it is not supported in minishop2
