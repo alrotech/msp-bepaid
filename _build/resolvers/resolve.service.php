@@ -42,7 +42,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
         /** @var miniShop2 $ms */
         if ($ms = $object->xpdo->getService('miniShop2')) {
-            $ms->addService('payment', BePaid::class, '{core_path}components/mspbepaid/bepaid.class.php');
+            $ms->addService('payment', BePaid::class, '{core_path}components/mspbepaid/BePaid.class.php');
         }
 
         break;
