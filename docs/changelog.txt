@@ -1,5 +1,9 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.4.1-pl (June 5, 2018)
+- Fixed issue with wrong generated payment_url
+- Fixed case of filename with payment handler
+
 mspBePaid 2.4.0-pl (March 19, 2018)
 - Fixed length of state field because bepaid requires it less than 20 symbols
 - Encrypted package
