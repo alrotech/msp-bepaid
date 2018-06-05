@@ -94,8 +94,8 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $config['payment_url'] = join('/', [
             rtrim($this->modx->getOption('site_url'), '/'),
-            ltrim($this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2'), '/'),
-            'payment/bepaid.php'
+            ltrim($this->modx->getOption('assets_url'), '/'),
+            'components/mspbepaid/bepaid.php'
         ]);
 
         $config = array_merge($config, $this->config);
