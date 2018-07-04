@@ -230,7 +230,8 @@ $validators = [];
 array_push($validators,
     ['type' => 'php', 'source' => $sources['validators'] . 'validate.phpversion.php'],
     ['type' => 'php', 'source' => $sources['validators'] . 'validate.modxversion.php'],
-    ['type' => 'php', 'source' => $sources['validators'] . 'validate.bcmath.php']
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.bcmath.php'],
+    ['type' => 'php', 'source' => $sources['validators'] . 'validate.oldversion.php']
 );
 
 $resolvers = [];
