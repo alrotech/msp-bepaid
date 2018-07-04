@@ -33,7 +33,7 @@ if (!class_exists('msPaymentInterface')) {
 /**
  * Class BePaid
  */
-class BePaid extends msPaymentHandler implements msPaymentInterface
+class BePaid extends msPaymentHandler
 {
     const PREFIX = 'ms2_payment_bepaid';
 
@@ -54,7 +54,22 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     const OPTION_PAYMENT_TYPES = 'payment_types';
     const OPTION_ERIP_SERVICE_ID = 'erip_service_id';
 
+    /** @var modX */
+    public $modx;
+
+    /** @var miniShop2 */
+    public $ms2;
+
+    /** @var array */
     public $config = [];
+
+    /**
+     * @return modX|xPDO
+     */
+    protected function getMODX()
+    {
+        return $this->modx;
+    }
 
     /**
      * BePaid constructor.
@@ -89,12 +104,12 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             $key = self::PREFIX . '_' . $value;
             $config[$value] = array_key_exists($key, $properties)
                 ? $properties[$key]
-                : $this->modx->getOption($key, null);
+                : $this->getMODX()->getOption($key, null);
         }
 
         $config['payment_url'] = join('/', [
-            rtrim($this->modx->getOption('site_url'), '/'),
-            ltrim($this->modx->getOption('assets_url'), '/'),
+            rtrim($this->getMODX()->getOption('site_url'), '/'),
+            ltrim($this->getMODX()->getOption('assets_url'), '/'),
             'components/mspbepaid/bepaid.php'
         ]);
 
@@ -152,7 +167,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
 
         $gateway = $this->config['payment_url'] . '?order=' . $order->get('id') . '&';
 
-        $orderDescription = $this->modx->lexicon('ms2_payment_bepaid_order_description', $order->toArray());
+        $orderDescription = $this->getMODX()->lexicon('ms2_payment_bepaid_order_description', $order->toArray());
 
         $payload = [
             'checkout' => [
@@ -201,7 +216,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             return $response['checkout']['redirect_url'];
         }
 
-        $this->log('Response not valid and contains errors: ' . print_r($response, true),  __FILE__, __LINE__);
+        $this->log('Response not valid and contains errors: ' . print_r($response, true));
 
         return false;
     }
@@ -376,7 +391,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         // $this->log(print_r($info, true));
 
         if ($response === false) {
-            $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error, __FILE__, __LINE__);
+            $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error);
         }
 
         return $response;
@@ -392,10 +407,10 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             return;
         }
 
-        $currentContext = $this->modx->context->get('key');
-        $this->modx->switchContext('mgr');
+        $currentContext = $this->getMODX()->context->get('key');
+        $this->getMODX()->switchContext('mgr');
         $this->ms2->changeOrderStatus($order->get('id'), $status);
-        $this->modx->switchContext($currentContext);
+        $this->getMODX()->switchContext($currentContext);
     }
 
     /**
@@ -424,7 +439,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             && isset($response['transaction']['type']) && $response['transaction']['type'] == 'payment'
         ) {
             /** @var msOrder $order */
-            if (!$order = $this->modx->getObject('msOrder', ['id' => $response['transaction']['tracking_id']])) {
+            if (!$order = $this->getMODX()->getObject('msOrder', ['id' => $response['transaction']['tracking_id']])) {
                 $msg = 'Requested order not found.';
                 $this->log($msg);
                 self::fail($msg);
@@ -475,20 +490,20 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $response = json_decode($this->request($url), true);
 
         if ($response['checkout']['shop_id'] != $this->config[self::OPTION_STORE_ID]) {
-            $this->log("Returned transaction not for this store, invalid store id ({$response['checkout']['shop_id']}). ", __FILE__, __LINE__);
+            $this->log("Returned transaction not for this store, invalid store id ({$response['checkout']['shop_id']}). ");
 
             return;
         }
 
         if ($response['checkout']['gateway_response']['payment']['uid'] != $uid) {
-            $this->log("Returned transaction uid ({$response['checkout']['gateway_response']['payment']['uid']}) not valid.", __FILE__, __LINE__);
+            $this->log("Returned transaction uid ({$response['checkout']['gateway_response']['payment']['uid']}) not valid.");
 
             return;
         }
 
         /** @var msOrder $order*/
-        if (!$order = $this->modx->getObject('msOrder', ['id' => $response['checkout']['order']['tracking_id']])) {
-            $this->log("Cannot find order with id ({$response['checkout']['order']['payment']['tracking_id']}) for transaction accept.", __FILE__, __LINE__);
+        if (!$order = $this->getMODX()->getObject('msOrder', ['id' => $response['checkout']['order']['tracking_id']])) {
+            $this->log("Cannot find order with id ({$response['checkout']['order']['payment']['tracking_id']}) for transaction accept.");
 
             return;
         }
@@ -504,7 +519,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             && !in_array($status, ['pending', 'auto_created', 'expired', 'permanent']) // ERIP
         ) {
             // need new page
-            $this->log($response['checkout']['message'] . " for order " . $order->get('id'), __FILE__, __LINE__);
+            $this->log($response['checkout']['message'] . " for order " . $order->get('id'));
 
             $this->changeOrderStatus($order, $this->config[self::OPTION_FAILURE_STATUS]);
 
@@ -512,7 +527,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         }
 
         if (!$response['checkout']['finished']) {
-            $this->log('Transaction not finished yet.', __FILE__, __LINE__);
+            $this->log('Transaction not finished yet.');
 
             return;
         }
@@ -525,7 +540,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
      */
     public function log($msg)
     {
-        $this->modx->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] ' . $msg);
+        $this->getMODX()->log(modX::LOG_LEVEL_ERROR, '[ms2::payment::bePaid] ' . $msg);
     }
 
     /**

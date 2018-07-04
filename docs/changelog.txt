@@ -4,6 +4,8 @@ mspBePaid 2.4.1-pl (June 5, 2018)
 - Fixed issue with wrong generated payment_url
 - Fixed case of filename with payment handler
 - Replaced hidden fields by visible fields (api was changed)
+- Forced test mode type to boolean
+- The main payment class BePaid refactored a bit
 
 mspBePaid 2.4.0-pl (March 19, 2018)
 - Fixed length of state field because bepaid requires it less than 20 symbols
