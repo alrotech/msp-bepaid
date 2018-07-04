@@ -50,6 +50,7 @@ class BePaid extends msPaymentHandler
     const OPTION_FAILURE_STATUS = 'failure_status';
     const OPTION_SUCCESS_PAGE = 'success_page';
     const OPTION_FAILURE_PAGE = 'failure_page';
+    const OPTION_UNPAID_PAGE = 'unpaid_page';
     const OPTION_API_VERSION = 'api_version';
     const OPTION_PAYMENT_TYPES = 'payment_types';
     const OPTION_ERIP_SERVICE_ID = 'erip_service_id';
@@ -209,7 +210,7 @@ class BePaid extends msPaymentHandler
             ];
         }
 
-        $response = $this->request($this->config[self::OPTION_CHECKOUT_URL], $payload);
+        $response = $this->request($this->config[self::OPTION_CHECKOUT_URL], $payload, [], boolval($this->config[self::OPTION_TEST_MODE]));
         $response = json_decode($response, true);
 
         if (isset($response['checkout']) && isset($response['checkout']['redirect_url'])) {
@@ -218,7 +219,9 @@ class BePaid extends msPaymentHandler
 
         $this->log('Response not valid and contains errors: ' . print_r($response, true));
 
-        return false;
+        return !boolval($this->config[self::OPTION_TEST_MODE])
+            ? $this->getMODX()->makeUrl($this->config[self::OPTION_UNPAID_PAGE], '', ['msorder' => $order->get('id')], 'full')
+            : false;
     }
 
     /**
@@ -352,9 +355,10 @@ class BePaid extends msPaymentHandler
      * @param $url
      * @param $payload
      * @param array $headers
+     * @param bool $debug
      * @return mixed Response in JSON format
      */
-    protected function request($url, $payload = null, $headers = [])
+    protected function request($url, $payload = null, $headers = [], $debug = false)
     {
         $headers = array_merge([
             'Content-Type' => 'application/json',
@@ -387,8 +391,10 @@ class BePaid extends msPaymentHandler
 
         curl_close($ch);
 
-        // Special method for debugging requests
-        // $this->log(print_r($info, true));
+        if ($debug) {
+            // Special method for debugging requests
+            $this->log('[REQUEST DEBUGGING]: ' . print_r($info, true));
+        }
 
         if ($response === false) {
             $this->log('CURL error, can not process request via path "' . $url . '". Error info: ' . $error);
@@ -487,7 +493,7 @@ class BePaid extends msPaymentHandler
 
         $url = join('/', [$this->config[self::OPTION_CHECKOUT_URL], $token]);
 
-        $response = json_decode($this->request($url), true);
+        $response = json_decode($this->request($url, null, [], boolval($this->config[self::OPTION_TEST_MODE])), true);
 
         if ($response['checkout']['shop_id'] != $this->config[self::OPTION_STORE_ID]) {
             $this->log("Returned transaction not for this store, invalid store id ({$response['checkout']['shop_id']}). ");

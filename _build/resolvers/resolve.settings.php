@@ -72,6 +72,19 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             $visibleFields->save();
         }
 
+        if (!$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_unpaid_page'])) {
+            /** @var modSystemSetting $unpaidPage */
+            $unpaidPage = $object->xpdo->newObject('modSystemSetting');
+            $unpaidPage->fromArray([
+                'namespace' => 'minishop2',
+                'area' => 'ms2_payment_bepaid',
+                'xtype' => 'textfield',
+                'key' => 'ms2_payment_bepaid_unpaid_page',
+                'value' => '0'
+            ], '', true, true);
+            $unpaidPage->save();
+        }
+
         break;
 
     case xPDOTransport::ACTION_UNINSTALL:

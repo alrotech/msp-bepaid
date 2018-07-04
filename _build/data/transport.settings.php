@@ -90,6 +90,10 @@ $list = [
         'xtype' => 'bepaid-combo-resource',
         'value' => 0
     ],
+    BePaid::OPTION_UNPAID_PAGE => [
+        'xtype' => 'bepaid-combo-resource',
+        'value' => 0
+    ],
     BePaid::OPTION_API_VERSION => [
         'xtype' => 'textfield',
         'value' => '2.1'
