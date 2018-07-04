@@ -75,6 +75,9 @@ $_lang['setting_ms2_payment_bepaid_success_page_desc'] = 'Пользовател
 $_lang['setting_ms2_payment_bepaid_failure_page'] = 'Страница отмены оплаты bePaid';
 $_lang['setting_ms2_payment_bepaid_failure_page_desc'] = 'Пользователь будет отправлен на эту страницу при неудачной оплате. Рекомендуется указать страницу с корзиной для вывода деталей заказа.';
 
+$_lang['setting_ms2_payment_bepaid_unpaid_page'] = 'Страница неоплаченного заказа';
+$_lang['setting_ms2_payment_bepaid_unpaid_page_desc'] = 'Пользователь будет отправлен на эту страницу после неудачного формирования ссылки на платежную страницу либо в случае других ошибок с платежной системой. В случае включенного режима тестирования эта настройка будет игнорироваться.';
+
 $_lang['setting_ms2_payment_bepaid_currency'] = 'Валюта платежа';
 $_lang['setting_ms2_payment_bepaid_currency_desc'] = 'Буквенный трехзначный код валюты согласно <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">ISO 4271</a>.';
 

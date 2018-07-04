@@ -75,6 +75,9 @@ $_lang['setting_ms2_payment_bepaid_success_page_desc'] = 'User will be redirecte
 $_lang['setting_ms2_payment_bepaid_failure_page'] = 'Destination page after failed/canceled payment';
 $_lang['setting_ms2_payment_bepaid_failure_page_desc'] = 'User will be redirected to the specified page after failed or canceled payment. Recommended to specify page with cart for show details of order.';
 
+$_lang['setting_ms2_payment_bepaid_unpaid_page'] = 'Unpaid order page';
+$_lang['setting_ms2_payment_bepaid_unpaid_page_desc'] = 'The user will be sent to this page after an unsuccessful link generation to the payment page, or in case of other errors with the payment system. If test mode is enabled, this setting will be ignored.';
+
 $_lang['setting_ms2_payment_bepaid_currency'] = 'Currency of payment';
 $_lang['setting_ms2_payment_bepaid_currency_desc'] = 'Literal three-digit code of currency according to <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">ISO 4271</a>.';
 
