@@ -84,6 +84,12 @@ $_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'URL to which will be s
 $_lang['setting_ms2_payment_bepaid_test_mode'] = 'Test mode';
 $_lang['setting_ms2_payment_bepaid_test_mode_desc'] = 'If specified "Yes" all requests will be sent to sandbox. Real card in this mode are not working.';
 
+$_lang['setting_ms2_payment_bepaid_readonly_fields'] = 'Fields on the payment page that are read-only';
+$_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'The fields specified here on the payment page will be read-only (can not be edited). List of available fields (separated by commas): <b>email</b>, <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
+
+$_lang['setting_ms2_payment_bepaid_visible_fields'] = 'Visible fields on the payment page';
+$_lang['setting_ms2_payment_bepaid_visible_fields_desc'] = 'The fields indicated here will be displayed on the payment page and will be required. A list (indicated by a comma), which can contain the values: <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
+
 $_lang['setting_ms2_payment_bepaid_readonly_fields'] = 'Read only orders properties';
 $_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Orders fields, listed here, on payment page will be showed as read only fields (not able to edit). List of available fields (separate by comma): <b>email</b>, <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
 

@@ -43,7 +43,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
     const OPTION_LANGUAGE = 'language';
     const OPTION_COUNTRY = 'country';
     const OPTION_READONLY_FIELDS = 'readonly_fields';
-    const OPTION_HIDDEN_FIELDS = 'hidden_fields';
+    const OPTION_VISIBLE_FIELDS = 'visible_fields';
     const OPTION_CURRENCY = 'currency';
     const OPTION_TEST_MODE = 'test_mode';
     const OPTION_SUCCESS_STATUS = 'success_status';
@@ -106,10 +106,10 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
             $config['customer_fields']['read_only'] = $read_only;
         }
 
-        $hidden = $config[self::OPTION_HIDDEN_FIELDS];
-        $hidden = $hidden ? explode(',', $hidden) : null;
-        if ($hidden) {
-            $config['customer_fields']['hidden'] = $hidden;
+        $visible = $config[self::OPTION_VISIBLE_FIELDS];
+        $visible = $visible ? explode(',', $visible) : null;
+        if ($visible) {
+            $config['customer_fields']['visible'] = $visible;
         }
 
         if (!in_array($config[self::OPTION_LANGUAGE],
@@ -157,7 +157,7 @@ class BePaid extends msPaymentHandler implements msPaymentInterface
         $payload = [
             'checkout' => [
                 'version' => $this->config[self::OPTION_API_VERSION],
-                'test' => $this->config[self::OPTION_TEST_MODE] ? 'true' : 'false',
+                'test' => boolval($this->config[self::OPTION_TEST_MODE]),
                 'transaction_type' => 'payment',
                 'settings' => [
                     'success_url' => $gateway . http_build_query(['action' => 'success']),

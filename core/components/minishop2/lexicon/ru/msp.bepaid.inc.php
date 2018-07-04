@@ -84,11 +84,11 @@ $_lang['setting_ms2_payment_bepaid_checkout_url_desc'] = 'URL, куда буду
 $_lang['setting_ms2_payment_bepaid_test_mode'] = 'Режим совершения тестовых платежей';
 $_lang['setting_ms2_payment_bepaid_test_mode_desc'] = 'При значении "Да", все запросы оплаты будут отправляться на тестовую среду обработки платежей bePaid. Реальные карты в данном режиме не работают.';
 
-$_lang['setting_ms2_payment_bepaid_readonly_fields'] = 'Свойства заказа только для чтения';
-$_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Поля заказа, перечисленные в данном параметре, на странице оплаты будут доступны только для чтения (редактировать нельзя). Список доступных полей (указывается через запятую): <b>email</b>, <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
+$_lang['setting_ms2_payment_bepaid_readonly_fields'] = 'Поля на странице оплаты, доступные только для чтения';
+$_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Поля, указанные здесь, на странице оплаты будут доступны только для чтения (редактировать нельзя). Список доступных полей (указывается через запятую): <b>email</b>, <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
 
-$_lang['setting_ms2_payment_bepaid_hidden_fields'] = 'Скрытые свойства заказа';
-$_lang['setting_ms2_payment_bepaid_hidden_fields_desc'] = 'Поля заказа, перечисленные в данном параметре, будут скрыты на странице оплаты, но при это будут записаны в параметры платежа. Список доступных полей (указывается через запятую): <b>phone</b>, <b>address</b>.';
+$_lang['setting_ms2_payment_bepaid_visible_fields'] = 'Отображаемые поля на странице оплаты';
+$_lang['setting_ms2_payment_bepaid_visible_fields_desc'] = 'Поля, указанные здесь, отобразятся на странице оплаты и будут обязательны для заполнения. Список (указывается через запятую), который может содержать значения: <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
 
 $_lang['setting_ms2_payment_bepaid_payment_types'] = 'Доступные способы оплаты';
 $_lang['setting_ms2_payment_bepaid_payment_types_desc'] = 'Массив способов оплаты для отображения на странице оплаты. Доступны следующие значения: <b>credit_card</b>, <b>erip</b>, <b>halva</b>. Для ЕРИП так же необходимо указать значение <b>erip_service_id</b>.';

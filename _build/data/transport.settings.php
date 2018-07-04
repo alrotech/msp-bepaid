@@ -61,8 +61,8 @@ $list = [
         'xtype' => 'textfield',
         'value' => 'email'
     ],
-    BePaid::OPTION_HIDDEN_FIELDS => [
-//        'xtype' => 'bepaid-combo-hidden',
+    BePaid::OPTION_VISIBLE_FIELDS => [
+//        'xtype' => 'bepaid-combo-visible',
         'xtype' => 'textfield',
         'value' => ''
     ],

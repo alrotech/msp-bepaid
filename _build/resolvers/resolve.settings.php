@@ -37,8 +37,10 @@ if (!$object->xpdo && !$object->xpdo instanceof modX) {
 
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_UPGRADE:
-        if (!$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_api_version'])) {
-            /** @var modSystemSetting $apiVersion */
+
+        /** @var modSystemSetting $apiVersion */
+        $apiVersion = $object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_api_version']);
+        if (!$apiVersion) {
             $apiVersion = $object->xpdo->newObject('modSystemSetting');
             $apiVersion->fromArray([
                 'namespace' => 'minishop2',
@@ -47,8 +49,29 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                 'key' => 'ms2_payment_bepaid_api_version',
                 'value' => 2.1
             ], '', true, true);
-            $apiVersion->save();
+        } else {
+            $apiVersion->set('value', 2.1);
         }
+        $apiVersion->save();
+
+        /** @var modSystemSetting $hiddenFields */
+        if ($hiddenFields = $object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_hidden_fields'])) {
+            $hiddenFields->remove();
+        }
+
+        if (!$object->xpdo->getObject('modSystemSetting', ['key' => 'ms2_payment_bepaid_visible_fields'])) {
+            /** @var modSystemSetting $visibleFields */
+            $visibleFields = $object->xpdo->newObject('modSystemSetting');
+            $visibleFields->fromArray([
+                'namespace' => 'minishop2',
+                'area' => 'ms2_payment_bepaid',
+                'xtype' => 'textfield',
+                'key' => 'ms2_payment_bepaid_visible_fields',
+                'value' => ''
+            ], '', true, true);
+            $visibleFields->save();
+        }
+
         break;
 
     case xPDOTransport::ACTION_UNINSTALL:

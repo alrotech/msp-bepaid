@@ -55,7 +55,7 @@ switch ($modx->event->name) {
                     // for now I have troubles with integrate superboxselect type into system settings grid
                     // so special types not used
                     // 'readonly.combo.js',
-                    // 'hidden.combo.js'
+                    // 'visible.combo.js'
                 ]); break;
             case 'mgr/settings':
                 loadExtraJs($modx, [
