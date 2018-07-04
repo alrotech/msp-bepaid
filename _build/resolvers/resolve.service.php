@@ -40,6 +40,17 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
 
+        // Alerting about old files in the custom directory
+        $msCorePath = $this->modx->getOption('minishop2.core_path', null, MODX_CORE_PATH . 'components/minishop2/');
+        $oldPlace = $msCorePath . 'custom/payment/bepaid.class.php';
+
+        if (file_exists($msCorePath . 'custom/payment/bepaid.class.php')) {
+            $object->xpdo->log(xpdo::LOG_LEVEL_ERROR, 'IMPORTANT NOTE!\n
+            The installer found that you use an old version of mspBePaid with old mechanism of registration custom classes for miniShop2. 
+            The new version uses a new service registration mechanism and provides new functions but files in the `core/compoments/minishop2/custom/payment` folder have higher priority and prevent to loading proper service class. 
+            The installer can not delete these files, since you could make your edits to the payment mechanism, but for the correct work of the new version you should remove or move these files from the `core/compoments/minishop2/custom/payment` folder yourself.');
+        }
+
         /** @var miniShop2 $ms */
         if ($ms = $object->xpdo->getService('miniShop2')) {
             $ms->addService('payment', BePaid::class, '{core_path}components/mspbepaid/BePaid.class.php');
