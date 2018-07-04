@@ -1,6 +1,6 @@
 This file shows the changes in recent releases of mspBePaid.
 
-mspBePaid 2.4.1-pl (June 5, 2018)
+mspBePaid 2.5.0-pl (July 4, 2018)
 - Fixed issue with wrong generated payment_url
 - Fixed case of filename with payment handler
 - Replaced hidden fields by visible fields (api was changed)

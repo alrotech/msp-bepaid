@@ -34,7 +34,7 @@ $modx->setLogTarget();
 
 $modx->runProcessor('workspace/packages/scanlocal');
 $answer = $modx->runProcessor('workspace/packages/install',
-    ['signature' => 'mspbepaid-2.3.1-pl']
+    ['signature' => 'mspbepaid-2.5.0-pl']
 );
 
 $response = $answer->getResponse();
