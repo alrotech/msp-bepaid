@@ -66,7 +66,7 @@ $xpdo = xPDO::getInstance('db', [
     ]
 ]);
 
-$xpdo->setLogLevel(xPDO::LOG_LEVEL_FATAL);
+$xpdo->setLogLevel();
 $xpdo->setLogTarget();
 
 class modNamespace extends xPDOObject {}

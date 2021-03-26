@@ -69,7 +69,7 @@ switch ($_GET['action']) {
         break;
 }
 
-$success = $cancel = $modx->getOption('site_url');
+$success = $cancel = $modx->getOption('site_url'); // todo - возвращать на страницу корзины по умолчанию
 
 if ($page = $handler->config[BePaid::OPTION_SUCCESS_PAGE]) {
     $success = $modx->makeUrl($page, '', ['msorder' => $orderId], 'full');
@@ -79,6 +79,6 @@ if ($page = $handler->config[BePaid::OPTION_FAILURE_PAGE]) {
     $cancel = $modx->makeUrl($page, '', ['msorder' => $orderId], 'full');
 }
 
-$redirect = !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'success') ? $success : $cancel;
+$redirect = !empty($_REQUEST['action']) && ($_REQUEST['action'] === 'success') ? $success : $cancel;
 
 $modx->sendRedirect($redirect);

@@ -65,10 +65,10 @@ class EncryptedVehicle extends xPDOObjectVehicle
     public function install(&$transport, $options)
     {
         if (!$this->decodePayloads($transport, 'install')) {
-            $transport->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Package can not be decrypted!');
+            $transport->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Vehicle can not be decrypted!');
             return false;
         } else {
-            $transport->xpdo->log(xPDO::LOG_LEVEL_INFO, 'Package decrypted!');
+            $transport->xpdo->log(xPDO::LOG_LEVEL_INFO, 'Vehicle decrypted!');
         }
 
         return parent::install($transport, $options);
@@ -83,10 +83,10 @@ class EncryptedVehicle extends xPDOObjectVehicle
     public function uninstall(&$transport, $options)
     {
         if (!$this->decodePayloads($transport, 'uninstall')) {
-            $transport->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Package can not be decrypted!');
+            $transport->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Vehicle can not be decrypted!');
             return false;
         } else {
-            $transport->xpdo->log(xPDO::LOG_LEVEL_INFO, 'Package decrypted!');
+            $transport->xpdo->log(xPDO::LOG_LEVEL_INFO, 'Vehicle decrypted!');
         }
 
         return parent::uninstall($transport, $options);
