@@ -1,5 +1,8 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.5.1-pl (March 26, 2021)
+- Fixed issue with zero cost when php locale changed to any from english
+
 mspBePaid 2.5.0-pl (July 4, 2018)
 - Fixed issue with wrong generated payment_url
 - Fixed case of filename with payment handler
