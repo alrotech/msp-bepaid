@@ -269,13 +269,11 @@ class BePaid extends msPaymentHandler
             'TND' => 1000
         ];
 
-        $amount = (float) $amount;
-
         $multiplier = array_key_exists($currency, $precision)
             ? $precision[$currency]
             : 100; // default
 
-        return intval(bcmul(abs($amount), $multiplier));
+        return (int) abs(bcmul(str_replace(',', '.', $amount), $multiplier));
     }
 
     /**
