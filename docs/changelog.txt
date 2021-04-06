@@ -1,5 +1,8 @@
 This file shows the changes in recent releases of mspBePaid.
 
+mspBePaid 2.5.2-pl (April 6, 2021)
+- Improve error reporting about missed parameters in the back-to-shop link
+
 mspBePaid 2.5.1-pl (March 26, 2021)
 - Fixed issue with zero cost when php locale changed to any from english
 
