@@ -57,11 +57,19 @@ switch ($_GET['action']) {
     case 'fail':
     case 'decline':
     case 'success':
-        if (empty($_GET['uid'])
-            || empty($_GET['token'])
-            || empty($_GET['status'])
-        ) {
-            $handler->fail('Invalid response. Should contain uid, token and status fields in GET request query.');
+        $missed = [];
+        foreach (['uid', 'token', 'status'] as $param) {
+            if (empty($_GET[$param])) {
+                $missed[] = $param;
+            }
+        }
+        if (count($missed)) {
+            $handler::fail(
+                sprintf(
+                    'Invalid response. Should contain uid, token and status parameters in GET request query. Following parameters are missed: %s',
+                    implode(', ', $missed)
+                )
+            );
         }
 
         $handler->process($order, $_GET['token'], $_GET['uid'], $_GET['status']);
