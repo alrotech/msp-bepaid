@@ -6,5 +6,5 @@ _packages/*/
 _packages/*.zip
 !_packages/.gitkeep
 
-
-
+vendor
+node_modules
