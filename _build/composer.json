@@ -2,7 +2,7 @@
   "name": "alroniks/mspbepaid",
   "description": "Payment provider for MODX miniShop2 e-commerce solutions based on bePaid system.",
   "type": "metapackage",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "license": "proprietary",
   "authors": [
     {
