@@ -1,0 +1,28 @@
+{
+  "name": "alroniks/mspbepaid",
+  "description": "Payment provider for MODX miniShop2 e-commerce solutions based on bePaid system.",
+  "type": "metapackage",
+  "version": "2.5.2",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Ivan Klimchuk",
+      "email": "ivan@klimchuk.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require-dev": {
+    "modx/revolution": "~2.0"
+  },
+  "require": {
+    "php": ">=7.4",
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "ext-simplexml": "*",
+    "ext-json": "*",
+    "ext-xmlwriter": "*",
+    "ext-bcmath": "*",
+    "ext-openssl": "*"
+  }
+}
