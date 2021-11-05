@@ -48,7 +48,7 @@ $_lang['ms2_payment_bepaid_lang_swedish'] = 'Шведский';
 $_lang['ms2_payment_bepaid_lang_norwegian'] = 'Норвежский';
 $_lang['ms2_payment_bepaid_lang_finnish'] = 'Финский';
 
-// settings
+//settings
 $_lang['area_ms2_payment_bepaid'] = 'bePaid';
 
 $_lang['setting_ms2_payment_bepaid_store_id'] = 'Идентификатор магазина в системе bePaid';
@@ -93,6 +93,12 @@ $_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Поля, указ�
 $_lang['setting_ms2_payment_bepaid_visible_fields'] = 'Отображаемые поля на странице оплаты';
 $_lang['setting_ms2_payment_bepaid_visible_fields_desc'] = 'Поля, указанные здесь, отобразятся на странице оплаты и будут обязательны для заполнения. Список (указывается через запятую), который может содержать значения: <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
 
+$_lang['setting_ms2_payment_bepaid_readonly_fields'] = 'Read only orders properties';
+$_lang['setting_ms2_payment_bepaid_readonly_fields_desc'] = 'Orders fields, listed here, on payment page will be showed as read only fields (not able to edit). List of available fields (separate by comma): <b>email</b>, <b>first_name</b>, <b>last_name</b>, <b>address</b>, <b>city</b>, <b>state</b>, <b>zip</b>, <b>phone</b>, <b>country</b>.';
+
+$_lang['setting_ms2_payment_bepaid_hidden_fields'] = 'Hidden orders properties';
+$_lang['setting_ms2_payment_bepaid_hidden_fields_desc'] = 'Orders fields, listed here, on payment page will be hidden, but still will be stored in payment details. List of available fields (separate by comma): <b>phone</b>, <b>address</b>.';
+
 $_lang['setting_ms2_payment_bepaid_payment_types'] = 'Доступные способы оплаты';
 $_lang['setting_ms2_payment_bepaid_payment_types_desc'] = 'Массив способов оплаты для отображения на странице оплаты. Доступны следующие значения: <b>credit_card</b>, <b>erip</b>, <b>halva</b>. Для ЕРИП так же необходимо указать значение <b>erip_service_id</b>.';
 
@@ -103,7 +109,7 @@ $_lang['setting_ms2_payment_bepaid_api_version'] = 'Версия платежн�
 $_lang['setting_ms2_payment_bepaid_api_version_desc'] = 'На текущий момент актуальная версия протокола <b>2.1</b>. Если вы устанавливали компонент ранее, это значение следует обновить вручную.';
 
 // countries
-$_lang['ms2_payment_bepaid_country_au'] = 'Австралия';
+$_lang['ms2_payment_bepaid country au'] = 'Australia';
 $_lang['ms2_payment_bepaid_country_at'] = 'Австрия';
 $_lang['ms2_payment_bepaid_country_az'] = 'Азербайджан';
 $_lang['ms2_payment_bepaid_country_ax'] = 'Аландские острова';
@@ -207,7 +213,7 @@ $_lang['ms2_payment_bepaid_country_cr'] = 'Коста-Рика';
 $_lang['ms2_payment_bepaid_country_ci'] = 'Кот-д’Ивуар';
 $_lang['ms2_payment_bepaid_country_cu'] = 'Куба';
 $_lang['ms2_payment_bepaid_country_kw'] = 'Кувейт';
-$_lang['ms2_payment_bepaid_country_kg'] = 'Кыргызстан';
+$_lang['ms2_payment_bepaid_country_kg'] = 'Беларусь';
 $_lang['ms2_payment_bepaid_country_cw'] = 'Кюрасао';
 $_lang['ms2_payment_bepaid_country_la'] = 'Лаосская Народно-Демократическая Республика';
 $_lang['ms2_payment_bepaid_country_lv'] = 'Латвия';
