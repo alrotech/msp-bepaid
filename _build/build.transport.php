@@ -1,75 +1,185 @@
 <?php
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Ivan Klimchuk <ivan@klimchuk.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/** @noinspection AutoloadingIssuesInspection */
 
 /**
- * mspBePaid package builder
- *
- * @author Ivan Klimchuk <ivan@klimchuk.com>
- * @package mspbepaid
- * @subpackage build
+ * Copyright (c) Ivan Klimchuk - All Rights Reserved
+ * Unauthorized copying, changing, distributing this file, via any medium, is strictly prohibited.
+ * Written by Ivan Klimchuk <ivan@klimchuk.com>, 2021
  */
 
-set_time_limit(0);
+declare(strict_types = 1);
 
+use function alroniks\mspbepaid\helpers\xml\arrayToXml;
+use function alroniks\mspbepaid\helpers\xml\xmlToArray;
+
+set_time_limit(0);
+error_reporting(E_ALL | E_STRICT);
+ini_set('display_errors', 'On');
 ini_set('date.timezone', 'Europe/Minsk');
 
-define('PKG_NAME', 'mspBePaid');
-define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '2.5.2');
-define('PKG_RELEASE', 'pl');
+require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . '/xpdo/xpdo/xpdo.class.php';
-require_once __DIR__ . '/xpdo/xpdo/transport/xpdotransport.class.php';
-require_once __DIR__ . '/xpdo/xpdo/transport/xpdovehicle.class.php';
-require_once __DIR__ . '/xpdo/xpdo/transport/xpdofilevehicle.class.php';
-require_once __DIR__ . '/xpdo/xpdo/transport/xpdoscriptvehicle.class.php';
-require_once __DIR__ . '/xpdo/xpdo/transport/xpdoobjectvehicle.class.php';
+$composer = json_decode(file_get_contents(__DIR__ . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
 
-require_once __DIR__ . '/helpers/ArrayXMLConverter.php';
-require_once __DIR__ . '/implants/encryptedvehicle.class.php';
+[, $package] = explode('/', $composer['name']);
 
-$xpdo = xPDO::getInstance('db', [
-    xPDO::OPT_CACHE_PATH => __DIR__ . '/../cache/',
-    xPDO::OPT_HYDRATE_FIELDS => true,
-    xPDO::OPT_HYDRATE_RELATED_OBJECTS => true,
-    xPDO::OPT_HYDRATE_ADHOC_FIELDS => true,
-    xPDO::OPT_CONNECTIONS => [
-        [
-            'dsn' => 'mysql:host=localhost;dbname=xpdotest;charset=utf8',
-            'username' => 'test',
-            'password' => 'test',
-            'options' => [xPDO::OPT_CONN_MUTABLE => true],
-            'driverOptions' => [],
-        ]
-    ]
-]);
+define('PKG_NAME_LOWER', $package);
+define('PKG_VERSION', $composer['version']);
+define('PKG_RELEASE', $composer['minimum-stability']);
 
-$xpdo->setLogLevel();
+require_once __DIR__ . '/vendor/modx/revolution/core/xpdo/xpdo.class.php';
+
+/* instantiate xpdo instance */
+$xpdo = new xPDO(
+    'mysql:host=localhost;dbname=modx;charset=utf8', 'root', '',
+    [xPDO::OPT_TABLE_PREFIX => 'modx_', xPDO::OPT_CACHE_PATH => __DIR__ . '/../../../core/cache/'],
+    [PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING]
+);
+$cacheManager = $xpdo->getCacheManager();
+$xpdo->setLogLevel(xPDO::LOG_LEVEL_INFO);
 $xpdo->setLogTarget();
 
-class modNamespace extends xPDOObject {}
+$signature = implode('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
+
+if (!empty($argv) && $argc > 1) {
+    [, $release, $encryption] = array_replace(array_fill(0, 3,null), $argv);
+}
+
+$directory = (isset($release) && $release === 'release') ? dirname(__DIR__) . '/_packages/' : __DIR__ . '/../../../core/packages/';
+$filename = $directory . $signature . '.transport.zip';
+
+/* remove the package if it's already been made */
+if (file_exists($filename)) {
+    unlink($filename);
+}
+if (file_exists($directory . $signature) && is_dir($directory . $signature)) {
+    $cacheManager = $xpdo->getCacheManager();
+    if ($cacheManager) {
+        $cacheManager->deleteTree($directory . $signature, true, false, []);
+    }
+}
+
+$xpdo->loadClass('transport.xPDOTransport', XPDO_CORE_PATH, true, true);
+$xpdo->loadClass('transport.xPDOVehicle', XPDO_CORE_PATH, true, true);
+$xpdo->loadClass('transport.xPDOObjectVehicle', XPDO_CORE_PATH, true, true);
+$xpdo->loadClass('transport.xPDOFileVehicle', XPDO_CORE_PATH, true, true);
+$xpdo->loadClass('transport.xPDOScriptVehicle', XPDO_CORE_PATH, true, true);
+
+$credentials = $encryption ?? file_get_contents(__DIR__ . '/../.encryption');
+if ($credentials) {
+    [$username, $key] = explode(':', $credentials);
+}
+
+if (empty($username) || empty($key)) {
+    $xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Credentials not found');
+    exit;
+}
+
+$params = [
+    'api_key' => trim($key),
+    'username' => trim($username),
+    'http_host' => 'any-site.local.docker',
+    'package' => PKG_NAME_LOWER,
+    'version' => PKG_VERSION . '-' . PKG_RELEASE,
+    'vehicle_version' => '2.0.0',
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://modstore.pro/extras/package/encode');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/xml']);
+curl_setopt($ch, CURLOPT_POSTFIELDS, arrayToXml(['request' => $params])->outputMemory());
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+$xml = trim(curl_exec($ch));
+curl_close($ch);
+
+$answer = xmlToArray($xml);
+
+if (isset($answer['message'])) {
+    $xpdo->log(xPDO::LOG_LEVEL_ERROR, $answer['message']);
+    exit;
+}
+
+$xpdo->log(xPDO::LOG_LEVEL_INFO, 'Encryption key is: ' . $answer['key']);
+
+define('PKG_ENCODE_KEY', $answer['key']);
+
+$package = new xPDOTransport($xpdo, $signature, $directory);
+
+$xpdo->setPackage('modx', __DIR__ . '/vendor/modx/revolution/core/model/');
+$xpdo->loadClass(modAccess::class);
+$xpdo->loadClass(modAccessibleObject::class);
+$xpdo->loadClass(modAccessibleSimpleObject::class);
+$xpdo->loadClass(modPrincipal::class);
+$xpdo->loadClass(modElement::class);
+$xpdo->loadClass(modScript::class);
+
+// Put files into package
+$package->put(
+    [
+        'source' => __DIR__ . '/../assets/' . PKG_NAME_LOWER,
+        'target' => "return MODX_ASSETS_PATH . 'components/';",
+    ],
+    ['vehicle_class' => xPDOFileVehicle::class]
+);
+$package->put(
+    [
+        'source' => __DIR__ . '/../core/' . PKG_NAME_LOWER,
+        'target' => "return MODX_CORE_PATH . 'components/';",
+    ],
+    ['vehicle_class' => xPDOFileVehicle::class]
+);
+$package->put(
+    ['source' => __DIR__ . '/resolvers/encryption.php'],
+    ['vehicle_class' => xPDOScriptVehicle::class]
+);
+
+class EncryptedVehicle extends xPDOObjectVehicle {}
+
+$namespace = $xpdo->newObject(modNamespace::class);
+$namespace->set('name', PKG_NAME_LOWER);
+$namespace->fromArray(
+    [
+        'path' => '{core_path}components/' . PKG_NAME_LOWER . '/',
+        'assets_path' => '{assets_path}components/' . PKG_NAME_LOWER . '/',
+    ]
+);
+
+$package->put(
+    $namespace,
+    [
+        'vehicle_class' => EncryptedVehicle::class,
+        xPDOTransport::UNIQUE_KEY => 'name',
+        xPDOTransport::PRESERVE_KEYS => true,
+        xPDOTransport::UPDATE_OBJECT => true,
+        xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true,
+        'validate' => [
+            ['type' => 'php', 'source' => __DIR__ . '/validators/php-extensions.php'],
+        ],
+    ]
+);
+
+$package->setAttribute('changelog', file_get_contents(__DIR__ . '/../changelog.md'));
+$package->setAttribute('license', file_get_contents(__DIR__ . '/../license'));
+$package->setAttribute('readme', file_get_contents(__DIR__ . '/../docs/about.md'));
+$package->setAttribute(
+    'requires',
+    [
+        'php' => '>=7.4',
+        'modx' => '>=2.8',
+        'miniShop2' => '>=2.5',
+        'msPaymentProps' => '>=0.3.4-stable',
+    ]
+);
+
+
+
+///=============
+
+
+
 class modCategory extends xPDOObject {
     public function getFKDefinition($alias)
     {
@@ -125,78 +235,9 @@ $sources = [
     ],
 ];
 
-$signature = join('-', [PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE]);
-$directory = $root . '_packages/';
-//$directory = __DIR__ . '/../../../core/packages/';
-$filename = $directory . $signature . '.transport.zip';
-
-/* remove the package if it's already been made */
-if (file_exists($filename)) {
-    unlink($filename);
-}
-if (file_exists($directory . $signature) && is_dir($directory . $signature)) {
-    $cacheManager = $xpdo->getCacheManager();
-    if ($cacheManager) {
-        $cacheManager->deleteTree($directory . $signature, true, false, []);
-    }
-}
-
-$credentials = file_get_contents(__DIR__ . '/../.encryption');
-list($username, $key) = explode(':', $credentials);
-
-if (empty($username) || empty($key)) {
-    $xpdo->log(xPDO::LOG_LEVEL_ERROR, "Credentials not found.");
-    exit;
-}
-
-$params = [
-    'api_key' => $key,
-    'username' => $username,
-    'http_host' => 'anysite.docker',
-    'package' => PKG_NAME,
-    'version' => PKG_VERSION . '-' . PKG_RELEASE,
-    'vehicle_version' => '2.0.0'
-];
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://modstore.pro/extras/package/encode');
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/xml']);
-curl_setopt($ch, CURLOPT_POSTFIELDS, ArrayXMLConverter::toXML($params,'request'));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-$result = trim(curl_exec($ch));
-curl_close($ch);
-
-$answer = ArrayXMLConverter::toArray($result);
-
-if (isset($answer['message'])) {
-    $xpdo->log(xPDO::LOG_LEVEL_ERROR, $answer['message']);
-    echo $answer['message'];
-    exit;
-}
-
-define('PKG_ENCODE_KEY', $answer['key']);
-
 $package = new xPDOTransport($xpdo, $signature, $directory);
 
-// insert class EncryptedVehicle
-$package->put(new xPDOFileVehicle, [
-    'vehicle_class' => 'xPDOFileVehicle',
-    'object' => [
-        'source' => $sources['implants'] . 'encryptedvehicle.class.php',
-        'target' => "return MODX_CORE_PATH . 'components/" . PKG_NAME_LOWER . "/';"
-    ]
-]);
 
-// load class EncryptedVehicle
-$package->put(new xPDOScriptVehicle, [
-    'vehicle_class' => 'xPDOScriptVehicle',
-    'object' => [
-        'source' => $sources['resolvers'] . 'resolve.encryption.php'
-    ]
-]);
 
 $namespace = new modNamespace($xpdo);
 $namespace->fromArray([
